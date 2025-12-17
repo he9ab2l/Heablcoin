@@ -290,3 +290,155 @@ class ApiManager:
             ep.total_latency = 0.0
             ep.status = ApiStatus.ACTIVE
         logger.info("[ApiManager] Stats reset")
+    
+    def record_success(self, endpoint_name: str, latency: float) -> None:
+        """记录成功调用"""
+        if endpoint_name in self.endpoints:
+            ep = self.endpoints[endpoint_name]
+            ep.success_count += 1
+            ep.total_latency += latency
+            ep.last_success = time.time()
+            ep.status = ApiStatus.ACTIVE
+    
+    def record_failure(self, endpoint_name: str) -> None:
+        """记录失败调用"""
+        if endpoint_name in self.endpoints:
+            ep = self.endpoints[endpoint_name]
+            ep.failure_count += 1
+            ep.last_failure = time.time()
+            if ep.failure_count >= 3:
+                ep.status = ApiStatus.FAILED
+    
+    def get_endpoint(self, name: str) -> Optional[ApiEndpoint]:
+        """获取指定端点"""
+        return self.endpoints.get(name)
+    
+    def is_endpoint_available(self, name: str) -> bool:
+        """检查端点是否可用"""
+        ep = self.endpoints.get(name)
+        if not ep:
+            return False
+        if ep.status == ApiStatus.FAILED:
+            # 检查是否可以恢复
+            if time.time() - ep.last_failure > 60:
+                ep.status = ApiStatus.ACTIVE
+                return True
+            return False
+        return ep.status in [ApiStatus.ACTIVE, ApiStatus.DEGRADED]
+    
+    def get_available_endpoints(self) -> List[ApiEndpoint]:
+        """获取所有可用端点"""
+        available = []
+        for name, ep in self.endpoints.items():
+            if self.is_endpoint_available(name):
+                available.append(ep)
+        return sorted(available, key=lambda x: x.priority)
+
+
+# 全局 API 管理器实例
+_api_manager_instance: Optional[ApiManager] = None
+
+
+def get_api_manager() -> ApiManager:
+    """获取全局 API 管理器实例"""
+    global _api_manager_instance
+    if _api_manager_instance is None:
+        _api_manager_instance = ApiManager()
+        _init_default_endpoints(_api_manager_instance)
+    return _api_manager_instance
+
+
+def _init_default_endpoints(manager: ApiManager) -> None:
+    """初始化默认端点（从环境变量）"""
+    import os
+    
+    # OpenAI
+    openai_key = os.getenv("OPENAI_API_KEY", "")
+    if openai_key:
+        manager.add_endpoint(ApiEndpoint(
+            name="openai",
+            base_url="https://api.openai.com/v1",
+            api_key=openai_key,
+            model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"),
+            priority=1,
+            max_requests_per_minute=60,
+            timeout=float(os.getenv("AI_TIMEOUT", "30"))
+        ))
+    
+    # DeepSeek
+    deepseek_key = os.getenv("DEEPSEEK_API_KEY", "")
+    if deepseek_key:
+        manager.add_endpoint(ApiEndpoint(
+            name="deepseek",
+            base_url="https://api.deepseek.com/v1",
+            api_key=deepseek_key,
+            model=os.getenv("DEEPSEEK_MODEL", "deepseek-chat"),
+            priority=2,
+            max_requests_per_minute=100,
+            timeout=float(os.getenv("AI_TIMEOUT", "30"))
+        ))
+    
+    # Anthropic
+    anthropic_key = os.getenv("ANTHROPIC_API_KEY", "")
+    if anthropic_key:
+        manager.add_endpoint(ApiEndpoint(
+            name="anthropic",
+            base_url="https://api.anthropic.com/v1",
+            api_key=anthropic_key,
+            model=os.getenv("ANTHROPIC_MODEL", "claude-3-haiku-20240307"),
+            priority=1,
+            max_requests_per_minute=60,
+            timeout=float(os.getenv("AI_TIMEOUT", "30"))
+        ))
+    
+    # Gemini
+    gemini_key = os.getenv("GEMINI_API_KEY", "")
+    if gemini_key:
+        manager.add_endpoint(ApiEndpoint(
+            name="gemini",
+            base_url="https://generativelanguage.googleapis.com/v1beta",
+            api_key=gemini_key,
+            model=os.getenv("GEMINI_MODEL", "gemini-1.5-flash"),
+            priority=2,
+            max_requests_per_minute=60,
+            timeout=float(os.getenv("AI_TIMEOUT", "30"))
+        ))
+
+    # Groq (OpenAI-compatible)
+    groq_key = os.getenv("GROQ_API_KEY", "")
+    if groq_key:
+        manager.add_endpoint(ApiEndpoint(
+            name="groq",
+            base_url=os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1"),
+            api_key=groq_key,
+            model=os.getenv("GROQ_MODEL", "llama-3.1-70b-versatile"),
+            priority=2,
+            max_requests_per_minute=90,
+            timeout=float(os.getenv("AI_TIMEOUT", "30"))
+        ))
+
+    # Moonshot (Kimi, OpenAI-compatible)
+    moonshot_key = os.getenv("MOONSHOT_API_KEY", "")
+    if moonshot_key:
+        manager.add_endpoint(ApiEndpoint(
+            name="moonshot",
+            base_url=os.getenv("MOONSHOT_BASE_URL", "https://api.moonshot.cn/v1"),
+            api_key=moonshot_key,
+            model=os.getenv("MOONSHOT_MODEL", "moonshot-v1-8k"),
+            priority=2,
+            max_requests_per_minute=60,
+            timeout=float(os.getenv("AI_TIMEOUT", "30"))
+        ))
+
+    # Zhipu (GLM, OpenAI-compatible)
+    zhipu_key = os.getenv("ZHIPU_API_KEY", "")
+    if zhipu_key:
+        manager.add_endpoint(ApiEndpoint(
+            name="zhipu",
+            base_url=os.getenv("ZHIPU_BASE_URL", "https://open.bigmodel.cn/api/paas/v4"),
+            api_key=zhipu_key,
+            model=os.getenv("ZHIPU_MODEL", "glm-4"),
+            priority=2,
+            max_requests_per_minute=60,
+            timeout=float(os.getenv("AI_TIMEOUT", "30"))
+        ))

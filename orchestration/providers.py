@@ -149,7 +149,7 @@ def build_default_providers() -> Dict[str, AiProvider]:
     """Load providers from environment; always return at least one offline provider."""
     providers: Dict[str, AiProvider] = {}
 
-    openai_key = os.getenv("OPENAI_API_KEY")
+    openai_key = os.getenv("OPENAI_API_KEY") or os.getenv("HEABL_OPENAI_KEY")
     if openai_key:
         providers["openai"] = OpenAICompatibleProvider(
             name="openai",
@@ -159,7 +159,7 @@ def build_default_providers() -> Dict[str, AiProvider]:
             timeout=float(os.getenv("AI_TIMEOUT", "30")),
         )
 
-    deepseek_key = os.getenv("DEEPSEEK_API_KEY")
+    deepseek_key = os.getenv("DEEPSEEK_API_KEY") or os.getenv("HEABL_DEEPSEEK_KEY")
     if deepseek_key:
         providers["deepseek"] = OpenAICompatibleProvider(
             name="deepseek",
@@ -182,5 +182,65 @@ def build_default_providers() -> Dict[str, AiProvider]:
         providers["echo"] = EchoProvider()
     else:
         providers["echo"] = EchoProvider()
+
+    groq_key = os.getenv("GROQ_API_KEY") or os.getenv("HEABL_GROQ_KEY")
+    if groq_key:
+        providers["groq"] = OpenAICompatibleProvider(
+            name="groq",
+            api_key=groq_key,
+            base_url=os.getenv("GROQ_BASE_URL", "https://api.groq.com/openai/v1"),
+            model=os.getenv("GROQ_MODEL", "llama-3.1-70b-versatile"),
+            timeout=float(os.getenv("AI_TIMEOUT", "30")),
+        )
+
+    moonshot_key = os.getenv("MOONSHOT_API_KEY") or os.getenv("HEABL_MOONSHOT_KEY")
+    if moonshot_key:
+        providers["moonshot"] = OpenAICompatibleProvider(
+            name="moonshot",
+            api_key=moonshot_key,
+            base_url=os.getenv("MOONSHOT_BASE_URL", "https://api.moonshot.cn/v1"),
+            model=os.getenv("MOONSHOT_MODEL", "moonshot-v1-8k"),
+            timeout=float(os.getenv("AI_TIMEOUT", "30")),
+        )
+
+    zhipu_key = os.getenv("ZHIPU_API_KEY") or os.getenv("HEABL_ZHIPU_KEY")
+
+    gemini_key = os.getenv("GEMINI_API_KEY") or os.getenv("HEABL_GEMINI_KEY")
+    if gemini_key:
+        providers["gemini"] = OpenAICompatibleProvider(
+            name="gemini",
+            api_key=gemini_key,
+            base_url=os.getenv("GEMINI_BASE_URL", "https://generativelanguage.googleapis.com/v1beta"),
+            model=os.getenv("GEMINI_MODEL", "gemini-1.5-flash"),
+            timeout=float(os.getenv("AI_TIMEOUT", "30")),
+        )
+
+    doubao_key = os.getenv("HEABL_DOUBAO_KEY")
+    if doubao_key:
+        providers["doubao"] = OpenAICompatibleProvider(
+            name="doubao",
+            api_key=doubao_key,
+            base_url=os.getenv("HEABL_DOUBAO_BASE", "https://ark.cn-beijing.volces.com/api/v3"),
+            model=os.getenv("HEABL_DOUBAO_MODEL", "ep-202406140015"),
+            timeout=float(os.getenv("AI_TIMEOUT", "30")),
+        )
+
+    coolyeah_key = os.getenv("HEABL_COOLYEAH_KEY")
+    if coolyeah_key:
+        providers["coolyeah"] = OpenAICompatibleProvider(
+            name="coolyeah",
+            api_key=coolyeah_key,
+            base_url=os.getenv("HEABL_COOLYEAH_BASE", "https://api.coolyeah.com/v1"),
+            model=os.getenv("HEABL_COOLYEAH_MODEL", "gpt-4o-mini"),
+            timeout=float(os.getenv("AI_TIMEOUT", "30")),
+        )
+    if zhipu_key:
+        providers["zhipu"] = OpenAICompatibleProvider(
+            name="zhipu",
+            api_key=zhipu_key,
+            base_url=os.getenv("ZHIPU_BASE_URL", "https://open.bigmodel.cn/api/paas/v4"),
+            model=os.getenv("ZHIPU_MODEL", "glm-4"),
+            timeout=float(os.getenv("AI_TIMEOUT", "30")),
+        )
 
     return providers

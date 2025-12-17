@@ -35,9 +35,15 @@ def send_learning_report(
     """
     smtp_server = _get_env("SMTP_SERVER")
     smtp_port = int(_get_env("SMTP_PORT", "587"))
-    smtp_user = _get_env("SMTP_USER")
-    smtp_pass = _get_env("SMTP_PASS")
-    recipient = to_email or _get_env("NOTIFY_EMAIL")
+    smtp_user = _get_env("SMTP_USER") or _get_env("SENDER_EMAIL")
+    smtp_pass = _get_env("SMTP_PASS") or _get_env("SENDER_PASSWORD")
+    recipient = (
+        to_email
+        or _get_env("NOTIFY_EMAIL")
+        or _get_env("RECIPIENT_EMAIL")
+        or _get_env("RECEIVER_EMAIL")
+        or smtp_user
+    )
 
     if not all([smtp_server, smtp_user, smtp_pass, recipient]):
         logger.warning("[学习通知] 邮件配置不完整，跳过发送")

@@ -1,154 +1,137 @@
 # 配置指南 ⚙️
 
-Heablcoin 使用 `.env` 文件管理敏感配置和系统行为。这确保你的密钥（如 API Key）不会被硬编码在源代码中。
+Heablcoin 使用 `.env` 管理所有敏感和可调参数。请始终基于 `./.env.example` 复制生成 `.env`，并确保该文件不进入版本控制。
 
----
+## 快速上手
+1) 复制模板：`cp .env.example .env`  
+2) 填写必填项：交易所密钥、`USE_TESTNET`、邮件账户、至少一个 AI 提供商密钥（可选，未填则回退离线 echo）。  
+3) 安装依赖：`pip install -r requirements.txt`  
+4) 验证：`python tests/run_tests.py --quick`（邮件链路可用 `python tests/run_tests.py email`）。
 
-## 配置步骤
+## 变量分组速查
 
-1.  在项目根目录找到 `.env.example` 文件
-2.  复制并重命名为 `.env`
-3.  用文本编辑器打开 `.env`，按下面的说明填写
+### 交易所 / CCXT
+- `BINANCE_API_KEY` / `BINANCE_SECRET_KEY`：交易所密钥。
+- `USE_TESTNET`：是否使用币安测试网（强烈推荐先用测试网）。
+- `EXCHANGE_POOL_TTL_SECONDS`：交易所连接池复用时间。
+- `CCXT_TIMEOUT_MS`，`CCXT_ENABLE_RATE_LIMIT`，`CCXT_DEFAULT_TYPE`，`CCXT_RECV_WINDOW`，`CCXT_ADJUST_TIME_DIFFERENCE`：CCXT 连接超时、限流与时间校准参数。
 
----
+### 🤖 AI 提供商（多云可选填其一或多项）
 
-## 环境变量详解
-
-### 🏦 交易所配置
-
-控制与 Binance 交易所的连接。
-
-| 变量名 | 必填 | 说明 |
+| 变量 | 默认值 | 说明 |
 | :--- | :--- | :--- |
-| `BINANCE_API_KEY` | ✅ 是 | 你的 Binance API Key |
-| `BINANCE_SECRET_KEY` | ✅ 是 | 你的 Binance API Secret |
-| `USE_TESTNET` | ✅ 是 | `True` 使用测试网（安全，推荐）；`False` 使用主网（真实资金） |
+| `OPENAI_API_KEY` / `OPENAI_MODEL` / `OPENAI_BASE_URL` | `gpt-4o-mini` / `https://api.openai.com/v1` | OpenAI / 兼容端点 |
+| `DEEPSEEK_API_KEY` / `DEEPSEEK_MODEL` / `DEEPSEEK_BASE_URL` | `deepseek-chat` / `https://api.deepseek.com/v1` | DeepSeek |
+| `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` / `ANTHROPIC_BASE_URL` | `claude-3-haiku-20240307` / `https://api.anthropic.com/v1/messages` | Anthropic |
+| `GEMINI_API_KEY` / `GEMINI_MODEL` | `gemini-1.5-flash` | Google Gemini |
+| `GROQ_API_KEY` / `GROQ_MODEL` / `GROQ_BASE_URL` | `llama-3.1-70b-versatile` / `https://api.groq.com/openai/v1` | Groq（OpenAI 兼容） |
+| `MOONSHOT_API_KEY` / `MOONSHOT_MODEL` / `MOONSHOT_BASE_URL` | `moonshot-v1-8k` / `https://api.moonshot.cn/v1` | Moonshot Kimi（OpenAI 兼容） |
+| `ZHIPU_API_KEY` / `ZHIPU_MODEL` / `ZHIPU_BASE_URL` | `glm-4` / `https://open.bigmodel.cn/api/paas/v4` | 智谱 GLM（OpenAI 兼容） |
+| `HEABL_*` keys | 同上 | 也可使用 HEABL_OPENAI_KEY / HEABL_DEEPSEEK_KEY / HEABL_GEMINI_KEY / HEABL_MOONSHOT_KEY / HEABL_GROQ_KEY / HEABL_ZHIPU_KEY / HEABL_DOUBAO_KEY 等 |
+| `HEABL_DOUBAO_BASE` / `HEABL_DOUBAO_MODEL` | `https://ark.cn-beijing.volces.com/api/v3` / `ep-202406140015` | 字节 Doubao (OpenAI 兼容) |
+| `HEABL_COOLYEAH_BASE` / `HEABL_COOLYEAH_MODEL` | `https://api.coolyeah.com/v1` / `gpt-4o-mini` | 自定义 OpenAI 兼容端点 |
+| `AI_TIMEOUT` | `30` | AI 请求超时（秒） |
+| `AI_DEFAULT_PROVIDER` | 空 | 默认 provider 名称（openai/deepseek/anthropic/gemini/groq/moonshot/zhipu/doubao/coolyeah/echo） |
+| `HEABL_LLM_DEFAULT` / `HEABL_LLM_PREFERENCE` | 空 | LLM Router 优先级列表，逗号分隔；未填则按可用 provider 逐个尝试 |
+| `AI_ROUTE_ANALYSIS` / `AI_ROUTE_CRITIQUE` / `AI_ROUTE_SYNTHESIS` / `AI_ROUTE_SAFETY` | 空 | 为多角色路由指定 provider 名称 |
 
-> **安全提示**: 永远不要将 `.env` 文件提交到版本控制系统（如 Git）。
+未配置任何密钥时，系统自动回退到离线 echo provider，保证流程可用。
 
-#### 如何获取 API Key
+### 📧 邮件通知
 
-**测试网（推荐新手）**:
-1. 访问 https://testnet.binance.vision/
-2. 使用 GitHub 账号登录
-3. 点击 "Generate HMAC_SHA256 Key"
-4. 复制生成的 API Key 和 Secret Key
-
-**主网（真实交易）**:
-1. 登录 https://www.binance.com/
-2. 进入「用户中心」→「API 管理」
-3. 创建新的 API Key
-4. **重要**: 仅开启「现货交易」权限，关闭提现权限
-
----
-
-### 📧 邮件通知配置
-
-配置这些参数后，可通过邮件接收交易提醒和每日报告。
-
-| 变量名 | 必填 | 说明 |
+| 变量 | 必填 | 说明 |
 | :--- | :--- | :--- |
-| `EMAIL_NOTIFICATIONS_ENABLED` | 否 | 设为 `True` 启用邮件功能，默认 `False` |
-| `SENDER_EMAIL` | 启用时必填 | 发送邮件的邮箱地址（如 QQ 邮箱） |
-| `SENDER_PASSWORD` | 启用时必填 | **授权码**（不是登录密码！） |
-| `RECEIVER_EMAIL` | 启用时必填 | 接收通知的邮箱地址 |
-| `SMTP_SERVER` | 启用时必填 | SMTP 服务器地址 |
-| `SMTP_PORT` | 启用时必填 | SMTP 端口（通常 SSL 用 `465`） |
+| `EMAIL_NOTIFICATIONS_ENABLED` | 否 | `True` 开启邮件功能 |
+| `SENDER_EMAIL` / `SENDER_PASSWORD` | 启用时必填 | 发件邮箱与授权码（默认也作为 `SMTP_USER`/`SMTP_PASS`） |
+| `SMTP_USER` / `SMTP_PASS` | 可选 | 登录账号/密码，如与发件人不同可单独填写 |
+| `RECIPIENT_EMAIL` | 启用时必填 | 收件邮箱，兼容 `RECEIVER_EMAIL` / `NOTIFY_EMAIL` |
+| `SMTP_SERVER` / `SMTP_PORT` | 启用时必填 | SMTP 地址与端口（SSL 常用 `465`） |
 
-#### 常用邮箱 SMTP 配置
+兼容性：老版本使用的 `RECEIVER_EMAIL` / `NOTIFY_EMAIL` 仍被支持，但推荐统一使用 `RECIPIENT_EMAIL`。
 
-| 邮箱 | SMTP 服务器 | 端口 |
+常用 SMTP：
+- QQ：`smtp.qq.com`，端口 `465`
+- 163：`smtp.163.com`，端口 `465`
+- Gmail：`smtp.gmail.com`，端口 `465` 或 `587`
+
+### 🛡 风控与市场数据
+
+| 变量 | 默认值 | 说明 |
 | :--- | :--- | :--- |
-| QQ 邮箱 | `smtp.qq.com` | 465 |
-| 163 邮箱 | `smtp.163.com` | 465 |
-| Gmail | `smtp.gmail.com` | 465 或 587 |
+| `MAX_TRADE_AMOUNT` | `1000.0` | 单笔最大交易额（USDT） |
+| `DAILY_TRADE_LIMIT` | `5000.0` | 每日累计交易限额（USDT） |
+| `ALLOWED_SYMBOLS` | 见 `.env.example` | 交易对白名单，逗号分隔 |
 
-#### 如何获取 QQ 邮箱授权码
+行情拉取上限（按模块分开配置）：  
+`OHLCV_LIMIT_MARKET_ANALYSIS`，`OHLCV_LIMIT_COMPREHENSIVE_ANALYSIS`，`OHLCV_LIMIT_SENTIMENT`，`OHLCV_LIMIT_OVERVIEW`，`OHLCV_LIMIT_MARKET_OVERVIEW`，`OHLCV_LIMIT_SIGNALS`，`OHLCV_LIMIT_STRATEGY`
 
-1. 登录 QQ 邮箱 → 设置 → 账户
-2. 找到「POP3/IMAP/SMTP 服务」
-3. 开启「IMAP/SMTP 服务」
-4. 按提示发送短信验证
-5. 获取 16 位授权码，填入 `SENDER_PASSWORD`
+### 💾 存储与外部集成
 
----
-
-### 🛡️ 风险管理与交易限额
-
-保护你的资金安全的重要设置。
-
-| 变量名 | 必填 | 默认值 | 说明 |
-| :--- | :--- | :--- | :--- |
-| `MAX_TRADE_AMOUNT` | 否 | `1000.0` | 单笔交易最大金额（USDT） |
-| `DAILY_TRADE_LIMIT` | 否 | `5000.0` | 每日交易累计限额（USDT） |
-| `ALLOWED_SYMBOLS` | 否 | （见下方） | 允许交易的币种白名单，逗号分隔 |
-
-**默认白名单币种**:
-```
-BTC/USDT,ETH/USDT,BNB/USDT,SOL/USDT,XRP/USDT,
-ADA/USDT,DOT/USDT,DOGE/USDT,AVAX/USDT,LINK/USDT,
-MATIC/USDT,UNI/USDT,ATOM/USDT,LTC/USDT,ETC/USDT
-```
-
-不在白名单内的交易对将被自动拒绝。
-
----
-
-### 🔧 系统与日志
-
-| 变量名 | 默认值 | 说明 |
+| 变量 | 默认值 | 说明 |
 | :--- | :--- | :--- |
-| `LOG_LEVEL` | `INFO` | 日志级别：`DEBUG`（最详细）、`INFO`、`WARNING`、`ERROR` |
-| `LOG_FILE` | `server_debug.log` | 日志输出文件名，位于 `logs/` 目录 |
+| `ENABLE_TRADE_DB` | `True` | 启用 SQLite 交易库（失败时自动回退 CSV） |
+| `TRADE_DB_FILE` | `data/trades.db` | 交易数据库路径 |
+| `NOTION_API_KEY` | 空 | 开启 Notion 适配器所需 |
+| `NOTION_DATABASE_ID` | 空 | 主 Notion 数据库 |
+| `NOTION_REPORTS_DB_ID` / `NOTION_TRADES_DB_ID` | 同上 | 可选：报告/交易分库 ID |
 
----
+### 📓 日志与性能
 
-### 🔔 精细化通知开关
-
-在不关闭全局邮件的情况下，单独控制特定类型的通知。
-
-| 变量名 | 默认值 | 说明 |
+| 变量 | 默认值 | 说明 |
 | :--- | :--- | :--- |
-| `NOTIFY_TRADE_EXECUTION` | `True` | 交易执行成功时发送通知 |
-| `NOTIFY_PRICE_ALERTS` | `True` | 价格预警触发时发送通知 |
-| `NOTIFY_DAILY_REPORT` | `True` | 生成每日报告时发送通知 |
-| `NOTIFY_SYSTEM_ERRORS` | `True` | 系统异常时发送通知 |
+| `DEBUG_MODE` | `False` | 输出更详细的调试信息 |
+| `LOG_LEVEL` | `INFO` | 日志级别（DEBUG/INFO/WARNING/ERROR） |
+| `LOG_FILE` | `logs/server_debug.log` | 传统日志文件 |
+| `LOG_DIR` | `logs` | 智能日志/性能数据目录 |
+| `LOG_ROTATE_MAX_BYTES` / `LOG_ROTATE_BACKUP_COUNT` | `5242880` / `3` | 传统日志滚动配置 |
+| `ENABLE_SMART_LOGGER` / `ENABLE_SMART_CACHE` | `True` | 是否启用智能日志 / 智能缓存 |
+| `PERF_SLOW_THRESHOLD_SECONDS` | `3.0` | 慢调用阈值 |
+| `PERF_DEGRADATION_FACTOR` / `PERF_DEGRADATION_MIN_CALLS` | `2.0` / `10` | 性能下降判定参数 |
+| `CACHE_DEFAULT_TTL_SECONDS` | `300` | 智能缓存默认 TTL |
+| `SERVER_ID` | 空 | 可选：覆盖节点标识 |
 
----
+### 🔔 通知开关（精细化）
+- `NOTIFY_TRADE_EXECUTION`：成交通知  
+- `NOTIFY_PRICE_ALERTS`：价格预警通知  
+- `NOTIFY_DAILY_REPORT`：日报/报告通知  
+- `NOTIFY_SYSTEM_ERRORS`：系统错误通知
 
-## 完整配置示例
+### 🛰 云端 Pipeline / 青龙
+- `REDIS_URL` 或 (`REDIS_HOST`/`REDIS_PORT`/`REDIS_PASSWORD`)
+- `TASK_QUEUE_KEY`（默认 `mcp:tasks`）、`RESULT_HASH_KEY`（默认 `mcp:results`）
+- `NOTIFY_DEFAULT`、`NOTIFY_FAILOVER`
+- `HEABL_TAVILY_KEY`（搜索）、多云 LLM Key（总结）
+- `RUN_ONCE`（默认 true，青龙设为 false 持续轮询）、`WORKER_INTERVAL`
+
+## 示例配置片段
 
 ```ini
-# === 交易所 ===
-BINANCE_API_KEY=你的API_Key
-BINANCE_SECRET_KEY=你的Secret_Key
+# 交易所
+BINANCE_API_KEY=your_key
+BINANCE_SECRET_KEY=your_secret
 USE_TESTNET=True
 
-# === 邮件 ===
+# AI（按需填写）
+OPENAI_API_KEY=
+DEEPSEEK_API_KEY=
+ANTHROPIC_API_KEY=
+GEMINI_API_KEY=
+
+# 邮件
 EMAIL_NOTIFICATIONS_ENABLED=True
-SENDER_EMAIL=你的QQ邮箱@qq.com
-SENDER_PASSWORD=你的16位授权码
-RECEIVER_EMAIL=接收通知的邮箱@example.com
+SENDER_EMAIL=you@example.com
+SENDER_PASSWORD=app_password
+RECIPIENT_EMAIL=alert@example.com
 SMTP_SERVER=smtp.qq.com
 SMTP_PORT=465
 
-# === 风控 ===
-ALLOWED_SYMBOLS=BTC/USDT,ETH/USDT,SOL/USDT
+# 风控
 MAX_TRADE_AMOUNT=500
 DAILY_TRADE_LIMIT=2000
-
-# === 日志 ===
-LOG_LEVEL=INFO
+ALLOWED_SYMBOLS=BTC/USDT,ETH/USDT,SOL/USDT
 ```
 
----
-
 ## 配置完成后
-
- 运行以下命令验证配置是否正确：
- 
- ```bash
- python tests/run_tests.py --quick
- ```
-
-如果看到 "✅ 连接成功!"，说明配置无误！
+- 运行 `python tests/run_tests.py --quick` 快速检查交易所与核心模块。
+- 运行 `python tests/run_tests.py email` 验证 SMTP 链路（可能会发送真实邮件）。
+- 使用 MCP 客户端前，确保 `.env` 已填好且 Python 依赖已安装。

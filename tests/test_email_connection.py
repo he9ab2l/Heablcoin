@@ -30,18 +30,22 @@ def test_email_connection() -> bool:
 
     load_dotenv(os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env"))
 
-    sender = os.getenv("SENDER_EMAIL")
-    password = os.getenv("SENDER_PASSWORD")
-    receiver = os.getenv("RECEIVER_EMAIL")
+    sender = os.getenv("SENDER_EMAIL") or os.getenv("SMTP_USER")
+    password = os.getenv("SENDER_PASSWORD") or os.getenv("SMTP_PASS")
+    receiver = (
+        os.getenv("RECIPIENT_EMAIL")
+        or os.getenv("RECEIVER_EMAIL")
+        or os.getenv("NOTIFY_EMAIL")
+    )
     smtp_server = os.getenv("SMTP_SERVER")
     smtp_port_str = os.getenv("SMTP_PORT", "465")
 
     if not all([sender, password, receiver, smtp_server]):
         print("❌ 错误: .env 文件中缺少必要的邮箱配置。")
-        print(f"   SENDER_EMAIL: {sender}")
-        print(f"   RECEIVER_EMAIL: {receiver}")
+        print(f"   SENDER_EMAIL/SMTP_USER: {sender}")
+        print(f"   RECIPIENT_EMAIL/RECEIVER_EMAIL/NOTIFY_EMAIL: {receiver}")
         print(f"   SMTP_SERVER: {smtp_server}")
-        print("\n👉 你需要设置：EMAIL_NOTIFICATIONS_ENABLED / SENDER_EMAIL / SENDER_PASSWORD / RECEIVER_EMAIL / SMTP_SERVER / SMTP_PORT")
+        print("\n👉 你需要设置：EMAIL_NOTIFICATIONS_ENABLED / SENDER_EMAIL 或 SMTP_USER / SENDER_PASSWORD 或 SMTP_PASS / RECIPIENT_EMAIL (或 RECEIVER_EMAIL/NOTIFY_EMAIL) / SMTP_SERVER / SMTP_PORT")
         return False
 
     try:

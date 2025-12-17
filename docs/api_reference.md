@@ -2,7 +2,47 @@
 
 本文档提供 Heablcoin MCP 服务器中所有可用工具的完整参考。
 
+## MCP 接入速览
+- Claude Desktop `claude_desktop_config.json` 示例：
+```json
+{
+  "mcpServers": {
+    "heablcoin": {
+      "command": "python",
+      "args": ["d:/MCP/Heablcoin.py"],
+      "env": { "PYTHONIOENCODING": "utf-8", "PYTHONUTF8": "1" }
+    }
+  }
+}
+```
+- Windsurf `mcp_config.json` 示例同上（路径请替换为本机绝对路径）。
+
+## 支持的 AI 提供商
+通过环境变量即可启用主流模型，未配置时自动回退离线 echo：
+- OpenAI 兼容：OpenAI、DeepSeek、Groq、Moonshot (Kimi)、智谱 GLM、其他兼容端点（可用 `OPENAI_BASE_URL`/`AI_DEFAULT_PROVIDER` 指向）。
+- 原生：Anthropic (Claude)、Google Gemini。
+- 路由：`AI_DEFAULT_PROVIDER` 决定默认，`AI_ROUTE_ANALYSIS/CRITIQUE/SYNTHESIS/SAFETY` 为多角色设置专属 provider。
+
 ---
+
+## 云端协同新工具
+- `consult_external_expert(query, model="deepseek", context="")`  
+  调用指定外部 AI 获取第二意见。`model` 支持 openai/deepseek/anthropic/gemini/groq/moonshot/zhipu 等。  
+  示例：`consult_external_expert("BTC 技术面怎么看？", "deepseek", "{\\"timeframe\\":\\"4h\\"}")`
+
+- `set_cloud_sentry(symbol, condition, action="notify", notes="")`  
+  将监控任务写入 Redis（需 `REDIS_URL`），由青龙 `qinglong_worker.py` 轮询执行。condition 支持 `price < 1000` 等简单表达式。
+  示例：`set_cloud_sentry("BTC/USDT", "price < 95000", "email_alert", "跌破支撑提醒")`
+
+- `sync_session_to_notion(summary, tags="")`  
+  将当前会话摘要写入 Notion 日志库（需 `NOTION_*`），`tags` 用逗号分隔。
+  示例：`sync_session_to_notion("今日复盘：...", "daily,trade")`
+
+- `fetch_portfolio_snapshot()`  
+  返回账户资产快照（基于 `get_account_summary`）。
+
+- `get_learning_context()`  
+  读取 `dev/lessons.md` 的交易教训/偏好，用于上下文注入。
 
 ## 🤖 AI 与市场智能
 

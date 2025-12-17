@@ -548,9 +548,14 @@ def send_email(subject: str, html_content: str, msg_type: str = 'CUSTOM') -> boo
             logger.debug("📧 邮件通知未启用")
             return False
 
-        sender = os.getenv("SENDER_EMAIL")
-        password = os.getenv("SENDER_PASSWORD")
-        receiver = os.getenv("RECEIVER_EMAIL")
+        sender = os.getenv("SENDER_EMAIL") or os.getenv("SMTP_USER")
+        password = os.getenv("SENDER_PASSWORD") or os.getenv("SMTP_PASS")
+        receiver = (
+            os.getenv("RECIPIENT_EMAIL")
+            or os.getenv("RECEIVER_EMAIL")
+            or os.getenv("NOTIFY_EMAIL")
+            or sender
+        )
         smtp_server = os.getenv("SMTP_SERVER", "smtp.qq.com")
         smtp_port = int(os.getenv("SMTP_PORT", "465"))
 
