@@ -1,0 +1,10 @@
+# Core dependencies
+mcp
+ccxt
+pandas
+numpy
+python-dotenv
+markdown
+
+# Optional: for better async support
+aiohttp

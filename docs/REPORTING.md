@@ -1,0 +1,72 @@
+# 报告与通知系统（report / notification）
+
+Heablcoin 提供两类“报告/通知”能力：
+
+- **分析报告（Markdown 报告）**：`generate_analysis_report(...)`
+  - 生成一份多章节 Markdown 报告
+  - 可保存到 `reports/analysis_reports/YYYYMMDD/`
+  - 可选发送到邮箱（作为正文）
+
+- **灵活邮件报告（HTML 模块化）**：`send_flexible_report(...)`
+  - 由 `report/flexible_report` 模块生成
+  - 通过模块 A~I 拼装 HTML 邮件
+  - 支持备份落盘
+
+---
+
+## 1) 分析报告（generate_analysis_report）
+
+### 1.1 适用场景
+
+- 想要一份“完整的市场分析文本报告”
+- 需要落盘保存归档
+
+### 1.2 输出
+
+- Markdown：`reports/analysis_reports/YYYYMMDD/YYYYMMDD_HHMMSS__SYMBOL__MODE__TIMEFRAME.md`
+- 元数据：同名 `.meta.json`
+
+---
+
+## 2) 灵活邮件报告（send_flexible_report）
+
+### 2.1 适用场景
+
+- 做“模块化仪表盘式”邮件推送
+- 想将多来源信息拼装到一封邮件里
+
+### 2.2 典型调用
+
+- 发送全模块：
+  - `send_flexible_report(title="综合报告")`
+
+- 只发送部分模块：
+  - `send_flexible_report(title="日报", send_A=True, send_B=True)`
+
+### 2.3 备份落盘目录
+
+- `reports/flexible_report/YYYYMMDD/`
+
+---
+
+## 3) 邮件发送与通知开关
+
+邮件发送受两类开关影响：
+
+- 总开关：`.env` 的 `EMAIL_NOTIFICATIONS_ENABLED=True`
+- 分类型开关：
+  - `NOTIFY_TRADE_EXECUTION`
+  - `NOTIFY_PRICE_ALERTS`
+  - `NOTIFY_DAILY_REPORT`
+  - `NOTIFY_SYSTEM_ERRORS`
+
+运行时可通过工具查看/覆盖：
+- `get_notification_settings()`
+- `set_notification_settings(...)`
+
+---
+
+## 4) 故障排查
+
+- SMTP 认证失败：见 [EMAIL_SETUP_GUIDE.md](EMAIL_SETUP_GUIDE.md)
+- MCP 工具看不到/无法启动：见 [TROUBLESHOOTING.md](TROUBLESHOOTING.md)

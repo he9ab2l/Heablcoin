@@ -1,0 +1,127 @@
+# 安装指南 📦
+
+本指南提供详细的步骤，帮助你在本地机器上搭建 Heablcoin 系统。
+
+---
+
+## 系统要求
+
+在开始之前，请确保已安装以下软件：
+
+*   **Python 3.8 或更高版本**: [下载 Python](https://www.python.org/downloads/)
+*   **Git**: [下载 Git](https://git-scm.com/downloads)
+*   **Claude Desktop** (可选，用于 MCP 模式): [下载 Claude](https://claude.ai/download)
+
+---
+
+## 安装步骤
+
+### 第一步：获取代码
+
+打开终端（PowerShell、命令提示符或 Terminal）并运行：
+
+```bash
+git clone <仓库地址>
+cd MCP
+```
+
+*(如果你是下载的 zip 文件，请解压后在终端中进入该文件夹)*
+
+---
+
+### 第二步：创建虚拟环境（推荐）
+
+使用虚拟环境可以隔离项目依赖，避免与系统其他 Python 包冲突。
+
+**Windows:**
+```bash
+python -m venv venv
+.\venv\Scripts\activate
+```
+
+**macOS / Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+激活成功后，你会看到终端提示符前面出现 `(venv)` 字样。
+
+---
+
+### 第三步：安装依赖
+
+安装 `requirements.txt` 中列出的 Python 包：
+
+```bash
+pip install -r requirements.txt
+```
+
+这将安装以下核心依赖：
+- `ccxt`: 加密货币交易所 API 库
+- `pandas`: 数据分析库
+- `mcp`: Model Context Protocol 库
+- 以及其他辅助工具
+
+---
+
+### 第四步：配置环境变量
+
+在运行程序之前，必须配置环境变量。
+
+1.  复制 `.env.example` 为 `.env`：
+    ```bash
+    copy .env.example .env  # Windows
+    cp .env.example .env    # macOS/Linux
+    ```
+
+2.  编辑 `.env` 文件，填写你的 API 密钥和偏好设置。
+
+详细配置说明请参阅：[配置指南](configuration.md)
+
+---
+
+### 第五步：验证安装
+
+ 运行测试脚本，确认一切配置正确：
+
+ ```bash
+ python tests/run_tests.py --quick
+ ```
+
+如果看到 "✅ 连接成功!"，说明安装成功，可以开始使用了！🎉
+
+---
+
+## 部署选项
+
+### Docker 部署（即将推出）
+我们正在开发 Dockerfile 以简化部署。详见 [路线图](../ROADMAP.md)。
+
+### 后台服务运行
+如需持久运行 Heablcoin，可考虑使用进程管理器：
+- **Linux**: `Supervisor` 或 `systemd`
+- **Windows**: `NSSM`（Non-Sucking Service Manager）
+
+---
+
+## 常见安装问题
+
+### pip 安装失败
+```bash
+# 尝试升级 pip
+python -m pip install --upgrade pip
+
+# 使用国内镜像源
+pip install -r requirements.txt -i https://pypi.tuna.tsinghua.edu.cn/simple
+```
+
+### Python 版本不对
+```bash
+# 检查 Python 版本
+python --version
+
+# 如果版本低于 3.8，请升级 Python
+```
+
+更多问题请参阅：[故障排查指南](troubleshooting.md)

@@ -1,0 +1,115 @@
+# Heablcoin 快速开始
+
+本指南以“最短路径跑通”为目标：
+- 终端快速自检
+- 在 Claude Desktop 中接入 MCP
+
+---
+
+## 1) 环境要求
+
+- Python 3.8+
+- Windows / macOS / Linux
+
+---
+
+## 2) 安装依赖
+
+在项目根目录执行：
+
+```bash
+pip install -r requirements.txt
+```
+
+---
+
+## 3) 配置 `.env`
+
+在项目根目录创建 `.env`（可复制 `.env.example`）。
+
+### 3.1 交易所配置（建议先用测试网）
+
+```env
+BINANCE_API_KEY=...
+BINANCE_SECRET_KEY=...
+USE_TESTNET=True
+```
+
+### 3.2 邮件配置（可选）
+
+```env
+EMAIL_NOTIFICATIONS_ENABLED=True
+SENDER_EMAIL=...
+SENDER_PASSWORD=...
+RECEIVER_EMAIL=...
+SMTP_SERVER=smtp.qq.com
+SMTP_PORT=465
+```
+
+邮箱授权码获取：见 [EMAIL_SETUP_GUIDE.md](EMAIL_SETUP_GUIDE.md)
+
+---
+
+## 4) 终端快速自检（推荐先跑）
+
+```bash
+python tests/run_tests.py --quick
+```
+
+你将看到：
+- 交易所连接测试
+- 系统状态
+- 市场分析
+- AI 分析
+
+---
+
+## 5) 接入 Claude Desktop（MCP 模式）
+
+编辑 `claude_desktop_config.json`：
+
+```json
+{
+  "mcpServers": {
+    "heablcoin": {
+      "command": "python",
+      "args": ["D:/MCP/Heablcoin.py"]
+    }
+  }
+}
+```
+
+重启 Claude Desktop 后，在对话里尝试：
+- “给我 BTC 的市场分析”
+- “给我一份个人交易分析报告”
+
+---
+
+## 6) 常用功能入口（建议收藏）
+
+### 6.1 市场分析
+
+- `get_market_analysis(symbol="BTC/USDT", timeframe="1h")`
+
+### 6.2 个人账户交易分析
+
+- `get_personal_analysis(modules="portfolio,performance,risk")`
+- `get_full_personal_analysis()`
+
+### 6.3 灵活邮件报告
+
+- `send_flexible_report(title="综合报告")`
+
+---
+
+## 7) 输出文件
+
+- 交易记录：`trade_history.csv`
+- 系统日志：`logs/server_debug.log`
+- 分析报告：`reports/analysis_reports/YYYYMMDD/`
+- 交易复盘笔记：`trade_journal.json`
+- 出入金记录：`funds_history.json`
+
+其他备份目录：
+- 灵活邮件报告备份：`reports/flexible_report/YYYYMMDD/`
+- 用户查询备份：`reports/query_backups/YYYYMMDD/`

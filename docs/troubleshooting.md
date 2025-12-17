@@ -1,0 +1,168 @@
+# Heablcoin 故障排查
+
+本指南以“现象 → 原因 → 解决方案 → 验证方式”组织。
+
+---
+
+## 1) 交易所连接失败 / 超时
+
+### 现象
+
+- `Connection timeout`
+- `Connection refused`
+- `Invalid API-key, IP, or permissions for action`
+
+### 可能原因
+
+- 网络不可达或被代理/防火墙拦截
+- API Key/Secret 填错
+- 测试网/主网切换不一致
+
+### 解决方案
+
+- 检查 `.env`：
+  - `BINANCE_API_KEY`
+  - `BINANCE_SECRET_KEY`
+  - `USE_TESTNET=True`
+- 尝试更换网络或临时关闭拦截软件
+
+### 验证
+
+```bash
+python tests/run_tests.py --quick
+```
+
+---
+
+## 2) 邮件发送失败（SMTP 认证失败）
+
+### 现象
+
+- `❌ SMTP 认证失败`
+
+### 可能原因
+
+- 使用了登录密码而不是授权码
+- **SMTP 535**：需要使用“应用专用密码/授权码”，不能用登录密码
+- SMTP 服务器/端口不匹配
+- 邮箱安全策略限制
+
+### 解决方案
+
+- 参考 `EMAIL_SETUP_GUIDE.md` 获取授权码
+- 校对 `.env`：
+  - `EMAIL_NOTIFICATIONS_ENABLED=True`
+  - `SENDER_EMAIL / SENDER_PASSWORD / RECEIVER_EMAIL`
+  - `SMTP_SERVER / SMTP_PORT`
+
+### 验证
+
+```bash
+python tests/run_tests.py email
+```
+
+或：
+
+```bash
+python tests/test_email_connection.py
+```
+
+#### 通知开关导致“看起来没发”
+
+邮件发送同时受两类开关影响：
+- `.env`：`EMAIL_NOTIFICATIONS_ENABLED=True`（总开关）
+- `.env`：`NOTIFY_TRADE_EXECUTION/NOTIFY_DAILY_REPORT/...`（细分开关）
+
+运行时也可在 MCP 对话中切换：
+- `get_notification_settings()`
+- `set_notification_settings(notify_trade_execution=False)`
+
+---
+
+## 3) Claude Desktop 看不到工具 / 工具调用失败
+
+### 现象
+
+- 工具列表为空
+- Claude 提示无法启动 MCP server
+
+### 可能原因
+
+- `claude_desktop_config.json` 路径或内容错误
+- `args` 未使用绝对路径
+- Python 环境/依赖未安装
+- **stdout 被污染**：MCP/JSONRPC 输出被 `print()` 或第三方库输出污染
+
+### 解决方案
+
+- 确保配置：
+  - `"command": "python"`
+  - `"args": ["D:/MCP/Heablcoin.py"]`
+- 在项目目录安装依赖：
+
+```bash
+pip install -r requirements.txt
+```
+
+#### JSONRPC 专项：`Connection failed` / `Invalid JSON`
+
+**原因**：MCP 通过 stdout 传输 JSONRPC 协议消息，如果代码里有 `print()` 或将日志输出到 stdout，会导致协议解析失败。
+
+**排查**：
+- 全局搜索并移除 `print(`（改用 `logging`）
+- 确认日志输出到 stderr（本项目已将 console handler 指向 stderr）
+- 若仍失败，查看 `logs/server_debug.log` 里是否有启动异常
+
+---
+
+## 4) 日志没有输出 / 日志级别不符合预期
+
+### 现象
+
+- `logs/server_debug.log` 没有增长
+- 希望 DEBUG 但只看到 INFO
+
+### 解决方案
+
+- 检查 `.env`：
+  - `LOG_LEVEL=INFO|DEBUG|WARNING|ERROR`
+  - `LOG_FILE=logs/server_debug.log`
+- 确认当前目录有写入权限
+
+---
+
+## 5) 报告生成失败 / 只生成部分章节
+
+### 现象
+
+- `generate_analysis_report` 返回“部分章节失败”
+
+### 可能原因
+
+- 某个 API 调用失败（网络/权限/限流）
+- 指定的 `symbol/timeframe` 不支持
+
+### 解决方案
+
+- 先单独调用对应工具定位问题：
+  - `get_comprehensive_analysis`
+  - `get_market_sentiment`
+  - `get_ai_trading_advice`
+- 查看 `logs/server_debug.log` 里的错误栈
+
+---
+
+## 6) 策略未触发
+
+### 说明
+
+这通常不是错误：策略需要满足触发条件才会执行。
+
+### 验证
+
+- 先看信号汇总：`get_trading_signals("BTC/USDT")`
+- 或运行终端测试：
+
+```bash
+python tests/run_tests.py integration
+```

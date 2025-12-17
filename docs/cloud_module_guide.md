@@ -1,0 +1,536 @@
+# 云端模块使用指南
+
+## 概述
+
+云端模块是 Heablcoin v2.0 的核心升级，提供了企业级的多 API 管理和任务调度能力。
+
+---
+
+## 模块架构
+
+```
+cloud/
+├── api_manager.py          # API 管理器（多提供商支持）
+├── enhanced_publisher.py   # 增强型任务发布器
+├── publisher.py            # 基础任务发布器（向后兼容）
+├── scheduler.py            # 任务调度器
+└── mcp_tools.py           # MCP 工具注册
+```
+
+---
+
+## API 管理器
+
+### 功能特性
+
+- **多提供商支持**: OpenAI, DeepSeek, Anthropic, 自定义端点
+- **智能负载均衡**: 4种选择策略
+- **自动故障转移**: 端点失败自动切换
+- **速率限制**: 每个端点独立限流
+- **健康监控**: 实时统计和状态追踪
+
+### 基础使用
+
+```python
+from cloud.api_manager import ApiManager, ApiEndpoint, ApiStatus
+
+# 创建管理器
+manager = ApiManager()
+
+# 添加 OpenAI 端点
+manager.add_endpoint(ApiEndpoint(
+    name="openai",
+    base_url="https://api.openai.com/v1",
+    api_key="sk-xxx",
+    model="gpt-4o-mini",
+    priority=1,
+    max_requests_per_minute=60,
+    timeout=30.0
+))
+
+# 添加 DeepSeek 端点（备用）
+manager.add_endpoint(ApiEndpoint(
+    name="deepseek",
+    base_url="https://api.deepseek.com/v1",
+    api_key="sk-xxx",
+    model="deepseek-chat",
+    priority=2,
+    max_requests_per_minute=100
+))
+```
+
+### 调用 API
+
+```python
+# 定义调用函数
+def call_api(endpoint):
+    # 使用 endpoint 的配置调用 API
+    response = requests.post(
+        f"{endpoint.base_url}/chat/completions",
+        headers={"Authorization": f"Bearer {endpoint.api_key}"},
+        json={"model": endpoint.model, "messages": [...]}
+    )
+    return response.json()
+
+# 使用重试机制调用
+result, used_endpoint = manager.call_with_retry(
+    func=call_api,
+    max_retries=3,
+    strategy="priority",  # 优先级策略
+    backoff_factor=1.5
+)
+
+print(f"使用端点: {used_endpoint.name}")
+print(f"结果: {result}")
+```
+
+### 选择策略
+
+```python
+# 1. 优先级策略（默认）
+result, ep = manager.call_with_retry(func, strategy="priority")
+
+# 2. 最低延迟策略
+result, ep = manager.call_with_retry(func, strategy="least_latency")
+
+# 3. 轮询策略
+result, ep = manager.call_with_retry(func, strategy="round_robin")
+
+# 4. 随机策略
+result, ep = manager.call_with_retry(func, strategy="random")
+```
+
+### 监控和统计
+
+```python
+# 获取统计信息
+stats = manager.get_stats()
+print(f"总端点数: {stats['total_endpoints']}")
+
+for name, info in stats['endpoints'].items():
+    print(f"\n端点: {name}")
+    print(f"  状态: {info['status']}")
+    print(f"  成功率: {info['success_rate']}")
+    print(f"  平均延迟: {info['avg_latency']}")
+    print(f"  速率限制: {info['rate_limit']}")
+
+# 重置统计
+manager.reset_stats()
+```
+
+---
+
+## 增强型任务发布器
+
+### 功能特性
+
+- **优先级队列**: LOW/NORMAL/HIGH/URGENT
+- **任务依赖**: 支持 DAG 依赖关系
+- **超时控制**: 任务级别超时
+- **过期机制**: 自动清理过期任务
+- **重试管理**: 可配置重试次数
+- **状态追踪**: 完整生命周期管理
+
+### 基础使用
+
+```python
+from cloud.enhanced_publisher import (
+    EnhancedCloudTaskPublisher,
+    TaskPriority,
+    TaskStatus
+)
+
+# 创建发布器
+publisher = EnhancedCloudTaskPublisher()
+
+# 发布普通任务
+task = publisher.publish(
+    name="market_analysis",
+    payload={"symbol": "BTC/USDT", "timeframe": "1h"},
+    priority=TaskPriority.NORMAL.value,
+    tags=["analysis", "crypto"]
+)
+
+print(f"任务ID: {task.task_id}")
+print(f"状态: {task.status}")
+```
+
+### 优先级任务
+
+```python
+# 发布紧急任务
+urgent_task = publisher.publish(
+    name="price_alert",
+    payload={"symbol": "BTC/USDT", "alert_type": "spike"},
+    priority=TaskPriority.URGENT.value,  # 最高优先级
+    timeout=30.0,  # 30秒超时
+    expires_in=300.0  # 5分钟后过期
+)
+
+# 发布低优先级任务
+background_task = publisher.publish(
+    name="data_cleanup",
+    payload={"days": 30},
+    priority=TaskPriority.LOW.value
+)
+```
+
+### 任务依赖
+
+```python
+# 任务1: 数据采集
+task1 = publisher.publish(
+    name="fetch_data",
+    payload={"source": "binance"},
+    priority=TaskPriority.HIGH.value
+)
+
+# 任务2: 数据分析（依赖任务1）
+task2 = publisher.publish(
+    name="analyze_data",
+    payload={"method": "technical"},
+    depends_on=[task1.task_id],
+    priority=TaskPriority.NORMAL.value
+)
+
+# 任务3: 生成报告（依赖任务2）
+task3 = publisher.publish(
+    name="generate_report",
+    payload={"format": "pdf"},
+    depends_on=[task2.task_id],
+    priority=TaskPriority.NORMAL.value
+)
+```
+
+### 任务查询
+
+```python
+# 查询所有待处理任务
+pending = publisher.list_tasks(status=TaskStatus.PENDING.value)
+
+# 查询高优先级任务
+high_priority = publisher.list_tasks(
+    priority_min=TaskPriority.HIGH.value,
+    limit=10
+)
+
+# 按标签查询
+analysis_tasks = publisher.list_tasks(tags=["analysis"])
+
+# 获取准备好的任务（依赖已满足）
+ready = publisher.get_ready_tasks(limit=5)
+```
+
+### 任务管理
+
+```python
+# 更新任务状态
+publisher.update_status(
+    task_id="xxx",
+    status=TaskStatus.RUNNING.value
+)
+
+# 完成任务
+publisher.update_status(
+    task_id="xxx",
+    status=TaskStatus.COMPLETED.value,
+    result={"success": True, "data": {...}}
+)
+
+# 失败任务
+publisher.update_status(
+    task_id="xxx",
+    status=TaskStatus.FAILED.value,
+    error="Connection timeout"
+)
+
+# 重试失败任务
+retried = publisher.retry_task(task_id="xxx")
+
+# 取消任务
+cancelled = publisher.cancel_task(task_id="xxx")
+
+# 清理过期任务
+cleaned_count = publisher.cleanup_expired()
+```
+
+### 任务处理器
+
+```python
+# 注册任务处理器
+def handle_analysis(payload):
+    symbol = payload.get("symbol")
+    # 执行分析逻辑
+    result = perform_analysis(symbol)
+    return {"result": result}
+
+publisher.register_handler("market_analysis", handle_analysis)
+
+# 执行任务
+task = publisher.get_task(task_id="xxx")
+result = publisher.execute_task(task)
+```
+
+### 统计信息
+
+```python
+stats = publisher.get_stats()
+
+print(f"总任务数: {stats['total']}")
+print(f"按状态统计: {stats['by_status']}")
+print(f"按优先级统计: {stats['by_priority']}")
+print(f"过期任务: {stats['expired']}")
+print(f"平均完成时间: {stats['avg_completion_time']:.2f}s")
+```
+
+---
+
+## MCP 工具使用
+
+通过 Claude Desktop 或 Windsurf 调用云端功能。
+
+### 发布增强型任务
+
+```
+发布一个高优先级的市场分析任务，分析 BTC/USDT，60秒超时
+```
+
+对应工具调用：
+```python
+publish_enhanced_task(
+    name="market_analysis",
+    payload='{"symbol": "BTC/USDT"}',
+    priority=3,  # HIGH
+    timeout=60.0,
+    tags="analysis,urgent"
+)
+```
+
+### 查看任务队列
+
+```
+查看所有待处理的高优先级任务
+```
+
+对应工具调用：
+```python
+list_enhanced_tasks(
+    status="pending",
+    priority_min=3,
+    limit=10
+)
+```
+
+### 添加 API 端点
+
+```
+添加 DeepSeek API 端点，优先级2，每分钟100次请求限制
+```
+
+对应工具调用：
+```python
+add_api_endpoint(
+    name="deepseek",
+    base_url="https://api.deepseek.com/v1",
+    api_key="sk-xxx",
+    model="deepseek-chat",
+    priority=2,
+    max_requests_per_minute=100
+)
+```
+
+### 查看统计信息
+
+```
+查看 API 管理器的统计信息
+```
+
+对应工具调用：
+```python
+get_api_manager_stats()
+```
+
+---
+
+## 最佳实践
+
+### 1. API 端点配置
+
+```python
+# ✅ 推荐：配置多个端点实现高可用
+manager.add_endpoint(primary_endpoint)
+manager.add_endpoint(backup_endpoint)
+manager.add_endpoint(fallback_endpoint)
+
+# ❌ 避免：只配置单个端点
+manager.add_endpoint(single_endpoint)
+```
+
+### 2. 优先级设置
+
+```python
+# ✅ 推荐：根据业务重要性设置优先级
+urgent_alert = TaskPriority.URGENT.value  # 价格预警
+normal_analysis = TaskPriority.NORMAL.value  # 常规分析
+low_cleanup = TaskPriority.LOW.value  # 后台清理
+
+# ❌ 避免：所有任务都设置为最高优先级
+all_urgent = TaskPriority.URGENT.value  # 失去优先级意义
+```
+
+### 3. 超时设置
+
+```python
+# ✅ 推荐：根据任务类型设置合理超时
+quick_task = publisher.publish(name="ping", timeout=5.0)
+normal_task = publisher.publish(name="analysis", timeout=60.0)
+long_task = publisher.publish(name="backtest", timeout=300.0)
+
+# ❌ 避免：所有任务使用相同超时
+fixed_timeout = 30.0  # 可能太短或太长
+```
+
+### 4. 错误处理
+
+```python
+# ✅ 推荐：使用重试机制
+try:
+    result, ep = manager.call_with_retry(
+        func=api_call,
+        max_retries=3
+    )
+except RuntimeError as e:
+    # 所有重试都失败后的处理
+    logger.error(f"API调用失败: {e}")
+    send_alert()
+
+# ❌ 避免：单次调用无容错
+result = api_call()  # 网络抖动即失败
+```
+
+---
+
+## 故障排查
+
+### 问题1: API 调用总是失败
+
+**检查清单**:
+1. API Key 是否正确
+2. 网络连接是否正常
+3. 端点 URL 是否正确
+4. 是否超过速率限制
+
+**调试命令**:
+```python
+# 查看端点状态
+stats = manager.get_stats()
+for name, info in stats['endpoints'].items():
+    print(f"{name}: {info['status']}")
+
+# 查看错误日志
+import logging
+logging.basicConfig(level=logging.DEBUG)
+```
+
+### 问题2: 任务不执行
+
+**检查清单**:
+1. 任务状态是否为 PENDING
+2. 依赖任务是否已完成
+3. 任务是否已过期
+4. 是否有注册的处理器
+
+**调试命令**:
+```python
+# 查看任务详情
+task = publisher.get_task(task_id)
+print(f"状态: {task.status}")
+print(f"依赖: {task.depends_on}")
+print(f"过期时间: {task.expires_at}")
+
+# 查看准备好的任务
+ready = publisher.get_ready_tasks()
+print(f"准备好的任务数: {len(ready)}")
+```
+
+### 问题3: 内存占用过高
+
+**检查清单**:
+1. 是否有大量未清理的任务
+2. 缓存是否设置了大小限制
+3. 是否有内存泄漏
+
+**调试命令**:
+```python
+# 清理过期任务
+cleaned = publisher.cleanup_expired()
+print(f"清理了 {cleaned} 个过期任务")
+
+# 查看任务统计
+stats = publisher.get_stats()
+print(f"总任务数: {stats['total']}")
+
+# 清理已完成任务（手动）
+tasks = publisher.list_tasks(status=TaskStatus.COMPLETED.value)
+# 根据需要删除旧任务
+```
+
+---
+
+## 性能优化建议
+
+### 1. 批量处理
+
+```python
+from utils.async_helper import AsyncBatchProcessor
+
+processor = AsyncBatchProcessor(max_concurrent=5)
+
+# 批量发布任务
+tasks_to_publish = [
+    {"name": "analysis", "payload": {"symbol": s}}
+    for s in ["BTC/USDT", "ETH/USDT", "BNB/USDT"]
+]
+
+results = processor.process_batch(
+    items=tasks_to_publish,
+    func=lambda t: publisher.publish(**t)
+)
+```
+
+### 2. 速率控制
+
+```python
+from utils.async_helper import RateLimitedExecutor
+
+executor = RateLimitedExecutor(max_per_second=10.0)
+
+# 控制发布速率
+for task_data in large_task_list:
+    executor.execute(publisher.publish, **task_data)
+```
+
+### 3. 监控性能
+
+```python
+from utils.performance_monitor import monitor_performance
+
+@monitor_performance
+def process_task(task):
+    # 自动追踪性能
+    return publisher.execute_task(task)
+
+# 查看性能报告
+from utils.performance_monitor import get_performance_monitor
+monitor = get_performance_monitor()
+print(monitor.get_metrics("process_task"))
+```
+
+---
+
+## 更多资源
+
+- **升级日志**: `UPGRADE_LOG_v2.0.md`
+- **升级总结**: `UPGRADE_SUMMARY.md`
+- **项目介绍**: `PROJECT_INTRO.md`
+- **API 参考**: `docs/api_reference.md`
