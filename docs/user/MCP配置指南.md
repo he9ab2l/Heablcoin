@@ -122,7 +122,33 @@ New-Item -ItemType Directory -Force -Path "$env:APPDATA\Windsurf"
 
 ---
 
-## 3. 常见问题排查
+## 3. Codex CLI 配置
+
+Codex CLI 支持以 MCP Client 方式连接本地/远程 MCP Server，并将其纳入工具列表。
+
+### 配置命令（Windows 示例）
+
+```powershell
+codex mcp add heablcoin --env PYTHONIOENCODING=utf-8 --env PYTHONUTF8=1 -- python d:/MCP/Heablcoin.py
+codex mcp list
+```
+
+如需移除：
+
+```powershell
+codex mcp remove heablcoin
+```
+
+### 配置文件位置
+
+- Windows：`%USERPROFILE%\\.codex\\config.toml`
+- macOS/Linux：`~/.codex/config.toml`
+
+说明：`codex mcp add` 会自动写入 `config.toml` 的 `[mcp_servers.<name>]` 段落。
+
+---
+
+## 4. 常见问题排查
 
 ### 问题 1: Python 命令找不到
 
@@ -204,7 +230,7 @@ BINANCE_SECRET_KEY=your_secret
 
 ---
 
-## 4. 验证配置
+## 5. 验证配置
 
 ### 测试 MCP 服务器
 
@@ -231,7 +257,7 @@ python Heablcoin-test.py --self-check
 
 ---
 
-## 5. 重启应用
+## 6. 重启应用
 
 配置完成后，**必须完全重启**应用才能生效：
 
@@ -249,7 +275,7 @@ python Heablcoin-test.py --self-check
 
 ---
 
-## 6. 查看日志
+## 7. 查看日志
 
 如果仍然无法工作，检查日志文件：
 
@@ -266,7 +292,7 @@ Get-Content "$env:APPDATA\Claude\logs\mcp*.log" -Tail 50
 
 ---
 
-## 7. 完整配置示例
+## 8. 完整配置示例
 
 ### 多个 MCP 服务器配置
 
@@ -291,7 +317,7 @@ Get-Content "$env:APPDATA\Claude\logs\mcp*.log" -Tail 50
 
 ---
 
-## 8. 快速配置脚本
+## 9. 快速配置脚本
 
 ### Windows 一键配置
 
@@ -359,7 +385,7 @@ powershell -ExecutionPolicy Bypass -File setup_mcp.ps1
 
 ---
 
-## 9. 联系支持
+## 10. 联系支持
 
 如果以上方法都无法解决问题，请提供以下信息：
 

@@ -138,5 +138,12 @@
     "details": "更新 可视化系统架构.mmd：补充 core.mcp_safety/tool_registry、tools.admin_tools，以及 DevOps（gp 脚本、敏感信息扫描、CI 测试）；同时移除 UTF-8 BOM，减少编辑器与工具链乱码风险；同步更新历史记录与任务进度。",
     "change_type": "优化",
     "file_path": "d:/MCP/可视化系统架构.mmd,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
+  },
+  {
+    "id": "2025-12-18 21:58:54",
+    "user_intent": "用户要求将 Heablcoin MCP 导入 Codex CLI 与 Claude Desktop，以便在两个客户端中直接调用 MCP 工具。",
+    "details": "1. 使用 `codex mcp add heablcoin -- python d:/MCP/Heablcoin.py` 将服务器写入 `~/.codex/config.toml` 并设置 UTF-8 环境变量；2. 检查并确认 Claude Desktop 配置文件 `%APPDATA%/Claude/claude_desktop_config.json` 已包含 heablcoin 配置；3. 更新 docs/user/MCP配置指南.md，补充 Codex CLI 配置章节；4. 同步更新历史记录与任务进度。",
+    "change_type": "增强",
+    "file_path": "c:/Users/16864/.codex/config.toml,c:/Users/16864/AppData/Roaming/Claude/claude_desktop_config.json,d:/MCP/docs/user/MCP配置指南.md,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
   }
 ]
