@@ -113,37 +113,23 @@ def test_stdout_isolation():
 
 
 def test_env_helpers():
-    """测试环境变量辅助函数"""
+    """测试环境变量辅助函数（使用 utils.env_helpers）"""
     print("\n📝 测试3: 环境变量辅助函数")
     
     try:
         import os
-        
-        def _env_bool(name: str, default: bool = True) -> bool:
-            v = os.getenv(name)
-            if v is None:
-                return default
-            return v.strip().lower() in {'1', 'true', 'yes', 'y', 'on'}
-        
-        def _env_float(name: str, default: float) -> float:
-            v = os.getenv(name)
-            if not v:
-                return default
-            try:
-                return float(v)
-            except ValueError:
-                return default
+        from utils.env_helpers import env_bool, env_float
         
         # 测试bool解析
         os.environ['TEST_BOOL'] = 'true'
-        assert _env_bool('TEST_BOOL') == True, "bool解析失败"
+        assert env_bool('TEST_BOOL') == True, "bool解析失败"
         
         # 测试float解析
         os.environ['TEST_FLOAT'] = '123.45'
-        assert _env_float('TEST_FLOAT', 0.0) == 123.45, "float解析失败"
+        assert env_float('TEST_FLOAT', 0.0) == 123.45, "float解析失败"
         
         # 测试默认值
-        assert _env_bool('NONEXISTENT', False) == False, "默认值失败"
+        assert env_bool('NONEXISTENT', False) == False, "默认值失败"
         
         # 清理
         del os.environ['TEST_BOOL']
@@ -162,24 +148,18 @@ def test_notification_switches():
     
     try:
         from typing import Optional, Dict
+        from utils.env_helpers import env_bool
         
         _NOTIFY_RUNTIME_OVERRIDES: Dict[str, Optional[bool]] = {
             'NOTIFY_TRADE_EXECUTION': None,
             'NOTIFY_PRICE_ALERTS': None,
         }
         
-        def _env_bool(name: str, default: bool = True) -> bool:
-            import os
-            v = os.getenv(name)
-            if v is None:
-                return default
-            return v.strip().lower() in {'1', 'true', 'yes', 'y', 'on'}
-        
         def _notify_enabled(key: str, default: bool = True) -> bool:
             override = _NOTIFY_RUNTIME_OVERRIDES.get(key)
             if override is not None:
                 return bool(override)
-            return _env_bool(key, default)
+            return env_bool(key, default)
         
         # 测试默认值
         assert _notify_enabled('NOTIFY_TRADE_EXECUTION', True) == True, "默认值应为True"
