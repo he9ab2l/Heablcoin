@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-12-18 14:45:00",
+  "last_updated": "2025-12-18 15:15:00",
   "projects": [
     {
       "project_id": "proj_20251218_01",
@@ -250,6 +250,49 @@
           "progress": 100,
           "status": "已完成",
           "created_at": "2025-12-18 14:45:00"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251218_08",
+      "name": "KISS/YAGNI/SOLID 架构重构",
+      "status": "已完成",
+      "progress": 100,
+      "tasks": [
+        {
+          "task_id": "task_08_01",
+          "description": "全局架构审计：识别冗余/过度设计/职责不清/耦合问题",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 15:15:00"
+        },
+        {
+          "task_id": "task_08_02",
+          "description": "抽取重复代码：环境变量工具函数 -> utils/env_helpers.py",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 15:15:00"
+        },
+        {
+          "task_id": "task_08_03",
+          "description": "更新引用点（Heablcoin.py, learning/core.py）使用新模块",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 15:15:00"
+        },
+        {
+          "task_id": "task_08_04",
+          "description": "新增 test_env_helpers.py 单元测试并接入测试套件",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 15:15:00"
+        },
+        {
+          "task_id": "task_08_05",
+          "description": "全量测试通过（12/12）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 15:15:00"
         }
       ]
     }
