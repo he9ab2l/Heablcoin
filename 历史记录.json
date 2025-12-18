@@ -68,5 +68,40 @@
     "details": "1. 抽取重复的环境变量工具函数到 utils/env_helpers.py（env_str/env_int/env_float/env_bool/resolve_path/parse_symbols）；2. 更新 Heablcoin.py 和 learning/core.py 引用新模块；3. 新增 test_env_helpers.py 单元测试并接入测试套件；4. 全量测试通过（12/12）。",
     "change_type": "重构",
     "file_path": "d:/MCP/utils/env_helpers.py,d:/MCP/utils/__init__.py,d:/MCP/Heablcoin.py,d:/MCP/learning/core.py,d:/MCP/tests/test_env_helpers.py,d:/MCP/tests/run_tests.py"
+  },
+  {
+    "id": "2025-12-18 15:45:24",
+    "user_intent": "（历史记录修复）该条原始内容在早期写入时发生编码替换，已丢失细节，暂以占位说明并等待后续补全。",
+    "details": "原记录内容包含大量“？”占位符，无法可靠还原；后续可通过 git 历史/日志补全该条的真实变更说明。",
+    "change_type": "修复",
+    "file_path": "d:/MCP/历史记录.json,d:/MCP/任务进度.json"
+  },
+  {
+    "id": "2025-12-18 16:14:43",
+    "user_intent": "用户要求固化 MCP SYSTEM DEVELOPMENT PROMPT v1.0 为工程资产。",
+    "details": "新增 docs/developer/MCP_SYSTEM_DEVELOPMENT_PROMPT_v1.0.md，包含 Meta/Context/Role/Task/I/O/Example/Validation/Safety 等层，规范工具开发与输出格式。",
+    "change_type": "新增",
+    "file_path": "d:/MCP/docs/developer/MCP_SYSTEM_DEVELOPMENT_PROMPT_v1.0.md"
+  },
+  {
+    "id": "2025-12-18 16:42:56",
+    "user_intent": "用户要求提升“使用者能跑通”的可用性：补齐 README/配置文档、统一邮箱收件人变量、修复 Windows UTF-8 输出问题。",
+    "details": "1. 更新 README/README.zh-CN：补齐 Claude Desktop / Windsurf MCP 配置示例与 UTF-8 环境变量建议；2. 统一邮箱收件人变量：新增 RECIPIENT_EMAIL 为主变量，并兼容 RECEIVER_EMAIL/NOTIFY_EMAIL；3. 修复 flexible_report 邮件服务读取收件人逻辑（优先 RECIPIENT_EMAIL）；4. 测试运行器与相关文档补齐 PYTHONIOENCODING/PYTHONUTF8 提示，避免 Windows 控制台编码异常；5. 新增 lesson 复盘：测试输出编码错误。",
+    "change_type": "优化",
+    "file_path": "d:/MCP/README.md,d:/MCP/README.zh-CN.md,d:/MCP/docs/user/快速开始.md,d:/MCP/docs/user/故障排查.md,d:/MCP/docs/developer/报告系统指南.md,d:/MCP/docs/developer/README.md,d:/MCP/src/skills/report/flexible_report/service.py,d:/MCP/tests/run_tests.py,d:/MCP/lesson/测试输出编码错误_20251218_1642.md"
+  },
+  {
+    "id": "2025-12-18 18:11:11",
+    "user_intent": "用户要求对仓库进行“项目化/分层化”重构：落地 src 分层（tools/skills/core/utils/storage），并保证可跑通、可测试、可扩展。",
+    "details": "1. 目录迁移到 src：core/cloud、core/orchestration、skills/*、tools/*、utils/*、storage/*；2. MCP 入口拆分：核心实现迁移到 src/core/server.py，仓库根 Heablcoin.py 保持稳定启动入口（包装器）；3. MCP 工具收敛：market/personal/learning/orchestration/cloud 工具模块迁移到 src/tools 并统一注册；4. 引入 core.path_setup + utils.project_paths 统一 sys.path 与仓库根路径解析，避免迁移后的相对路径失效；5. 更新 .env.example 与 docs/developer/资源与环境变量.md，补齐 Redis/通知/LLM 模板（不含任何真实密钥）；6. 更新 可视化系统架构.mmd 反映新的 src 分层架构，减少编码风险（不使用 emoji）。",
+    "change_type": "重构",
+    "file_path": "d:/MCP/src,d:/MCP/Heablcoin.py,d:/MCP/src/core/server.py,d:/MCP/src/core/path_setup.py,d:/MCP/src/tools,d:/MCP/src/skills,d:/MCP/src/utils/project_paths.py,d:/MCP/tests/run_tests.py,d:/MCP/.env.example,d:/MCP/docs/developer/资源与环境变量.md,d:/MCP/可视化系统架构.mmd"
+  },
+  {
+    "id": "2025-12-18 19:05:00",
+    "user_intent": "用户反馈历史记录与任务进度文件出现问号乱码，要求修复并保持可读性与可追溯性。",
+    "details": "1. 修复 历史记录.json 中 4 条乱码记录（补全中文描述/路径/变更类型）；2. 修复 任务进度.json 中 proj_20251218_164256_09 与 proj_20251218_10 的中文字段；3. 新增回归测试 test_project_records.py，确保记录文件可解析且不包含 ASCII 问号占位符；4. 新增 lesson 复盘，记录本次问题与防复发措施。",
+    "change_type": "修复",
+    "file_path": "d:/MCP/历史记录.json,d:/MCP/任务进度.json,d:/MCP/tests/test_project_records.py,d:/MCP/lesson/历史记录任务进度乱码_20251218_1905.md"
   }
 ]

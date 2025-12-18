@@ -33,7 +33,15 @@
 # 🕒 创建时间：2025-12-18
 ############################################################
 
-from orchestration.ai_router import LLMRouter
+import os
+import sys
+
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC_DIR = os.path.join(REPO_ROOT, "src")
+sys.path.insert(0, REPO_ROOT)
+sys.path.insert(0, SRC_DIR)
+
+from core.orchestration.ai_router import LLMRouter
 
 
 def test_router_fallback_echo():

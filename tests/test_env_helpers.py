@@ -5,7 +5,10 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC_DIR = os.path.join(REPO_ROOT, "src")
+sys.path.insert(0, REPO_ROOT)
+sys.path.insert(0, SRC_DIR)
 
 
 def run_tests():

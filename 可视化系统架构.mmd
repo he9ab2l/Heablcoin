@@ -1,216 +1,111 @@
-%% 可视化系统架构 - 自动生成（更新时间：2025-12-18 14:45:00）
+﻿%% 可视化系统架构 - 自动生成（更新时间：2025-12-18 18:01:17）
 %% 可直接导入 https://www.mermaidchart.com/
-%% Heablcoin - 智能加密货币量化交易系统
+%% Heablcoin - MCP 驱动的加密交易系统（src 分层架构）
 
 graph TB
-    %% 样式定义
     classDef datasource fill:#e3f2fd,stroke:#1976d2,stroke-width:2px,color:#0d47a1
-    classDef collector fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#1b5e20
-    classDef processor fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c
-    classDef formatter fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#e65100
-    classDef messagebus fill:#ffebee,stroke:#d32f2f,stroke-width:2px,color:#b71c1c
-    classDef consumer fill:#fce4ec,stroke:#c2185b,stroke-width:2px,color:#880e4f
-    classDef terminal fill:#eceff1,stroke:#546e7a,stroke-width:2px,color:#263238
+    classDef core fill:#f3e5f5,stroke:#7b1fa2,stroke-width:2px,color:#4a148c
+    classDef tools fill:#fff3e0,stroke:#f57c00,stroke-width:2px,color:#e65100
+    classDef skills fill:#e8f5e9,stroke:#388e3c,stroke-width:2px,color:#1b5e20
     classDef utils fill:#fffde7,stroke:#fbc02d,stroke-width:2px,color:#f57f17
     classDef storage fill:#e0f2f1,stroke:#00796b,stroke-width:2px,color:#004d40
+    classDef terminal fill:#eceff1,stroke:#546e7a,stroke-width:2px,color:#263238
 
-    %% 系统入口
-    SystemArchitecture["🪙 Heablcoin<br/>智能加密货币量化交易系统"]
+    SystemArchitecture["Heablcoin<br/>MCP Trading System"]
 
-    subgraph DataSources["📡 数据源层 DataSources"]
-        DS_Binance["Binance API<br/>现货/合约"]
-        DS_OKX["OKX API<br/>(扩展中)"]
-        DS_Bybit["Bybit API<br/>(扩展中)"]
-        DS_Config[".env 配置文件"]
-        DS_Redis["Redis<br/>云端队列"]
+    subgraph Entry["入口 Entry"]
+        ENTRY["Heablcoin.py（稳定入口包装器）"]
+        SERVER["src/core/server.py（FastMCP 服务端）"]
+        ENTRY --> SERVER
     end
 
-    subgraph Collectors["🔍 数据采集层 Collectors"]
-        C_CCXT["ccxt 统一接口<br/>exchange_adapter.py"]
-        C_DataProvider["数据提供器<br/>data_provider.py"]
-        C_PersonalData["个人数据采集<br/>personal_analytics/data_provider.py"]
+    subgraph DataSources["数据源层 DataSources"]
+        DS_Config[".env / 环境变量"]
+        DS_Exchange["交易所 API（Binance Testnet/Mainnet via CCXT）"]
+        DS_Redis["Redis（任务队列/缓存）"]
+        DS_LLM["LLM Providers（OpenAI/DeepSeek/Claude/Gemini/...）"]
+        DS_Notify["通知通道（SMTP/Server酱/飞书/...）"]
     end
 
-    subgraph Processors["⚙️ 数据处理层 Processors"]
-        subgraph Indicators["技术指标计算"]
-            P_Trend["趋势指标<br/>MA/EMA/ADX"]
-            P_Momentum["动量指标<br/>RSI/MACD/Stoch"]
-            P_Volatility["波动率指标<br/>ATR/BB"]
-            P_Volume["成交量指标<br/>OBV/VWAP"]
-        end
-        
-        subgraph Analysis["分析模块"]
-            P_Technical["技术分析<br/>technical_summary.py"]
-            P_Sentiment["情绪分析<br/>sentiment.py"]
-            P_Patterns["形态识别<br/>patterns.py"]
-            P_Signals["信号生成<br/>trading_signals.py"]
-        end
-        
-        subgraph PersonalAnalysis["个人绩效分析"]
-            P_Performance["绩效计算<br/>performance.py"]
-            P_Risk["风险分析<br/>risk.py"]
-            P_Attribution["归因分析<br/>attribution.py"]
-            P_Behavior["行为分析<br/>behavior.py"]
-        end
+    subgraph Core["核心层 Core（src/core）"]
+        CORE_Path["path_setup.py（sys.path 启动）"]
+        CORE_Exchange["exchange.py（交易所连接池）"]
+        CORE_Cloud["cloud/*（任务/调度/队列）"]
+        CORE_Orch["orchestration/*（多模型路由/编排）"]
     end
 
-    subgraph Orchestration["🎯 AI编排层 Orchestration"]
-        O_Router["任务路由器<br/>router.py"]
-        O_AIRoles["AI角色定义<br/>ai_roles.py"]
-        O_Providers["AI提供商<br/>providers.py"]
-        O_Tasks["任务定义<br/>tasks.py"]
+    subgraph ToolsLayer["工具层 Tools（src/tools）"]
+        T_Market["market_analysis_tools.py"]
+        T_Personal["personal_analytics_tools.py"]
+        T_Learning["learning_tools.py"]
+        T_Orch["orchestration_tools.py"]
+        T_Cloud["cloud_tools.py"]
     end
 
-    subgraph Cloud["☁️ 云端任务层 Cloud"]
-        CL_Scheduler["定时调度器<br/>scheduler.py"]
-        CL_Publisher["任务发布器<br/>enhanced_publisher.py"]
-        CL_Executor["任务执行器<br/>task_executor.py"]
-        CL_APIManager["API管理器<br/>api_manager.py"]
+    subgraph SkillsLayer["技能/领域层 Skills（src/skills）"]
+        SK_Market["market_analysis/*"]
+        SK_Personal["personal_analytics/*"]
+        SK_Learning["learning/*"]
+        SK_Report["report/*（含 flexible_report）"]
+        SK_Data["data/*"]
     end
 
-    subgraph Formatters["📦 格式化层 Formatters"]
-        F_Report["报告生成<br/>report_generator.py"]
-        F_Flexible["灵活报告<br/>flexible_report/"]
-        F_JSON["JSON输出"]
-        F_Markdown["Markdown输出"]
-        F_HTML["HTML输出"]
+    subgraph UtilsLayer["通用工具 Utils（src/utils）"]
+        U_Paths["project_paths.py（仓库根路径）"]
+        U_Env["env_helpers.py（env 读取/解析）"]
+        U_Logger["smart_logger.py"]
+        U_Cache["smart_cache.py"]
+        U_Risk["risk_management.py"]
+        U_ExchangeAdapter["exchange_adapter.py"]
+        U_Notifier["notifier.py"]
     end
 
-    subgraph MessageBus["🔔 消息中心 MessageBus"]
-        MB_MCP["MCP Server<br/>Heablcoin.py"]
-        MB_Tools["MCP工具注册<br/>mcp_tools.py"]
+    subgraph StorageLayer["存储适配 Storage（src/storage）"]
+        ST_File["file_adapter.py"]
+        ST_Redis["redis_adapter.py"]
+        ST_Email["email_adapter.py"]
+        ST_Notion["notion_adapter.py"]
     end
 
-    subgraph Consumers["📥 消费层 Consumers"]
-        CO_Trading["交易执行<br/>place_order"]
-        CO_Analysis["分析查询<br/>get_analysis"]
-        CO_Account["账户管理<br/>get_account"]
-        CO_Learning["学习模块<br/>learning/"]
+    subgraph Documentation["文档层 Documentation"]
+        DOC_User["docs/user/*"]
+        DOC_Dev["docs/developer/*"]
+        DOC_Lesson["lesson/*"]
     end
 
-    subgraph Storage["💾 存储层 Storage"]
-        ST_File["文件存储<br/>file_adapter.py"]
-        ST_Redis["Redis存储<br/>redis_adapter.py"]
-        ST_Email["邮件发送<br/>email_adapter.py"]
-        ST_Notion["Notion同步<br/>notion_adapter.py"]
+    subgraph Terminals["客户端/终端 Terminals"]
+        UT_Claude["Claude Desktop（MCP Client）"]
+        UT_Windsurf["Windsurf（MCP Client）"]
+        UT_Test["Heablcoin-test.py（终端自检）"]
+        UT_Qinglong["qinglong_worker.py（青龙 Worker）"]
     end
 
-    subgraph Utils["🔧 工具层 Utils"]
-        U_Logger["智能日志<br/>smart_logger.py"]
-        U_Cache["智能缓存<br/>smart_cache.py"]
-        U_RiskMgmt["风险管理<br/>risk_management.py"]
-        U_Backtest["回测引擎<br/>backtesting.py"]
-        U_Notifier["通知工具<br/>notifier.py"]
-        U_PerfMon["性能监控<br/>performance_monitor.py"]
-    end
+    %% 主要数据流/调用链
+    DS_Config --> SERVER
+    SERVER --> ToolsLayer
+    ToolsLayer --> SkillsLayer
+    ToolsLayer --> UtilsLayer
+    SkillsLayer --> UtilsLayer
+    ToolsLayer --> StorageLayer
+    SkillsLayer --> StorageLayer
 
-    subgraph UserTerminals["👥 用户终端层 UserTerminals"]
-        UT_Claude["Claude Desktop<br/>MCP客户端"]
-        UT_Windsurf["Windsurf IDE<br/>MCP客户端"]
-        UT_Terminal["终端测试<br/>Heablcoin-test.py"]
-        UT_Qinglong["青龙面板<br/>qinglong_worker.py"]
-    end
+    DS_Exchange --> U_ExchangeAdapter
+    DS_Redis --> ST_Redis
+    DS_LLM --> CORE_Orch
+    DS_Notify --> ST_Email
 
-     subgraph Documentation["📚 文档层 Documentation"]
-         DOC_User["用户文档<br/>docs/user/"]
-         DOC_Dev["开发者文档<br/>docs/developer/"]
-         LSN_Lesson["经验复盘<br/>lesson/"]
-     end
+    SERVER -->|"MCP JSON-RPC"| UT_Claude
+    SERVER -->|"MCP JSON-RPC"| UT_Windsurf
+    UT_Test --> SERVER
+    UT_Qinglong --> CORE_Cloud
 
-    %% 数据流连接 - 数据源到采集层（蓝色）
-    DS_Binance -->|"行情/K线"| C_CCXT
-    DS_OKX -.->|"扩展中"| C_CCXT
-    DS_Bybit -.->|"扩展中"| C_CCXT
-    DS_Config -->|"配置加载"| MB_MCP
-    DS_Redis -->|"任务队列"| CL_Executor
-
-    %% 采集层到处理层（绿色）
-    C_CCXT -->|"统一数据"| C_DataProvider
-    C_DataProvider -->|"OHLCV"| P_Trend
-    C_DataProvider -->|"OHLCV"| P_Momentum
-    C_DataProvider -->|"OHLCV"| P_Volatility
-    C_DataProvider -->|"OHLCV"| P_Volume
-    C_PersonalData -->|"交易历史"| P_Performance
-
-    %% 处理层内部（紫色）
-    P_Trend --> P_Technical
-    P_Momentum --> P_Technical
-    P_Volatility --> P_Technical
-    P_Volume --> P_Technical
-    P_Technical --> P_Signals
-    P_Sentiment --> P_Signals
-    P_Patterns --> P_Signals
-    
-    P_Performance --> P_Risk
-    P_Risk --> P_Attribution
-    P_Attribution --> P_Behavior
-
-    %% 处理层到格式化层（紫色）
-    P_Signals -->|"分析结果"| F_Report
-    P_Behavior -->|"绩效数据"| F_Flexible
-
-    %% AI编排
-    O_Router --> O_AIRoles
-    O_AIRoles --> O_Providers
-    O_Providers --> O_Tasks
-
-    %% 云端任务
-    CL_Scheduler --> CL_Publisher
-    CL_Publisher --> CL_Executor
-    CL_Executor --> CL_APIManager
-
-    %% 格式化层到消息中心（橙色）
-    F_Report -->|"JSON/MD/HTML"| MB_MCP
-    F_Flexible -->|"灵活报告"| MB_MCP
-    F_JSON --> MB_MCP
-    F_Markdown --> MB_MCP
-    F_HTML --> MB_MCP
-
-    %% 消息中心到消费层（红色）
-    MB_MCP --> MB_Tools
-    MB_Tools -->|"交易工具"| CO_Trading
-    MB_Tools -->|"分析工具"| CO_Analysis
-    MB_Tools -->|"账户工具"| CO_Account
-    MB_Tools -->|"学习工具"| CO_Learning
-
-    %% 消费层到存储层
-    CO_Trading --> ST_File
-    CO_Trading --> ST_Email
-    CO_Analysis --> U_Cache
-    CO_Learning --> ST_File
-
-    %% 存储层
-    ST_File -.-> ST_Redis
-    ST_Email -.-> ST_Notion
-
-    %% 工具层支撑（虚线表示支撑关系）
-    U_Logger -.->|"日志支撑"| MB_MCP
-    U_Cache -.->|"缓存支撑"| C_DataProvider
-    U_RiskMgmt -.->|"风控支撑"| CO_Trading
-    U_Backtest -.->|"回测支撑"| P_Signals
-    U_Notifier -.->|"通知支撑"| ST_Email
-    U_PerfMon -.->|"监控支撑"| MB_MCP
-
-    %% 消费层到用户终端（灰色）
-    MB_MCP -->|"MCP协议"| UT_Claude
-    MB_MCP -->|"MCP协议"| UT_Windsurf
-    CO_Trading -->|"测试接口"| UT_Terminal
-    CL_Executor -->|"定时任务"| UT_Qinglong
-
-     %% 文档资产（灰色虚线表示文档引用关系）
-     MB_MCP -.->|"使用/配置说明"| DOC_User
-     MB_MCP -.->|"架构/规范"| DOC_Dev
-     CO_Learning -.->|"经验沉淀"| LSN_Lesson
-
-    %% 应用样式
-    class DS_Binance,DS_OKX,DS_Bybit,DS_Config,DS_Redis datasource
-    class C_CCXT,C_DataProvider,C_PersonalData collector
-    class P_Trend,P_Momentum,P_Volatility,P_Volume,P_Technical,P_Sentiment,P_Patterns,P_Signals,P_Performance,P_Risk,P_Attribution,P_Behavior processor
-    class F_Report,F_Flexible,F_JSON,F_Markdown,F_HTML formatter
-    class MB_MCP,MB_Tools messagebus
-    class CO_Trading,CO_Analysis,CO_Account,CO_Learning consumer
-    class UT_Claude,UT_Windsurf,UT_Terminal,UT_Qinglong terminal
-    class U_Logger,U_Cache,U_RiskMgmt,U_Backtest,U_Notifier,U_PerfMon utils
+    %% 样式应用
+    class DS_Config,DS_Exchange,DS_Redis,DS_LLM,DS_Notify datasource
+    class CORE_Path,CORE_Exchange,CORE_Cloud,CORE_Orch core
+    class T_Market,T_Personal,T_Learning,T_Orch,T_Cloud tools
+    class SK_Market,SK_Personal,SK_Learning,SK_Report,SK_Data skills
+    class U_Paths,U_Env,U_Logger,U_Cache,U_Risk,U_ExchangeAdapter,U_Notifier utils
     class ST_File,ST_Redis,ST_Email,ST_Notion storage
-     class DOC_User,DOC_Dev,LSN_Lesson terminal
-    class O_Router,O_AIRoles,O_Providers,O_Tasks,CL_Scheduler,CL_Publisher,CL_Executor,CL_APIManager processor
+    class ENTRY,SERVER,SystemArchitecture terminal
+    class UT_Claude,UT_Windsurf,UT_Test,UT_Qinglong terminal
+    class DOC_User,DOC_Dev,DOC_Lesson terminal

@@ -10,12 +10,14 @@
 5. 云端模块指南：云端模块指南.md
 6. 个人绩效模块指南：个人绩效模块指南.md
 7. 报告系统指南：报告系统指南.md
+8. 资源与环境变量：资源与环境变量.md
 
 ## Prompt 规范
-8. Prompt备忘录：Prompt备忘录.md
-9. 审计专家系统 v4.0：审计专家系统_v4.0_Prompt.md
-10. 审计与传承专家系统 v5.0：审计与传承专家系统_v5.0_Prompt.md
+9. Prompt备忘录：Prompt备忘录.md
+10. 审计专家系统 v4.0：审计专家系统_v4.0_Prompt.md
+11. 审计与传承专家系统 v5.0：审计与传承专家系统_v5.0_Prompt.md
+12. MCP 系统开发提示词：MCP_SYSTEM_DEVELOPMENT_PROMPT_v1.0.md
 
 ## 项目记录
-11. 项目上下文文档：项目上下文文档.md
-12. 运维流程（Runbooks）：runbooks/多端连接集成流程标准化.md
+13. 项目上下文文档：项目上下文文档.md
+14. 运维流程（Runbooks）：runbooks/多端连接集成流程标准化.md

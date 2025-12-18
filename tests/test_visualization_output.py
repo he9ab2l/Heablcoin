@@ -49,7 +49,10 @@ import json
 from typing import Any, Dict
 
 # 添加项目路径
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC_DIR = os.path.join(REPO_ROOT, "src")
+sys.path.insert(0, REPO_ROOT)
+sys.path.insert(0, SRC_DIR)
 
 
 def _assert_has(d: Dict[str, Any], key: str):

@@ -39,8 +39,11 @@ from __future__ import annotations
 import sys
 import os
 
-# 添加项目根目录到路径
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# 添加项目根目录与 src 到路径（支持直接运行本文件）
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC_DIR = os.path.join(REPO_ROOT, "src")
+sys.path.insert(0, REPO_ROOT)
+sys.path.insert(0, SRC_DIR)
 
 passed = 0
 failed = 0
@@ -66,13 +69,13 @@ def main():
     # ==================== 测试1: 模块导入 ====================
     print("📝 测试1: 模块导入")
     try:
-        from learning.registry import LearningRegistry, LearningModule
-        from learning.modules.pre_trade import PreTradeAuditModule
-        from learning.modules.in_trade import InTradeCoachModule
-        from learning.modules.history import HistorySimModule
-        from learning.modules.growth import GrowthProfileModule
-        from learning.modules.utility import UtilityModule
-        from learning.notifier import send_learning_report
+        from skills.learning.registry import LearningRegistry, LearningModule
+        from skills.learning.modules.pre_trade import PreTradeAuditModule
+        from skills.learning.modules.in_trade import InTradeCoachModule
+        from skills.learning.modules.history import HistorySimModule
+        from skills.learning.modules.growth import GrowthProfileModule
+        from skills.learning.modules.utility import UtilityModule
+        from skills.learning.notifier import send_learning_report
         test("模块导入", True)
     except Exception as e:
         test("模块导入", False, str(e))
@@ -197,13 +200,13 @@ def main():
     # ==================== 测试8: 邮件通知（配置检查） ====================
     print("\n📝 测试8: 邮件通知配置")
     try:
-        from learning.notifier import send_learning_report
+        from skills.learning.notifier import send_learning_report
         
         # 不发送，只检查函数存在
         test("邮件通知-函数存在", callable(send_learning_report))
         
         # 检查其他函数
-        from learning.notifier import send_training_summary, send_daily_learning_report
+        from skills.learning.notifier import send_training_summary, send_daily_learning_report
         test("邮件通知-训练总结函数", callable(send_training_summary))
         test("邮件通知-每日报告函数", callable(send_daily_learning_report))
     except Exception as e:

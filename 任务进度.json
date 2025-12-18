@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-12-18 15:15:00",
+  "last_updated": "2025-12-18 19:05:00",
   "projects": [
     {
       "project_id": "proj_20251218_01",
@@ -293,6 +293,135 @@
           "progress": 100,
           "status": "已完成",
           "created_at": "2025-12-18 15:15:00"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251218_164256_09",
+      "name": "可用性补齐（README/配置/编码）",
+      "status": "已完成",
+      "progress": 100,
+      "tasks": [
+        {
+          "task_id": "task_09_01",
+          "description": "更新 README：补齐 MCP 配置与使用说明",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 16:42:56"
+        },
+        {
+          "task_id": "task_09_02",
+          "description": "统一邮箱收件人变量：新增 RECIPIENT_EMAIL 并兼容旧变量",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 16:42:56"
+        },
+        {
+          "task_id": "task_09_03",
+          "description": "修复邮件发送链路：收件人读取优先 RECIPIENT_EMAIL",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 16:42:56"
+        },
+        {
+          "task_id": "task_09_04",
+          "description": "修复 Windows 控制台输出编码与测试脚本兼容性",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 16:42:56"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251218_10",
+      "name": "src 分层重构（tools/skills/core）",
+      "status": "进行中",
+      "progress": 67,
+      "tasks": [
+        {
+          "task_id": "task_10_01",
+          "description": "迁移到 src 分层目录（core/tools/skills/utils/storage）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 18:11:11"
+        },
+        {
+          "task_id": "task_10_02",
+          "description": "统一导入体系：core/skills/tools/... 并简化 sys.path",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 18:11:11"
+        },
+        {
+          "task_id": "task_10_03",
+          "description": "收敛 MCP 工具到 src/tools 并统一注册",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 18:11:11"
+        },
+        {
+          "task_id": "task_10_04",
+          "description": "引入 utils.project_paths：统一仓库根路径解析",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 18:11:11"
+        },
+        {
+          "task_id": "task_10_05",
+          "description": "更新 .env.example：补齐 Redis/通知/LLM 变量模板",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 18:11:11"
+        },
+        {
+          "task_id": "task_10_06",
+          "description": "同步文档与架构图：反映新的 src 分层结构",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 18:11:11"
+        },
+        {
+          "task_id": "task_10_07",
+          "description": "server.py 去重：统一使用 core.exchange 并下沉基础能力",
+          "progress": 0,
+          "status": "待办",
+          "created_at": "2025-12-18 18:11:11"
+        },
+        {
+          "task_id": "task_10_08",
+          "description": "实现 Skill 框架：组合工具/输入校验/可开关/可测试",
+          "progress": 0,
+          "status": "待办",
+          "created_at": "2025-12-18 18:11:11"
+        },
+        {
+          "task_id": "task_10_09",
+          "description": "补齐 smoke：tools/skills 注册与最小可用链路验证",
+          "progress": 0,
+          "status": "待办",
+          "created_at": "2025-12-18 18:11:11"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251218_190500_11",
+      "name": "工程化记录修复与防回归（历史记录/任务进度）",
+      "status": "已完成",
+      "progress": 100,
+      "tasks": [
+        {
+          "task_id": "task_11_01",
+          "description": "修复 历史记录.json 与 任务进度.json 问号乱码（补全中文字段）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 19:05:00"
+        },
+        {
+          "task_id": "task_11_02",
+          "description": "新增回归测试 test_project_records.py + lesson 复盘，防止乱码复发",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 19:05:00"
         }
       ]
     }

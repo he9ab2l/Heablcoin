@@ -45,9 +45,21 @@ from __future__ import annotations
 
 import os
 import time
+import sys
 from typing import Dict, Any
 
-from cloud.task_manager import fetch_next_task
+try:
+    _REPO_ROOT = os.path.dirname(os.path.abspath(__file__))
+    _SRC_DIR = os.path.join(_REPO_ROOT, "src")
+    if _SRC_DIR not in sys.path:
+        sys.path.insert(0, _SRC_DIR)
+    from core.path_setup import setup_sys_path as _setup_sys_path
+
+    _setup_sys_path()
+except Exception:
+    pass
+
+from core.cloud.task_manager import fetch_next_task
 from Heablcoin import get_exchange, send_email  # type: ignore
 
 

@@ -43,8 +43,23 @@ import os
 import subprocess
 import argparse
 
+# Avoid UnicodeEncodeError on Windows consoles (e.g., emoji output).
+try:
+    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    sys.stderr.reconfigure(encoding="utf-8", errors="replace")
+except Exception:
+    pass
+
 # 添加项目路径
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC_DIR = os.path.join(REPO_ROOT, "src")
+sys.path.insert(0, SRC_DIR)
+try:
+    from core.path_setup import setup_sys_path
+
+    setup_sys_path()
+except Exception:
+    pass
 
 
 # 测试套件配置
@@ -62,6 +77,7 @@ TEST_SUITES = {
             'test_exchange_adapter.py',
             'test_lesson_recorder.py',
             'test_env_helpers.py',
+            'test_project_records.py',
         ]
     },
     'email': {
@@ -90,6 +106,7 @@ TEST_SUITES = {
             'test_exchange_adapter.py',
             'test_lesson_recorder.py',
             'test_env_helpers.py',
+            'test_project_records.py',
             'test_integration_simple.py',
             'test_integration_full.py',
         ]
@@ -110,9 +127,18 @@ def run_test_file(test_file):
     print(f"{'='*60}")
     
     try:
+        env = os.environ.copy()
+        env.setdefault("PYTHONIOENCODING", "utf-8")
+        env.setdefault("PYTHONUTF8", "1")
+        # Keep PYTHONPATH minimal: repo root (for `lesson/`) + `src` (for core/tools/skills/utils/storage).
+        extra_paths = [REPO_ROOT, SRC_DIR]
+        existing = env.get("PYTHONPATH", "")
+        merged = os.pathsep.join([p for p in extra_paths if p] + ([existing] if existing else []))
+        env["PYTHONPATH"] = merged
         result = subprocess.run(
             [sys.executable, test_path],
             cwd=os.path.dirname(os.path.dirname(__file__)),
+            env=env,
             capture_output=False,
             text=True
         )

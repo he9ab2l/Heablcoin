@@ -31,6 +31,9 @@ server_debug.log
 data/*.json
 data/*.db
 data/*.sqlite
+src/skills/data/*.json
+src/skills/data/*.db
+src/skills/data/*.sqlite
 
 # Reports (keep structure, ignore content)
 reports/*/
