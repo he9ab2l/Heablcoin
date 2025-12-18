@@ -7,8 +7,10 @@ MCP Tool 安全封装（异常隔离 + 软禁用）
 
 from __future__ import annotations
 
+import contextlib
 import functools
 import logging
+import sys
 import traceback
 from typing import Any, Callable
 
@@ -41,7 +43,8 @@ def mcp_tool_safe(func: Callable) -> Callable:
             )
 
         try:
-            return func(*args, **kwargs)
+            with contextlib.redirect_stdout(sys.stderr):
+                return func(*args, **kwargs)
         except Exception as e:
             error_detail = {
                 "tool": tool_name,

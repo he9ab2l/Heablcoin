@@ -145,5 +145,12 @@
     "details": "1. 使用 `codex mcp add heablcoin -- python d:/MCP/Heablcoin.py` 将服务器写入 `~/.codex/config.toml` 并设置 UTF-8 环境变量；2. 检查并确认 Claude Desktop 配置文件 `%APPDATA%/Claude/claude_desktop_config.json` 已包含 heablcoin 配置；3. 更新 docs/user/MCP配置指南.md，补充 Codex CLI 配置章节；4. 同步更新历史记录与任务进度。",
     "change_type": "增强",
     "file_path": "c:/Users/16864/.codex/config.toml,c:/Users/16864/AppData/Roaming/Claude/claude_desktop_config.json,d:/MCP/docs/user/MCP配置指南.md,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
+  },
+  {
+    "id": "2025-12-19 00:40:00",
+    "user_intent": "交付任务发布系统与部署文档",
+    "details": "1. 新增 publish_task/get_task_status 工具 + Webhook；2. 启动 TaskExecutor 并扩展增强队列；3. 补齐 validators、task_executor、mcp_stdio 测试；4. 新增 examples.md/API_SPEC.md/DEPLOY_GUIDE.md 与 setup/deploy 脚本；5. 更新 README/.env.example/任务.txt/任务进度.json 记录。",
+    "change_type": "新增",
+    "file_path": "d:/MCP/src/core/cloud/enhanced_publisher.py,d:/MCP/src/core/cloud/task_executor.py,d:/MCP/src/tools/cloud_tools.py,d:/MCP/src/core/server.py,d:/MCP/src/utils/validators.py,d:/MCP/tests/test_validators.py,d:/MCP/tests/test_task_executor.py,d:/MCP/tests/test_mcp_stdio_startup.py,d:/MCP/tests/run_tests.py,d:/MCP/examples.md,d:/MCP/API_SPEC.md,d:/MCP/DEPLOY_GUIDE.md,d:/MCP/scripts/setup.sh,d:/MCP/scripts/deploy.sh,d:/MCP/README.md,d:/MCP/任务.txt,d:/MCP/任务进度.json"
   }
 ]

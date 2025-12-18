@@ -106,6 +106,7 @@ from tools.learning_tools import register_tools as _register_learning_tools
 from tools.orchestration_tools import register_tools as _register_orchestration_tools
 from tools.cloud_tools import register_tools as _register_cloud_tools
 from tools.admin_tools import register_tools as _register_admin_tools
+from core.cloud.task_executor import start_executor
 
 try:
     import markdown as _markdown
@@ -154,6 +155,8 @@ PERF_DEGRADATION_FACTOR = _env_float('PERF_DEGRADATION_FACTOR', 2.0)
 PERF_DEGRADATION_MIN_CALLS = _env_int('PERF_DEGRADATION_MIN_CALLS', 10)
 
 CACHE_DEFAULT_TTL_SECONDS = _env_int('CACHE_DEFAULT_TTL_SECONDS', 300)
+ENABLE_TASK_EXECUTOR = _env_bool('ENABLE_TASK_EXECUTOR', True)
+TASK_EXECUTOR_POLL_INTERVAL = _env_float('TASK_EXECUTOR_POLL_INTERVAL', 2.0)
 
 OHLCV_LIMIT_MARKET_ANALYSIS = _env_int('OHLCV_LIMIT_MARKET_ANALYSIS', 100)
 OHLCV_LIMIT_COMPREHENSIVE_ANALYSIS = _env_int('OHLCV_LIMIT_COMPREHENSIVE_ANALYSIS', 100)
@@ -342,6 +345,14 @@ try:
     _register_admin_tools(mcp)
 except Exception as _e:
     logger.warning(f"⚠️ admin 工具注册失败: {type(_e).__name__}: {_e}")
+
+task_executor_instance = None
+if ENABLE_TASK_EXECUTOR:
+    try:
+        task_executor_instance = start_executor(poll_interval=TASK_EXECUTOR_POLL_INTERVAL)
+        logger.info("🧵 Task executor started (poll %.1fs)", TASK_EXECUTOR_POLL_INTERVAL)
+    except Exception as exc:
+        logger.error("Task executor start failed: %s", exc)
 
 # ============================================
 # 1. 基础设施层

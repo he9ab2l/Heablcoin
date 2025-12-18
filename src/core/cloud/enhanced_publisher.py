@@ -48,6 +48,8 @@ from pathlib import Path
 from typing import Any, Dict, List, Optional, Callable
 from enum import Enum
 
+import requests
+
 from utils.smart_logger import get_logger
 
 logger = get_logger("system")
@@ -94,6 +96,8 @@ class EnhancedCloudTask:
     expires_at: Optional[float] = None
     depends_on: List[str] = field(default_factory=list)
     callback_url: Optional[str] = None
+    callback_attempts: int = 0
+    callback_last_error: Optional[str] = None
     
     def is_expired(self) -> bool:
         """检查任务是否过期"""
@@ -149,6 +153,8 @@ class EnhancedCloudTaskPublisher:
                         expires_at=item.get("expires_at"),
                         depends_on=item.get("depends_on") or [],
                         callback_url=item.get("callback_url"),
+                        callback_attempts=item.get("callback_attempts", 0),
+                        callback_last_error=item.get("callback_last_error"),
                     )
                 )
             return tasks
@@ -289,10 +295,48 @@ class EnhancedCloudTaskPublisher:
                 break
         
         if updated:
+            if self._should_fire_callback(updated, status):
+                self._invoke_callback(updated)
             self._save(tasks)
             logger.info(f"[EnhancedPublisher] task id={task_id} -> {status}")
         
         return updated
+
+    @staticmethod
+    def _should_fire_callback(task: EnhancedCloudTask, status: str) -> bool:
+        return (
+            task.callback_url
+            and status in {
+                TaskStatus.COMPLETED.value,
+                TaskStatus.FAILED.value,
+                TaskStatus.CANCELLED.value,
+                TaskStatus.EXPIRED.value,
+            }
+        )
+
+    def _invoke_callback(self, task: EnhancedCloudTask) -> None:
+        if not task.callback_url:
+            return
+
+        payload = {
+            "task_id": task.task_id,
+            "status": task.status,
+            "result": task.result,
+            "error": task.error,
+            "updated_at": task.updated_at,
+            "name": task.name,
+            "priority": task.priority,
+        }
+
+        task.callback_attempts += 1
+        try:
+            resp = requests.post(task.callback_url, json=payload, timeout=10)
+            if resp.status_code >= 400:
+                task.callback_last_error = f"{resp.status_code}: {resp.text[:200]}"
+            else:
+                task.callback_last_error = None
+        except Exception as exc:  # pragma: no cover
+            task.callback_last_error = str(exc)
     
     def retry_task(self, task_id: str) -> Optional[EnhancedCloudTask]:
         """重试失败的任务"""

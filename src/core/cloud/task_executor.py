@@ -517,6 +517,13 @@ def submit_task(
     depends_on: Optional[List[str]] = None,
     storage_target: Optional[str] = None,
     notify_on_complete: bool = False,
+    context: Optional[Dict[str, Any]] = None,
+    output_format: str = "json",
+    callback_url: Optional[str] = None,
+    tags: Optional[List[str]] = None,
+    schedule: Optional[int] = None,
+    max_retries: int = 3,
+    expires_in: Optional[float] = None,
 ) -> str:
     """
     提交任务到队列
@@ -530,6 +537,13 @@ def submit_task(
         depends_on: 依赖任务 ID 列表
         storage_target: 存储目标
         notify_on_complete: 完成后是否通知
+        context: 上下文
+        output_format: json/markdown/html
+        callback_url: 完成后回调
+        tags: 自定义标签
+        schedule: 定时执行（秒）
+        max_retries: 最大重试次数
+        expires_in: 任务自动过期（秒）
     
     Returns:
         str: 任务 ID
@@ -548,6 +562,8 @@ def submit_task(
         task_type=task_type,
         action=action,
         params=params or {},
+        context=context,
+        output_format=output_format,
         storage_target=storage_target,
         notify_on_complete=notify_on_complete,
     )
@@ -558,7 +574,11 @@ def submit_task(
         priority=priority,
         timeout=timeout,
         depends_on=depends_on,
-        tags=[task_type.value, action]
+        tags=list(set((tags or []) + [task_type.value, action])),
+        schedule=schedule,
+        max_retries=max_retries,
+        callback_url=callback_url,
+        expires_in=expires_in,
     )
     
     return task.task_id

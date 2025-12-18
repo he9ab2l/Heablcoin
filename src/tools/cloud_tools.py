@@ -1,44 +1,13 @@
-############################################################
-# 📘 文件说明：云端MCP工具
-# 本文件实现的功能：注册云端相关的MCP工具函数
-#
-# 📋 程序整体伪代码（中文）：
-# 1. 初始化依赖模块和配置
-# 2. 定义核心类和函数
-# 3. 实现主要业务逻辑
-# 4. 提供对外接口
-# 5. 异常处理与日志记录
-#
-# 🔄 程序流程图（逻辑流）：
-# ┌──────────────┐
-# │  MCP 请求    │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  工具函数处理 │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  返回结果    │
-# └──────────────┘
-#
-# 📊 数据管道说明：
-# 数据流向：MCP请求 → 任务队列 → 云端执行 → 结果回调
-#
-# 🧩 文件结构：
-# - 函数: register_tools, start_cloud_scheduler, publish_cloud_task, list_cloud_tasks, cloud_scheduler_snapshot
-#
-# 🔗 主要依赖：__future__, cloud, json, orchestration, pathlib, time, typing, utils
-#
-# 🕒 创建时间：2025-12-18
-############################################################
+"""
+Cloud tools: task publishing, scheduler controls, API endpoint registry.
+"""
 
 from __future__ import annotations
 
 import json
 import time
 from pathlib import Path
-from typing import Any, Dict, Optional
+from typing import Any, Dict, Optional, List
 
 from core.mcp_safety import mcp_tool_safe
 from core.cloud.publisher import CloudTaskPublisher
@@ -46,6 +15,8 @@ from core.cloud.enhanced_publisher import EnhancedCloudTaskPublisher, TaskPriori
 from core.cloud.scheduler import CloudScheduler
 from core.cloud.api_manager import ApiManager, ApiEndpoint, ApiStatus
 from core.orchestration.router import build_orchestrator_from_env, build_default_task_plan
+from core.cloud.task_executor import submit_task
+from utils.validators import normalize_symbol, validate_price_condition
 from utils.smart_logger import get_logger
 
 logger = get_logger("system")
@@ -65,7 +36,7 @@ def register_tools(mcp: Any) -> None:
     def _process_pending_tasks() -> None:
         pending = publisher.list_tasks(status="pending")
         for task in pending:
-            logger.info(f"[CloudScheduler] processing task id={task.task_id} name={task.name}")
+            logger.info("[CloudScheduler] processing task=%s id=%s", task.name, task.task_id)
             if task.name == "ai_pipeline":
                 ctx = task.payload.get("context") or {}
                 content = task.payload.get("content", "")
@@ -73,7 +44,7 @@ def register_tools(mcp: Any) -> None:
                 result = orchestrator.run(plan=plan, user_input=content, context=ctx)
                 publisher.update_status(task.task_id, status="completed", result=result)
             else:
-                publisher.update_status(task.task_id, status="acknowledged", result={"note": "queued for external worker"})
+                publisher.update_status(task.task_id, status="acknowledged", result={"note": "queued"})
 
     def _ensure_defaults() -> None:
         if "heartbeat" not in scheduler.tasks:
@@ -84,7 +55,6 @@ def register_tools(mcp: Any) -> None:
     @mcp.tool()
     @mcp_tool_safe
     def start_cloud_scheduler() -> str:
-        """启动云端定时任务调度（云心跳 + 队列消费）"""
         _ensure_defaults()
         scheduler.start()
         return json.dumps({"status": "started", "tasks": scheduler.snapshot()}, ensure_ascii=False, indent=2)
@@ -92,8 +62,6 @@ def register_tools(mcp: Any) -> None:
     @mcp.tool()
     @mcp_tool_safe
     def publish_cloud_task(name: str, payload: str = "{}", schedule_every_seconds: int = 0, tags: str = "") -> str:
-        """发布一个云端任务，可被调度或外部工作器消费"""
-        parsed_payload: Dict[str, Any] = {}
         try:
             parsed_payload = json.loads(payload) if payload else {}
         except Exception:
@@ -105,24 +73,20 @@ def register_tools(mcp: Any) -> None:
     @mcp.tool()
     @mcp_tool_safe
     def list_cloud_tasks(status: str = "") -> str:
-        """查看云端任务队列"""
         tasks = publisher.list_tasks(status=status or None)
-        data = [task.__dict__ for task in tasks]
-        return json.dumps(data, ensure_ascii=False, indent=2)
+        return json.dumps([task.__dict__ for task in tasks], ensure_ascii=False, indent=2)
 
     @mcp.tool()
     @mcp_tool_safe
     def cloud_scheduler_snapshot() -> str:
-        """查看云端调度任务状态"""
         return json.dumps(scheduler.snapshot(), ensure_ascii=False, indent=2)
 
     @mcp.tool()
     @mcp_tool_safe
     def trigger_cloud_queue() -> str:
-        """手动触发一次队列消费"""
         _process_pending_tasks()
-        return "队列消费完成"
-    
+        return "队列已刷新"
+
     @mcp.tool()
     @mcp_tool_safe
     def publish_enhanced_task(
@@ -133,78 +97,147 @@ def register_tools(mcp: Any) -> None:
         expires_in: float = 0,
         depends_on: str = "",
         max_retries: int = 3,
-        tags: str = ""
+        tags: str = "",
     ) -> str:
-        """发布增强型云端任务（支持优先级、依赖、超时等）"""
         try:
             parsed_payload = json.loads(payload) if payload else {}
         except Exception:
             parsed_payload = {"payload": payload}
-        
         tag_list = [t.strip() for t in (tags or "").split(",") if t.strip()]
         depends_list = [d.strip() for d in (depends_on or "").split(",") if d.strip()]
-        
         task = enhanced_publisher.publish(
             name=name,
             payload=parsed_payload,
             priority=priority,
-            timeout=timeout if timeout > 0 else None,
-            expires_in=expires_in if expires_in > 0 else None,
-            depends_on=depends_list if depends_list else None,
+            timeout=timeout or None,
+            expires_in=expires_in or None,
+            depends_on=depends_list or None,
             max_retries=max_retries,
-            tags=tag_list
+            tags=tag_list,
         )
-        
-        return json.dumps({
-            "task_id": task.task_id,
-            "status": task.status,
-            "priority": task.priority,
-            "expires_at": task.expires_at
-        }, ensure_ascii=False, indent=2)
-    
+        return json.dumps(
+            {"task_id": task.task_id, "status": task.status, "priority": task.priority, "expires_at": task.expires_at},
+            ensure_ascii=False,
+            indent=2,
+        )
+
     @mcp.tool()
     @mcp_tool_safe
     def list_enhanced_tasks(status: str = "", priority_min: int = 0, limit: int = 50) -> str:
-        """查看增强型云端任务队列"""
         tasks = enhanced_publisher.list_tasks(
             status=status or None,
-            priority_min=priority_min if priority_min > 0 else None,
-            limit=limit
+            priority_min=priority_min or None,
+            limit=limit,
         )
-        data = [{
-            "task_id": t.task_id,
-            "name": t.name,
-            "status": t.status,
-            "priority": t.priority,
-            "created_at": t.created_at,
-            "retry_count": t.retry_count,
-            "depends_on": t.depends_on,
-        } for t in tasks]
+        data = []
+        for t in tasks:
+            data.append({
+                "task_id": t.task_id,
+                "name": t.name,
+                "status": t.status,
+                "priority": t.priority,
+                "created_at": t.created_at,
+                "retry_count": t.retry_count,
+                "depends_on": t.depends_on,
+                "callback_attempts": t.callback_attempts,
+                "callback_error": t.callback_last_error,
+                "tags": t.tags,
+            })
         return json.dumps(data, ensure_ascii=False, indent=2)
-    
+
     @mcp.tool()
     @mcp_tool_safe
     def get_enhanced_task_stats() -> str:
-        """获取增强型任务统计信息"""
-        stats = enhanced_publisher.get_stats()
-        return json.dumps(stats, ensure_ascii=False, indent=2)
-    
+        return json.dumps(enhanced_publisher.get_stats(), ensure_ascii=False, indent=2)
+
     @mcp.tool()
     @mcp_tool_safe
     def retry_failed_task(task_id: str) -> str:
-        """重试失败的任务"""
         task = enhanced_publisher.retry_task(task_id)
         if task:
             return json.dumps({"status": "retrying", "retry_count": task.retry_count}, ensure_ascii=False)
-        return json.dumps({"status": "failed", "message": "Task not found or cannot retry"}, ensure_ascii=False)
-    
+        return json.dumps({"status": "failed", "message": "Task not found"}, ensure_ascii=False)
+
     @mcp.tool()
     @mcp_tool_safe
     def cleanup_expired_tasks() -> str:
-        """清理过期任务"""
         count = enhanced_publisher.cleanup_expired()
         return json.dumps({"cleaned": count}, ensure_ascii=False)
-    
+
+    @mcp.tool()
+    @mcp_tool_safe
+    def publish_task(
+        task_type: str,
+        action: str,
+        params: str = "{}",
+        priority: int = TaskPriority.NORMAL.value,
+        timeout_seconds: float = 0,
+        depends_on: str = "",
+        notify_on_complete: bool = False,
+        callback_url: str = "",
+        context: str = "",
+        output_format: str = "json",
+        tags: str = "",
+        schedule_seconds: int = 0,
+        max_retries: int = 3,
+        expires_in_seconds: int = 0,
+    ) -> str:
+        try:
+            payload = json.loads(params) if params else {}
+        except Exception as exc:
+            return json.dumps({"success": False, "error": f"params parse error: {exc}"}, ensure_ascii=False, indent=2)
+        ctx = json.loads(context) if context else None
+        if "symbol" in payload:
+            payload["symbol"] = normalize_symbol(str(payload["symbol"]))
+        if "condition" in payload:
+            try:
+                validate_price_condition(str(payload["condition"]))
+            except ValueError as exc:
+                return json.dumps({"success": False, "error": str(exc)}, ensure_ascii=False, indent=2)
+
+        task_id = submit_task(
+            task_type=task_type,
+            action=action,
+            params=payload,
+            priority=priority,
+            timeout=timeout_seconds or None,
+            depends_on=[d.strip() for d in depends_on.split(",") if d.strip()] or None,
+            storage_target=payload.get("storage_target"),
+            notify_on_complete=notify_on_complete,
+            context=ctx,
+            output_format=output_format,
+            callback_url=callback_url or None,
+            tags=[t.strip() for t in tags.split(",") if t.strip()],
+            schedule=schedule_seconds or None,
+            max_retries=max_retries,
+            expires_in=expires_in_seconds or None,
+        )
+
+        return json.dumps({"success": True, "task_id": task_id, "status": TaskStatus.PENDING.value}, ensure_ascii=False, indent=2)
+
+    @mcp.tool()
+    @mcp_tool_safe
+    def get_task_status(task_id: str) -> str:
+        task = enhanced_publisher.get_task(task_id)
+        if not task:
+            return json.dumps({"success": False, "error": "task not found"}, ensure_ascii=False, indent=2)
+        return json.dumps({
+            "success": True,
+            "task": {
+                "task_id": task.task_id,
+                "name": task.name,
+                "status": task.status,
+                "priority": task.priority,
+                "result": task.result,
+                "error": task.error,
+                "retry_count": task.retry_count,
+                "callback_attempts": task.callback_attempts,
+                "callback_error": task.callback_last_error,
+                "tags": task.tags,
+                "updated_at": task.updated_at,
+            }
+        }, ensure_ascii=False, indent=2)
+
     @mcp.tool()
     @mcp_tool_safe
     def add_api_endpoint(
@@ -214,9 +247,8 @@ def register_tools(mcp: Any) -> None:
         model: str,
         priority: int = 1,
         max_requests_per_minute: int = 60,
-        timeout: float = 30.0
+        timeout: float = 30.0,
     ) -> str:
-        """添加 API 端点到管理器"""
         endpoint = ApiEndpoint(
             name=name,
             base_url=base_url,
@@ -224,21 +256,18 @@ def register_tools(mcp: Any) -> None:
             model=model,
             priority=priority,
             max_requests_per_minute=max_requests_per_minute,
-            timeout=timeout
+            timeout=timeout,
         )
         api_manager.add_endpoint(endpoint)
         return json.dumps({"status": "added", "name": name}, ensure_ascii=False)
-    
+
     @mcp.tool()
     @mcp_tool_safe
     def get_api_manager_stats() -> str:
-        """获取 API 管理器统计信息"""
-        stats = api_manager.get_stats()
-        return json.dumps(stats, ensure_ascii=False, indent=2)
-    
+        return json.dumps(api_manager.get_stats(), ensure_ascii=False, indent=2)
+
     @mcp.tool()
     @mcp_tool_safe
     def reset_api_stats() -> str:
-        """重置 API 统计信息"""
         api_manager.reset_stats()
         return json.dumps({"status": "reset"}, ensure_ascii=False)

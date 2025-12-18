@@ -16,14 +16,18 @@ Heablcoin is a modular trading system built for MCP clients (Claude Desktop, Win
 - Visualization: structured JSON output for interactive charts.
 - Trading & portfolio: safe execution with whitelists, limits, and position sizing.
 - Notifications: configurable email alerts for trades, prices, and daily reports.
-- Extensibility: exchange adapter and pluggable notifier framework.
+- Task publishing: describe conditional trades via `publish_task`, run asynchronously with webhook callbacks.
+- Extensibility: exchange adapter, Redis-backed queues, and pluggable notifier framework.
 
 ## Quick Links
 
 - [Installation Guide](docs/user/安装指南.md)
 - [Configuration Guide](docs/user/配置指南.md)
 - [API Reference](docs/developer/API参考.md)
+- [API Spec (Tools & Payloads)](API_SPEC.md)
+- [Deployment Guide](DEPLOY_GUIDE.md)
 - [Architecture](docs/developer/架构设计.md)
+- [Task Examples](examples.md)
 
 ## Installation Summary
 
@@ -81,6 +85,7 @@ Configure `mcp_config.json`:
 ```bash
 python Heablcoin-test.py --quick
 python tests/run_tests.py unit
+python -c "from core.cloud.task_executor import submit_task; submit_task('market_analysis','top_market_cap',{'limit':5})"
 ```
 
 Email configuration test (optional, may send a real email):

@@ -55,3 +55,11 @@ ssh -N -L 6379:127.0.0.1:26739 root@<ECS_IP>
   └── /tests            # 单元测试和集成测试：各模块拆分，允许迁移/合并现有模块
 ```
 
+## 8. 进行中任务（执行中）
+- 任务发布系统：`publish_task` 接口 + Redis 队列（已落地，等待进一步扩展策略模板）
+- 部署脚本：`scripts/setup.sh` / `scripts/deploy.sh`
+- 文档补全：`README`、`API_SPEC.md`、`DEPLOY_GUIDE.md`
+
+## 已完成
+- 2025-12-19：新增异步任务接口、Webhook 回调、任务示例 `examples.md`
+- 2025-12-19：测试覆盖扩展（validators、task_executor、mcp stdio）
