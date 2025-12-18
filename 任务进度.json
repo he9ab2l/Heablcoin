@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-12-18 19:05:00",
+  "last_updated": "2025-12-18 21:14:48",
   "projects": [
     {
       "project_id": "proj_20251218_01",
@@ -422,6 +422,35 @@
           "progress": 100,
           "status": "已完成",
           "created_at": "2025-12-18 19:05:00"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251218_211448_12",
+      "name": "仓库卫生与安全",
+      "status": "进行中",
+      "progress": 33,
+      "tasks": [
+        {
+          "task_id": "task_12_01",
+          "description": "清理误提交的运行产物文件（日志等），保持仓库干净且避免泄露信息",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 21:14:48"
+        },
+        {
+          "task_id": "task_12_02",
+          "description": "新增敏感信息扫描脚本（仅扫描暂存区文件名与命中统计，不输出内容）并接入提交流程",
+          "progress": 0,
+          "status": "待办",
+          "created_at": "2025-12-18 21:14:48"
+        },
+        {
+          "task_id": "task_12_03",
+          "description": "增加跨平台提交与推送脚本并文档化（Windows PowerShell 与 Linux bash）",
+          "progress": 0,
+          "status": "待办",
+          "created_at": "2025-12-18 21:14:48"
         }
       ]
     }

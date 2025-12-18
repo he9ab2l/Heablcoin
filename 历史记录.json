@@ -103,5 +103,12 @@
     "details": "1. 修复 历史记录.json 中 4 条乱码记录（补全中文描述/路径/变更类型）；2. 修复 任务进度.json 中 proj_20251218_164256_09 与 proj_20251218_10 的中文字段；3. 新增回归测试 test_project_records.py，确保记录文件可解析且不包含 ASCII 问号占位符；4. 新增 lesson 复盘，记录本次问题与防复发措施。",
     "change_type": "修复",
     "file_path": "d:/MCP/历史记录.json,d:/MCP/任务进度.json,d:/MCP/tests/test_project_records.py,d:/MCP/lesson/历史记录任务进度乱码_20251218_1905.md"
+  },
+  {
+    "id": "2025-12-18 21:14:48",
+    "user_intent": "用户要求清理仓库中无用文件并在上传前检查敏感信息，避免将运行产物与潜在敏感信息提交到仓库。",
+    "details": "删除被误提交的运行日志产物 logs/system.log.2025-12-16，并同步更新历史记录与任务进度。",
+    "change_type": "清理",
+    "file_path": "d:/MCP/logs/system.log.2025-12-16,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
   }
 ]
