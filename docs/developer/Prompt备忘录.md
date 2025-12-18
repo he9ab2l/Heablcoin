@@ -59,3 +59,17 @@
 1. 下一阶段目标
 2. 进行各个部分的连接，包括 MCP 本地、云端服务器、多 AI、多种信息推送
 3. 需要输出可执行流程与后续落地规划
+
+## 5 深度审计专家系统 v4.0 Prompt（审计输出框架）
+
+1. 独立文件：`docs/developer/审计专家系统_v4.0_Prompt.md`
+2. 角色：`Chief System Audit Officer`
+3. 关键约束
+   1. 禁止瞎猜接口，必须基于代码/文档原文
+   2. 发现信息缺失必须输出 `CLARIFICATION_REQUIRED`
+   3. 结论必须给出证据与影响分析，无证据标注为 `架构师猜想`
+4. 每轮输出必须包含
+   1. `State Snapshot`
+   2. `Deep Audit`（含风险评级 `Critical/High/Mid/Low`）
+   3. `Architecture Visual`（Mermaid 代码块）
+   4. `Action Items`（Top 3 尖锐提问）

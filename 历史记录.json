@@ -40,5 +40,12 @@
     "details": "新增文档入口导航：docs/README.md、docs/user/README.md、docs/developer/README.md，用于统一入口与用户/开发者分层导航。",
     "change_type": "新增",
     "file_path": "d:/MCP/docs/README.md,d:/MCP/docs/user/README.md,d:/MCP/docs/developer/README.md"
+  },
+  {
+    "id": "2025-12-18 14:18:00",
+    "user_intent": "用户要求将深度审计专家系统 v4.0 Prompt 固化为可复用工程资产，并作为后续会话默认审计框架。",
+    "details": "1. 新增独立 Prompt 文件：docs/developer/审计专家系统_v4.0_Prompt.md；2. 更新 docs/developer/Prompt备忘录.md 新增审计框架章节引用；3. 增量更新 可视化系统架构.mmd 加入 Documentation 文档层节点。",
+    "change_type": "新增",
+    "file_path": "d:/MCP/docs/developer/审计专家系统_v4.0_Prompt.md,d:/MCP/docs/developer/Prompt备忘录.md,d:/MCP/可视化系统架构.mmd"
   }
 ]
