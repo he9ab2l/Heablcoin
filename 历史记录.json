@@ -131,5 +131,12 @@
     "details": "1. 新增 GitHub Actions 工作流：在 Ubuntu 环境安装 requirements.txt 并运行 `python tests/run_tests.py all`；2. 本地全量测试通过（14/14）；3. 同步更新历史记录与任务进度。",
     "change_type": "增强",
     "file_path": "d:/MCP/.github/workflows/tests.yml,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
+  },
+  {
+    "id": "2025-12-18 21:42:17",
+    "user_intent": "用户要求继续完善并保持架构文档与代码同步，确保使用者与开发者能快速理解全局结构。",
+    "details": "更新 可视化系统架构.mmd：补充 core.mcp_safety/tool_registry、tools.admin_tools，以及 DevOps（gp 脚本、敏感信息扫描、CI 测试）；同时移除 UTF-8 BOM，减少编辑器与工具链乱码风险；同步更新历史记录与任务进度。",
+    "change_type": "优化",
+    "file_path": "d:/MCP/可视化系统架构.mmd,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
   }
 ]

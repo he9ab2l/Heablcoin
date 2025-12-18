@@ -1,4 +1,4 @@
-﻿%% 可视化系统架构 - 自动生成（更新时间：2025-12-18 18:01:17）
+%% 可视化系统架构 - 自动生成（更新时间：2025-12-18 21:37:17）
 %% 可直接导入 https://www.mermaidchart.com/
 %% Heablcoin - MCP 驱动的加密交易系统（src 分层架构）
 
@@ -30,6 +30,8 @@ graph TB
     subgraph Core["核心层 Core（src/core）"]
         CORE_Path["path_setup.py（sys.path 启动）"]
         CORE_Exchange["exchange.py（交易所连接池）"]
+        CORE_McpSafety["mcp_safety.py（工具安全封装）"]
+        CORE_ToolRegistry["tool_registry.py（工具注册表/开关）"]
         CORE_Cloud["cloud/*（任务/调度/队列）"]
         CORE_Orch["orchestration/*（多模型路由/编排）"]
     end
@@ -40,6 +42,7 @@ graph TB
         T_Learning["learning_tools.py"]
         T_Orch["orchestration_tools.py"]
         T_Cloud["cloud_tools.py"]
+        T_Admin["admin_tools.py（工具开关管理）"]
     end
 
     subgraph SkillsLayer["技能/领域层 Skills（src/skills）"]
@@ -73,6 +76,13 @@ graph TB
         DOC_Lesson["lesson/*"]
     end
 
+    subgraph DevOps["开发运维 DevOps"]
+        DEV_GpSh["gp.sh（提交推送脚本）"]
+        DEV_GpPs1["gp.ps1（Windows 提交推送脚本）"]
+        DEV_SecretScan["scripts/scan_secrets.py（敏感信息扫描）"]
+        DEV_CI[".github/workflows/tests.yml（CI 测试）"]
+    end
+
     subgraph Terminals["客户端/终端 Terminals"]
         UT_Claude["Claude Desktop（MCP Client）"]
         UT_Windsurf["Windsurf（MCP Client）"]
@@ -83,11 +93,15 @@ graph TB
     %% 主要数据流/调用链
     DS_Config --> SERVER
     SERVER --> ToolsLayer
+    SERVER --> CORE_McpSafety
     ToolsLayer --> SkillsLayer
     ToolsLayer --> UtilsLayer
     SkillsLayer --> UtilsLayer
     ToolsLayer --> StorageLayer
     SkillsLayer --> StorageLayer
+
+    CORE_McpSafety --> CORE_ToolRegistry
+    ToolsLayer --> CORE_ToolRegistry
 
     DS_Exchange --> U_ExchangeAdapter
     DS_Redis --> ST_Redis
@@ -101,11 +115,12 @@ graph TB
 
     %% 样式应用
     class DS_Config,DS_Exchange,DS_Redis,DS_LLM,DS_Notify datasource
-    class CORE_Path,CORE_Exchange,CORE_Cloud,CORE_Orch core
-    class T_Market,T_Personal,T_Learning,T_Orch,T_Cloud tools
+    class CORE_Path,CORE_Exchange,CORE_McpSafety,CORE_ToolRegistry,CORE_Cloud,CORE_Orch core
+    class T_Market,T_Personal,T_Learning,T_Orch,T_Cloud,T_Admin tools
     class SK_Market,SK_Personal,SK_Learning,SK_Report,SK_Data skills
     class U_Paths,U_Env,U_Logger,U_Cache,U_Risk,U_ExchangeAdapter,U_Notifier utils
     class ST_File,ST_Redis,ST_Email,ST_Notion storage
     class ENTRY,SERVER,SystemArchitecture terminal
     class UT_Claude,UT_Windsurf,UT_Test,UT_Qinglong terminal
     class DOC_User,DOC_Dev,DOC_Lesson terminal
+    class DEV_GpSh,DEV_GpPs1,DEV_SecretScan,DEV_CI terminal
