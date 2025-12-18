@@ -262,7 +262,7 @@ if __name__ == "__main__":
 
 - [升级文档](../升级.md) - 查看优化功能详情
 - [主README](../README.md) - 项目总览
-- [使用指南](../docs/USAGE_MCP.md) - MCP使用说明
+- [使用指南](../docs/user/MCP使用指南.md) - MCP使用说明
 
 ## 📞 支持
 

@@ -16,14 +16,18 @@ Heablcoin 是一个面向 LLM（如 Claude）的模块化加密货币交易/分�
 - **可视化**：在 Claude Desktop 内生成交互式图表（基于结构化 JSON 输出）
 - **账户与交易**：查询资产、执行下单（受风控约束）
 - **智能通知**：交易/价格/报告邮件通知（可细粒度开关）
-- **风控保护**：限额、白名单、测试网默认等安全机制
+- **风控保护与仓位管理**：限额、白名单、测试网默认等安全机制，并新增仓位管理工具可根据账户余额和止损距离自动计算仓位，提供追踪止损帮助锁定收益。
+
+ - **多交易所支持**：全新的 `ExchangeAdapter` 抽象，提供 Binance 实现以及 OKX/Bybit 桩代码，方便未来扩展。
+ - **基础回测引擎**：通过 `run_backtest` 快速验证策略逻辑，无需额外依赖。
+ - **多通道通知**：引入 `Notifier` 框架，支持控制台、Telegram 等扩展通知渠道。
 
 ## 🔗 快速链接
 
-- [安装指南](docs/installation.md)
-- [配置指南（.env）](docs/configuration.md)
-- [API 参考](docs/api_reference.md)
-- [架构设计](docs/architecture.md)
+- [安装指南](docs/user/安装指南.md)
+- [配置指南（.env）](docs/user/配置指南.md)
+- [API 参考](docs/developer/API参考.md)
+- [架构设计](docs/developer/架构设计.md)
 
 ## 📦 安装摘要
 
@@ -38,6 +42,9 @@ cp .env.example .env
 
 # 3. 安装依赖
 pip install -r requirements.txt
+
+# 可选：启用 Telegram 通知
+# python -m pip install python-telegram-bot
 
 # 4. 快速自检
 python tests/run_tests.py --quick
@@ -64,7 +71,7 @@ python tests/run_tests.py --quick
 - “分析 BTC 走势并画图”
 - “查看我的账户余额”
 
-更多细节见：[docs/USAGE_MCP.md](docs/USAGE_MCP.md)
+更多细节见：[docs/user/MCP使用指南.md](docs/user/MCP使用指南.md)
 
 ### 方式 2：Windsurf（Codeium MCP）
 

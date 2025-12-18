@@ -23,6 +23,8 @@ ENV/
 # Logs
 *.log
 logs/*.log
+logs/*.log.*
+logs/*.log*
 server_debug.log
 
 # Data

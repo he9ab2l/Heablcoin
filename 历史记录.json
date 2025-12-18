@@ -1,0 +1,44 @@
+[
+  {
+    "id": "2025-12-18 13:04:00",
+    "user_intent": "用户希望为项目建立完整的工程化管理体系，包括结构化记忆、系统架构可视化、任务追踪和可定位日志。",
+    "details": "1. 为112个Python文件添加标准化头注释；2. 生成代码使用全景图文档；3. 新增exchange_adapter、backtesting、notifier、risk_management四个utils模块；4. 更新README中英文版本；5. 建立历史记录、任务进度、系统架构可视化等工程化管理文件。",
+    "change_type": "新增",
+    "file_path": "d:/MCP/历史记录.json,d:/MCP/任务进度.json,d:/MCP/可视化系统架构.mmd,d:/MCP/docs/代码使用全景图_按时间轴_20251218.md,d:/MCP/dev/add_headers.py,d:/MCP/utils/exchange_adapter.py,d:/MCP/utils/backtesting.py,d:/MCP/utils/notifier.py,d:/MCP/utils/risk_management.py"
+  },
+  {
+    "id": "2025-12-18 13:10:00",
+    "user_intent": "用户要求优化日志系统，实现结构化JSON输出、错误码追踪、北京时间戳和完整的文件/行号定位。",
+    "details": "1. 新增StructuredLogFormatter类输出JSON格式日志；2. 新增HumanReadableFormatter类用于控制台调试；3. 实现错误码生成器（E+模块编号+序号）；4. 新增log_error_with_context函数支持带上下文的错误记录；5. 新增HeablcoinError标准异常类禁止裸异常；6. 所有日志通道切换为结构化格式化器。",
+    "change_type": "强化",
+    "file_path": "d:/MCP/utils/smart_logger.py"
+  },
+  {
+    "id": "2025-12-18 13:15:00",
+    "user_intent": "用户要求创建多端连接集成的流程标准化文档，涵盖MCP本地、云端服务器、多AI、多通道推送的完整集成流程。",
+    "details": "创建30步详细流程文档，分为五个阶段：1.MCP本地服务配置(6步)；2.云端服务器部署(7步)；3.多AI提供商集成(5步)；4.多通道信息推送配置(8步)；5.四层联动验证(4步)。覆盖Redis、OpenAI、DeepSeek、Anthropic、Telegram、Discord、企业微信、钉钉等全部组件。",
+    "change_type": "新增",
+    "file_path": "d:/MCP/docs/流程标准化_Heablcoin多端连接集成.md"
+  },
+  {
+    "id": "2025-12-18 13:36:00",
+    "user_intent": "用户要求将项目上下文文档与其提供的关键提示词落盘保存，并作为后续会话可复用记忆。",
+    "details": "1. 新增项目上下文文档：docs/项目上下文文档_ProjectContext_20251218.md；2. 新增提示词备忘录：docs/Prompt_备忘录_20251218.md。",
+    "change_type": "新增",
+    "file_path": "d:/MCP/docs/项目上下文文档_ProjectContext_20251218.md,d:/MCP/docs/Prompt_备忘录_20251218.md"
+  },
+  {
+    "id": "2025-12-18 13:50:00",
+    "user_intent": "用户要求将文档按用户/开发者分离并进行结构化整理，命名语义化且尽量去日期化，同时修复所有引用链接。",
+    "details": "1. 新增 docs/user 与 docs/developer（含 runbooks）目录并将文档分类归档；2. 将带日期文件名改为稳定语义化命名；3. 更新 README 与相关文档中旧 docs 路径引用到新路径；4. 补充 .gitignore 忽略 logs/*.log.* 轮转日志。",
+    "change_type": "修改",
+    "file_path": "d:/MCP/docs,d:/MCP/README.md,d:/MCP/README.zh-CN.md,d:/MCP/tests/README.md,d:/MCP/.gitignore"
+  },
+  {
+    "id": "2025-12-18 13:52:00",
+    "user_intent": "用户要求文档放置结构化、命名规范易懂且用户文档与开发者文档分离，并补齐入口导航。",
+    "details": "新增文档入口导航：docs/README.md、docs/user/README.md、docs/developer/README.md，用于统一入口与用户/开发者分层导航。",
+    "change_type": "新增",
+    "file_path": "d:/MCP/docs/README.md,d:/MCP/docs/user/README.md,d:/MCP/docs/developer/README.md"
+  }
+]

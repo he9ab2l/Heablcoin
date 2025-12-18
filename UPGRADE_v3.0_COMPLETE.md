@@ -10,7 +10,7 @@
 ### 2025-12-17 配置与协作补丁
 - 补全并规范 `.env` / `.env.example`：覆盖交易所、AI 多云、邮件、存储、性能与通知全量变量，默认值与代码一致。  
 - 邮件链路统一：`Heablcoin.py`、`storage/email_adapter.py`、`learning/notifier.py` 共享 `RECIPIENT_EMAIL`/`SMTP_USER` 兼容旧变量，测试脚本同步。  
-- 文档与指引：重写 `docs/configuration.md`，新增 `NEXT_STEPS.md` 说明当下操作与云端升级路线。
+- 文档与指引：重写 `docs/user/配置指南.md`，新增 `NEXT_STEPS.md` 说明当下操作与云端升级路线。
 
 ---
 

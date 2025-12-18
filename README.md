@@ -16,14 +16,18 @@ Heablcoin is a powerful, modular crypto trading assistant designed to work seaml
 *   **📊 Visualization**: Interactive chart generation within Claude Desktop.
 *   **💼 Portfolio Management**: Robust ledger system to track PnL, risk, and attribution.
 *   **🔔 Smart Notifications**: Configurable email alerts for trades, prices, and daily reports.
-*   **🛡️ Risk Control**: Built-in limits, whitelists, and safe-mode defaults.
+*   **🛡️ Risk Control & Position Sizing**: Built‑in limits, whitelists, and safe‑mode defaults. New risk management utilities provide automatic position sizing based on account balance and stop‑loss distance, along with trailing stop helpers to lock in gains.
+
+*   **⚙️ Multi-Exchange Support**: Unified `ExchangeAdapter` with native Binance implementation and stubs for OKX and Bybit to simplify future expansion.
+*   **📈 Backtesting Engine (Basic)**: New `run_backtest` function allows quick evaluation of strategy logic offline without external dependencies.
+*   **🔔 Multi‑Channel Notifications**: Pluggable `Notifier` with console and Telegram channels out‑of‑the‑box, extensible to other messaging platforms.
 
 ## 🚀 Quick Links
 
-*   [**Installation Guide**](docs/installation.md)
-*   [**Configuration Guide**](docs/configuration.md)
-*   [**API Reference**](docs/api_reference.md)
-*   [**Architecture**](docs/architecture.md)
+*   [**Installation Guide**](docs/user/安装指南.md)
+*   [**Configuration Guide**](docs/user/配置指南.md)
+*   [**API Reference**](docs/developer/API参考.md)
+*   [**Architecture**](docs/developer/架构设计.md)
 
 ## 📦 Installation Summary
 
@@ -38,6 +42,9 @@ cp .env.example .env
 
 # 3. Install
 pip install -r requirements.txt
+
+# Optional: enable Telegram notifications
+# python -m pip install --break-system-packages python-telegram-bot
 
 # 4. Verify
 python tests/run_tests.py --quick
