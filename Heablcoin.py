@@ -156,42 +156,12 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 # 加载环境变量
 load_dotenv(os.path.join(CURRENT_DIR, '.env'))
 
-def _env_str(name: str, default: str) -> str:
-    v = os.getenv(name)
-    if v is None:
-        return default
-    v = v.strip()
-    return v if v else default
-
-
-def _env_int(name: str, default: int) -> int:
-    v = os.getenv(name)
-    if not v:
-        return default
-    try:
-        return int(v)
-    except ValueError:
-        return default
-
-
-def _env_bool(name: str, default: bool = True) -> bool:
-    v = os.getenv(name)
-    if v is None:
-        return default
-    return v.strip().lower() in {'1', 'true', 'yes', 'y', 'on'}
-
-
-def _env_float(name: str, default: float) -> float:
-    v = os.getenv(name)
-    if not v:
-        return default
-    try:
-        return float(v)
-    except ValueError:
-        return default
+# Use centralized env helpers (avoid code duplication)
+from utils.env_helpers import env_str as _env_str, env_int as _env_int, env_float as _env_float, env_bool as _env_bool
 
 
 def _resolve_path(p: str, default_rel: str) -> str:
+    """Resolve path relative to CURRENT_DIR."""
     p = (p or '').strip()
     if not p:
         p = default_rel

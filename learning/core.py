@@ -43,21 +43,7 @@ from typing import Any, Dict, List, Optional, Tuple
 from learning.storage import create_session, load_session, append_submission
 from market_analysis.data_provider import DataProvider
 from market_analysis.modules.market_structure import analyze_structure
-
-
-def _env_str(name: str, default: str) -> str:
-    import os
-
-    v = os.getenv(name)
-    if v is None:
-        return default
-    v = v.strip()
-    return v if v else default
-
-
-def _parse_symbols(value: str) -> List[str]:
-    parts = [p.strip() for p in (value or "").split(",") if p.strip()]
-    return parts
+from utils.env_helpers import env_str as _env_str, parse_symbols as _parse_symbols
 
 
 def get_default_symbols() -> List[str]:

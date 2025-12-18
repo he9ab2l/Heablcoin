@@ -52,9 +52,19 @@ from .notifier import (
 # Import risk management utilities into package namespace
 from .risk_management import calculate_position_size, trailing_stop, PositionSize  # noqa: F401
 
+# Environment variable helpers (extracted from Heablcoin.py for reuse)
+from .env_helpers import (
+    env_str,
+    env_int,
+    env_float,
+    env_bool,
+    resolve_path,
+    parse_symbols,
+)  # noqa: F401
+
 __all__ += [
     'ExchangeAdapter', 'BinanceAdapter', 'OKXAdapter', 'BybitAdapter',
     'run_backtest', 'Notifier', 'ConsoleChannel', 'TelegramChannel', 'NotificationChannel',
-    # v4 additions: risk management utilities
-    'calculate_position_size', 'trailing_stop', 'PositionSize'
+    'calculate_position_size', 'trailing_stop', 'PositionSize',
+    'env_str', 'env_int', 'env_float', 'env_bool', 'resolve_path', 'parse_symbols',
 ]

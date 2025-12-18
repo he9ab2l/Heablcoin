@@ -61,6 +61,7 @@ TEST_SUITES = {
             'test_backtesting.py',
             'test_exchange_adapter.py',
             'test_lesson_recorder.py',
+            'test_env_helpers.py',
         ]
     },
     'email': {
@@ -88,6 +89,7 @@ TEST_SUITES = {
             'test_backtesting.py',
             'test_exchange_adapter.py',
             'test_lesson_recorder.py',
+            'test_env_helpers.py',
             'test_integration_simple.py',
             'test_integration_full.py',
         ]
