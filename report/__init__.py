@@ -31,4 +31,6 @@
 
 from __future__ import annotations
 
-__all__ = []
+from . import flexible_report
+
+__all__ = ["flexible_report"]

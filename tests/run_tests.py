@@ -56,6 +56,11 @@ TEST_SUITES = {
             'test_smart_cache.py',
             'test_mcp_tools.py',
             'test_visualization_output.py',
+            'test_risk_management.py',
+            'test_notifier.py',
+            'test_backtesting.py',
+            'test_exchange_adapter.py',
+            'test_lesson_recorder.py',
         ]
     },
     'email': {
@@ -78,6 +83,11 @@ TEST_SUITES = {
             'test_smart_cache.py',
             'test_mcp_tools.py',
             'test_visualization_output.py',
+            'test_risk_management.py',
+            'test_notifier.py',
+            'test_backtesting.py',
+            'test_exchange_adapter.py',
+            'test_lesson_recorder.py',
             'test_integration_simple.py',
             'test_integration_full.py',
         ]

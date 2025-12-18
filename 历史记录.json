@@ -54,5 +54,12 @@
     "details": "1. 删除5个冗余文档：UPGRADE_LOG_v2.0.md、UPGRADE_SUMMARY.md、UPGRADE_v3.0_COMPLETE.md、IMPLEMENTATION_COMPLETE.md、NEXT_STEPS.md；2. 移动MCP_CONFIG_GUIDE.md到docs/user/MCP配置指南.md；3. 移动ROADMAP.md到docs/developer/路线图.md；4. 新增审计与传承专家系统v5.0 Prompt；5. 更新Prompt备忘录添加v5.0章节；6. 整理开发端和用户端文档README结构。",
     "change_type": "优化",
     "file_path": "d:/MCP/docs/developer/审计与传承专家系统_v5.0_Prompt.md,d:/MCP/docs/developer/Prompt备忘录.md,d:/MCP/docs/developer/README.md,d:/MCP/docs/user/README.md,d:/MCP/docs/user/MCP配置指南.md,d:/MCP/docs/developer/路线图.md"
+  },
+  {
+    "id": "2025-12-18 14:45:00",
+    "user_intent": "用户要求实现 lesson/ 经验复盘机制、规范化 __init__.py 导出、补齐单元测试并完成全量测试，以提升项目后续开发可维护性。",
+    "details": "1. 新增 lesson/ 目录、TEMPLATE.md 与 record_lesson.py（非交互参数驱动，自动生成带时间戳的复盘文件）；2. 为关键包 __init__.py 统一相对导入并明确 __all__（cloud/orchestration/data/market_analysis/learning/personal_analytics/storage/report/utils）；3. 新增单元测试：risk_management/notifier/backtesting/exchange_adapter/lesson_recorder，并接入 tests/run_tests.py 的 unit/all 套件；4. 完整跑通测试：--quick、unit、integration、all。",
+    "change_type": "强化",
+    "file_path": "d:/MCP/lesson,d:/MCP/tests/run_tests.py,d:/MCP/tests/test_risk_management.py,d:/MCP/tests/test_notifier.py,d:/MCP/tests/test_backtesting.py,d:/MCP/tests/test_exchange_adapter.py,d:/MCP/tests/test_lesson_recorder.py,d:/MCP/cloud/__init__.py,d:/MCP/orchestration/__init__.py,d:/MCP/data/__init__.py,d:/MCP/market_analysis/__init__.py,d:/MCP/market_analysis/modules/__init__.py,d:/MCP/learning/__init__.py,d:/MCP/personal_analytics/__init__.py,d:/MCP/storage/__init__.py,d:/MCP/report/__init__.py,d:/MCP/report/flexible_report/__init__.py,d:/MCP/utils/__init__.py"
   }
 ]

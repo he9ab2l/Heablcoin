@@ -1,4 +1,4 @@
-%% 可视化系统架构 - 自动生成（更新时间：2025-12-18 14:18:00）
+%% 可视化系统架构 - 自动生成（更新时间：2025-12-18 14:45:00）
 %% 可直接导入 https://www.mermaidchart.com/
 %% Heablcoin - 智能加密货币量化交易系统
 
@@ -114,6 +114,7 @@ graph TB
      subgraph Documentation["📚 文档层 Documentation"]
          DOC_User["用户文档<br/>docs/user/"]
          DOC_Dev["开发者文档<br/>docs/developer/"]
+         LSN_Lesson["经验复盘<br/>lesson/"]
      end
 
     %% 数据流连接 - 数据源到采集层（蓝色）
@@ -199,6 +200,7 @@ graph TB
      %% 文档资产（灰色虚线表示文档引用关系）
      MB_MCP -.->|"使用/配置说明"| DOC_User
      MB_MCP -.->|"架构/规范"| DOC_Dev
+     CO_Learning -.->|"经验沉淀"| LSN_Lesson
 
     %% 应用样式
     class DS_Binance,DS_OKX,DS_Bybit,DS_Config,DS_Redis datasource
@@ -210,5 +212,5 @@ graph TB
     class UT_Claude,UT_Windsurf,UT_Terminal,UT_Qinglong terminal
     class U_Logger,U_Cache,U_RiskMgmt,U_Backtest,U_Notifier,U_PerfMon utils
     class ST_File,ST_Redis,ST_Email,ST_Notion storage
-     class DOC_User,DOC_Dev terminal
+     class DOC_User,DOC_Dev,LSN_Lesson terminal
     class O_Router,O_AIRoles,O_Providers,O_Tasks,CL_Scheduler,CL_Publisher,CL_Executor,CL_APIManager processor

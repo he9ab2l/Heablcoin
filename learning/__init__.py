@@ -36,13 +36,13 @@ Heablcoin 学习模块
 """
 from __future__ import annotations
 
-from learning.registry import LearningRegistry
-from learning.modules.pre_trade import PreTradeAuditModule
-from learning.modules.in_trade import InTradeCoachModule
-from learning.modules.history import HistorySimModule
-from learning.modules.growth import GrowthProfileModule
-from learning.modules.utility import UtilityModule
-from learning.notifier import send_learning_report, send_training_summary, send_daily_learning_report
+from .registry import LearningRegistry
+from .modules.pre_trade import PreTradeAuditModule
+from .modules.in_trade import InTradeCoachModule
+from .modules.history import HistorySimModule
+from .modules.growth import GrowthProfileModule
+from .modules.utility import UtilityModule
+from .notifier import send_learning_report, send_training_summary, send_daily_learning_report
 
 __all__ = [
     "LearningRegistry",

@@ -49,12 +49,12 @@ from .notifier import (
     NotificationChannel,
 )  # noqa: F401
 
+# Import risk management utilities into package namespace
+from .risk_management import calculate_position_size, trailing_stop, PositionSize  # noqa: F401
+
 __all__ += [
     'ExchangeAdapter', 'BinanceAdapter', 'OKXAdapter', 'BybitAdapter',
     'run_backtest', 'Notifier', 'ConsoleChannel', 'TelegramChannel', 'NotificationChannel',
     # v4 additions: risk management utilities
     'calculate_position_size', 'trailing_stop', 'PositionSize'
 ]
-
-# Import risk management utilities into package namespace
-from .risk_management import calculate_position_size, trailing_stop, PositionSize  # noqa: F401
