@@ -37,6 +37,7 @@ from __future__ import annotations
 
 from typing import Any, Optional
 
+from core.mcp_safety import mcp_tool_safe
 from skills.market_analysis.core import MarketAnalyzer
 from skills.report.query_backup import save_query_backup
 
@@ -65,4 +66,4 @@ def get_market_analysis_modular(
 
 
 def register_tools(mcp: Any) -> None:
-    mcp.tool()(get_market_analysis_modular)
+    mcp.tool()(mcp_tool_safe(get_market_analysis_modular))

@@ -37,6 +37,7 @@ from __future__ import annotations
 
 from typing import Any, List, Optional
 
+from core.mcp_safety import mcp_tool_safe
 from skills.personal_analytics.core import PersonalAnalyzer
 from skills.personal_analytics.modules.trade_journal import add_trade_note, search_trades
 from skills.personal_analytics.modules.funds_flow import add_funds_record
@@ -48,6 +49,7 @@ def register_tools(mcp: Any) -> None:
     """注册个人分析 MCP 工具"""
     
     @mcp.tool()
+    @mcp_tool_safe
     def get_personal_analysis(
         modules: str = "",
         limit: int = 0,
@@ -112,6 +114,7 @@ def register_tools(mcp: Any) -> None:
         return result
     
     @mcp.tool()
+    @mcp_tool_safe
     def get_full_personal_analysis(
         initial_capital: float = 10000.0,
         return_format: str = "markdown",
@@ -146,6 +149,7 @@ def register_tools(mcp: Any) -> None:
         return result
     
     @mcp.tool()
+    @mcp_tool_safe
     def get_portfolio_analysis(return_format: str = "markdown") -> str:
         """
         获取投资组合与持仓分析。
@@ -164,6 +168,7 @@ def register_tools(mcp: Any) -> None:
         )
     
     @mcp.tool()
+    @mcp_tool_safe
     def get_period_performance(
         period: str = "all",
         return_format: str = "markdown",
@@ -185,6 +190,7 @@ def register_tools(mcp: Any) -> None:
         )
     
     @mcp.tool()
+    @mcp_tool_safe
     def get_trading_session_analysis(return_format: str = "markdown") -> str:
         """
         获取交易时段分析。
@@ -203,6 +209,7 @@ def register_tools(mcp: Any) -> None:
         )
     
     @mcp.tool()
+    @mcp_tool_safe
     def get_cost_analysis(return_format: str = "markdown") -> str:
         """
         获取交易成本分析。
@@ -221,6 +228,7 @@ def register_tools(mcp: Any) -> None:
         )
     
     @mcp.tool()
+    @mcp_tool_safe
     def add_trade_journal_note(
         order_id: str,
         note: str,
@@ -244,6 +252,7 @@ def register_tools(mcp: Any) -> None:
         return f"❌ 保存失败: {result.get('message', '')}"
     
     @mcp.tool()
+    @mcp_tool_safe
     def record_funds_flow(
         amount: float,
         record_type: str,
@@ -277,6 +286,7 @@ def register_tools(mcp: Any) -> None:
         return f"❌ 记录失败: {result.get('message', '')}"
     
     @mcp.tool()
+    @mcp_tool_safe
     def search_trade_history(
         symbol: str = "",
         side: str = "",
@@ -324,6 +334,7 @@ def register_tools(mcp: Any) -> None:
         return "\n".join(lines)
     
     @mcp.tool()
+    @mcp_tool_safe
     def list_personal_analysis_modules() -> str:
         """列出所有可用的个人分析模块"""
         modules = PersonalAnalyzer.list_modules()

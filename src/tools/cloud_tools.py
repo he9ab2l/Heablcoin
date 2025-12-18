@@ -40,6 +40,7 @@ import time
 from pathlib import Path
 from typing import Any, Dict, Optional
 
+from core.mcp_safety import mcp_tool_safe
 from core.cloud.publisher import CloudTaskPublisher
 from core.cloud.enhanced_publisher import EnhancedCloudTaskPublisher, TaskPriority, TaskStatus
 from core.cloud.scheduler import CloudScheduler
@@ -81,6 +82,7 @@ def register_tools(mcp: Any) -> None:
             scheduler.add_task(name="cloud_queue", interval_seconds=120, func=_process_pending_tasks, tags=["queue"])
 
     @mcp.tool()
+    @mcp_tool_safe
     def start_cloud_scheduler() -> str:
         """启动云端定时任务调度（云心跳 + 队列消费）"""
         _ensure_defaults()
@@ -88,6 +90,7 @@ def register_tools(mcp: Any) -> None:
         return json.dumps({"status": "started", "tasks": scheduler.snapshot()}, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def publish_cloud_task(name: str, payload: str = "{}", schedule_every_seconds: int = 0, tags: str = "") -> str:
         """发布一个云端任务，可被调度或外部工作器消费"""
         parsed_payload: Dict[str, Any] = {}
@@ -100,6 +103,7 @@ def register_tools(mcp: Any) -> None:
         return json.dumps({"task_id": task.task_id, "status": task.status}, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def list_cloud_tasks(status: str = "") -> str:
         """查看云端任务队列"""
         tasks = publisher.list_tasks(status=status or None)
@@ -107,17 +111,20 @@ def register_tools(mcp: Any) -> None:
         return json.dumps(data, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def cloud_scheduler_snapshot() -> str:
         """查看云端调度任务状态"""
         return json.dumps(scheduler.snapshot(), ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def trigger_cloud_queue() -> str:
         """手动触发一次队列消费"""
         _process_pending_tasks()
         return "队列消费完成"
     
     @mcp.tool()
+    @mcp_tool_safe
     def publish_enhanced_task(
         name: str,
         payload: str = "{}",
@@ -156,6 +163,7 @@ def register_tools(mcp: Any) -> None:
         }, ensure_ascii=False, indent=2)
     
     @mcp.tool()
+    @mcp_tool_safe
     def list_enhanced_tasks(status: str = "", priority_min: int = 0, limit: int = 50) -> str:
         """查看增强型云端任务队列"""
         tasks = enhanced_publisher.list_tasks(
@@ -175,12 +183,14 @@ def register_tools(mcp: Any) -> None:
         return json.dumps(data, ensure_ascii=False, indent=2)
     
     @mcp.tool()
+    @mcp_tool_safe
     def get_enhanced_task_stats() -> str:
         """获取增强型任务统计信息"""
         stats = enhanced_publisher.get_stats()
         return json.dumps(stats, ensure_ascii=False, indent=2)
     
     @mcp.tool()
+    @mcp_tool_safe
     def retry_failed_task(task_id: str) -> str:
         """重试失败的任务"""
         task = enhanced_publisher.retry_task(task_id)
@@ -189,12 +199,14 @@ def register_tools(mcp: Any) -> None:
         return json.dumps({"status": "failed", "message": "Task not found or cannot retry"}, ensure_ascii=False)
     
     @mcp.tool()
+    @mcp_tool_safe
     def cleanup_expired_tasks() -> str:
         """清理过期任务"""
         count = enhanced_publisher.cleanup_expired()
         return json.dumps({"cleaned": count}, ensure_ascii=False)
     
     @mcp.tool()
+    @mcp_tool_safe
     def add_api_endpoint(
         name: str,
         base_url: str,
@@ -218,12 +230,14 @@ def register_tools(mcp: Any) -> None:
         return json.dumps({"status": "added", "name": name}, ensure_ascii=False)
     
     @mcp.tool()
+    @mcp_tool_safe
     def get_api_manager_stats() -> str:
         """获取 API 管理器统计信息"""
         stats = api_manager.get_stats()
         return json.dumps(stats, ensure_ascii=False, indent=2)
     
     @mcp.tool()
+    @mcp_tool_safe
     def reset_api_stats() -> str:
         """重置 API 统计信息"""
         api_manager.reset_stats()

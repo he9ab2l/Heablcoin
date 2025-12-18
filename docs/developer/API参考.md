@@ -25,6 +25,21 @@
 
 ---
 
+## 工具开关与注册表
+
+所有 MCP Tools 默认启用；支持“软禁用”（工具仍存在，但会返回禁用提示，不执行真实逻辑）。
+
+### 环境变量
+
+- `TOOLS_DISABLED`：黑名单，逗号分隔（例如：`TOOLS_DISABLED=place_order,cancel_order`）
+- `TOOLS_ENABLED_ONLY`：白名单，逗号分隔（非空时仅白名单启用）
+
+### 管理工具（Admin）
+
+- `list_tools()`：列出已注册工具及启用状态（JSON）
+- `set_tool_enabled(tool_name, enabled)`：运行时启用/禁用指定工具（软禁用）
+- `reset_tool_overrides()`：清空所有运行时覆盖，回到环境变量/默认值
+
 ## 云端协同新工具
 - `consult_external_expert(query, model="deepseek", context="")`  
   调用指定外部 AI 获取第二意见。`model` 支持 openai/deepseek/anthropic/gemini/groq/moonshot/zhipu 等。  

@@ -38,6 +38,7 @@ from __future__ import annotations
 import json
 from typing import Any
 
+from core.mcp_safety import mcp_tool_safe
 from core.orchestration.router import build_orchestrator_from_env
 from core.orchestration.tasks import build_plan_for_task, parse_context
 from core.orchestration.ai_roles import (
@@ -58,6 +59,7 @@ def register_tools(mcp: Any) -> None:
     orchestrator = build_orchestrator_from_env()
 
     @mcp.tool()
+    @mcp_tool_safe
     def ai_run_pipeline(task: str = "analysis", user_input: str = "", context: str = "") -> str:
         """多阶段多AI流水线：按任务拆分分析/复核/合成"""
         ctx = parse_context(context)
@@ -66,6 +68,7 @@ def register_tools(mcp: Any) -> None:
         return json.dumps(result, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def ai_enhance_output(content: str, tone: str = "concise", context: str = "") -> str:
         """调用多AI链路对输出做二次润色，保持事实一致"""
         ctx = parse_context(context)
@@ -73,6 +76,7 @@ def register_tools(mcp: Any) -> None:
         return enhanced.get("final") or json.dumps(enhanced, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def ai_provider_snapshot() -> str:
         """查看当前可用AI提供商与路由"""
         providers = []
@@ -91,6 +95,7 @@ def register_tools(mcp: Any) -> None:
     # ============================================
 
     @mcp.tool()
+    @mcp_tool_safe
     def ai_call_role(
         role: str,
         prompt: str,
@@ -135,6 +140,7 @@ def register_tools(mcp: Any) -> None:
         }, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def ai_reason(prompt: str, context: str = "") -> str:
         """
         AI 推理分析（风险评估、策略审核）
@@ -153,6 +159,7 @@ def register_tools(mcp: Any) -> None:
         }, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def ai_write(prompt: str, tone: str = "professional") -> str:
         """
         AI 写作（报告、日记、邮件）
@@ -165,6 +172,7 @@ def register_tools(mcp: Any) -> None:
         return response.content if response.success else f"错误: {response.error}"
 
     @mcp.tool()
+    @mcp_tool_safe
     def ai_remember(prompt: str, documents: str = "") -> str:
         """
         AI 记忆/摘要（长文本分析、历史回顾）
@@ -183,6 +191,7 @@ def register_tools(mcp: Any) -> None:
         }, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def ai_research(query: str, num_sources: int = 5) -> str:
         """
         AI 研究（新闻搜索、公告分析）
@@ -200,6 +209,7 @@ def register_tools(mcp: Any) -> None:
         }, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def ai_critique(plan: str, criteria: str = "") -> str:
         """
         AI 审查/批评（策略审核、风险识别）
@@ -218,6 +228,7 @@ def register_tools(mcp: Any) -> None:
         }, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def ai_list_roles() -> str:
         """列出所有可用的 AI 角色及其说明"""
         roles = []
@@ -236,6 +247,7 @@ def register_tools(mcp: Any) -> None:
     # ==========================================================
 
     @mcp.tool()
+    @mcp_tool_safe
     def consult_external_expert(query: str, model: str = "deepseek", context: str = "") -> str:
         """
         让 Claude 借助其他 AI（多云）给出第二意见。
@@ -262,6 +274,7 @@ def register_tools(mcp: Any) -> None:
         }, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def set_cloud_sentry(symbol: str, condition: str, action: str = "notify", notes: str = "") -> str:
         """
         写入云端哨兵任务（Redis 队列），由青龙 worker 轮询执行。
@@ -277,6 +290,7 @@ def register_tools(mcp: Any) -> None:
         return json.dumps(result, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def sync_session_to_notion(summary: str, tags: str = "") -> str:
         """
         将当前会话/分析结论写入 Notion 日志库。
@@ -293,6 +307,7 @@ def register_tools(mcp: Any) -> None:
         }, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def fetch_portfolio_snapshot() -> str:
         """
         返回账户资产快照（调用 Heablcoin.get_account_summary）。
@@ -305,6 +320,7 @@ def register_tools(mcp: Any) -> None:
             return json.dumps({"success": False, "error": str(e)}, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def get_learning_context() -> str:
         """
         返回最近的交易教训/偏好，来自 dev/lessons.md（如不存在则返回占位提示）。

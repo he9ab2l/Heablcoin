@@ -49,6 +49,7 @@ from skills.learning.modules.utility import UtilityModule
 from skills.learning.notifier import send_learning_report, send_training_summary
 from core.orchestration.router import build_orchestrator_from_env
 from skills.report.query_backup import save_query_backup
+from core.mcp_safety import mcp_tool_safe
 from utils.smart_logger import get_logger
 
 
@@ -65,6 +66,7 @@ def register_tools(mcp: Any) -> None:
     utility = UtilityModule()
 
     @mcp.tool()
+    @mcp_tool_safe
     def get_learning_catalog() -> str:
         """列出可用训练/学习工具目录"""
         data = {
@@ -104,6 +106,7 @@ def register_tools(mcp: Any) -> None:
         return json.dumps(data, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def start_learning_session(
         kind: str = "scan",
         symbol: str = "BTC/USDT",
@@ -143,6 +146,7 @@ def register_tools(mcp: Any) -> None:
         return json.dumps(out, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def submit_learning_answer(session_id: str, answer: str, ai_enhance: bool = False, tone: str = "concise") -> str:
         """提交学习会话答案并返回评分与复盘，可选启用多AI优化输出"""
         result = engine.score_session(session_id=session_id, answer=answer)
@@ -166,12 +170,14 @@ def register_tools(mcp: Any) -> None:
         return result
 
     @mcp.tool()
+    @mcp_tool_safe
     def get_learning_history(limit: int = 20) -> str:
         """查看近期学习会话记录"""
         items = list_sessions(limit=limit)
         return json.dumps({"sessions": items}, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def get_execution_guard_settings() -> str:
         """获取下单纪律拦截配置与状态"""
         rules = load_rules()
@@ -179,6 +185,7 @@ def register_tools(mcp: Any) -> None:
         return json.dumps({"rules": rules, "locked": locked, "remain_seconds": remain}, ensure_ascii=False, indent=2)
 
     @mcp.tool()
+    @mcp_tool_safe
     def set_execution_guard_settings(
         enabled: Optional[bool] = None,
         trend_guard: Optional[bool] = None,
@@ -207,6 +214,7 @@ def register_tools(mcp: Any) -> None:
     # ==================== 第一板块：交易前逻辑安检 ====================
 
     @mcp.tool()
+    @mcp_tool_safe
     def audit_trade_reason(symbol: str = "BTC/USDT", side: str = "buy", reason: str = "", timeframe: str = "1h") -> str:
         """
         理由审计官：验证你的交易理由是否与实际数据匹配。
@@ -234,6 +242,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def calculate_risk_reward(
         entry_price: float,
         stop_loss: float,
@@ -270,6 +279,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def check_trend_alignment(symbol: str = "BTC/USDT", side: str = "buy", timeframe: str = "1h") -> str:
         """
         逆势警报器：检查你的交易方向是否与大趋势一致。
@@ -291,6 +301,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def check_fomo(symbol: str = "BTC/USDT", side: str = "buy", timeframe: str = "1h") -> str:
         """
         FOMO检测：检测你是否在追涨杀跌。
@@ -317,6 +328,7 @@ def register_tools(mcp: Any) -> None:
     # ==================== 第二板块：盘中实时陪练 ====================
 
     @mcp.tool()
+    @mcp_tool_safe
     def hunt_patterns(pattern: str, symbols: str = "", timeframe: str = "1h") -> str:
         """
         形态寻宝游戏：扫描市场找出符合特定技术形态的币种。
@@ -339,6 +351,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def get_profit_protection_advice(
         symbol: str = "BTC/USDT",
         entry_price: float = 0,
@@ -359,6 +372,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def analyze_loss(
         symbol: str = "BTC/USDT",
         entry_price: float = 0,
@@ -407,6 +421,7 @@ def register_tools(mcp: Any) -> None:
     # ==================== 第三板块：历史时光机 ====================
 
     @mcp.tool()
+    @mcp_tool_safe
     def simulate_what_if(
         symbol: str = "BTC/USDT",
         hours_ago: int = 1,
@@ -444,6 +459,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def start_blind_history_test(
         symbol: str = "BTC/USDT",
         timeframe: str = "1h",
@@ -484,6 +500,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def reveal_blind_test(session_id: str, your_choice: str) -> str:
         """
         揭晓历史重演测验的答案。
@@ -510,6 +527,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def backtest_strategy(
         symbol: str = "BTC/USDT",
         strategy: str = "",
@@ -551,6 +569,7 @@ def register_tools(mcp: Any) -> None:
     # ==================== 第四板块：成长与画像 ====================
 
     @mcp.tool()
+    @mcp_tool_safe
     def log_trade_decision(
         action: str,
         symbol: str = "",
@@ -583,6 +602,7 @@ def register_tools(mcp: Any) -> None:
         return "❌ 记录失败"
 
     @mcp.tool()
+    @mcp_tool_safe
     def get_trade_journal(limit: int = 20, symbol: str = "", tag: str = "") -> str:
         """查看交易日记记录"""
         entries = growth.get_journal_entries(limit=limit, symbol=symbol, tag=tag)
@@ -610,6 +630,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def record_bad_habit(habit: str, context: str = "") -> str:
         """
         记录一次坏习惯。
@@ -626,6 +647,7 @@ def register_tools(mcp: Any) -> None:
         return "❌ 记录失败"
 
     @mcp.tool()
+    @mcp_tool_safe
     def get_habit_warnings() -> str:
         """获取坏习惯统计和警告"""
         summary = growth.get_habit_summary()
@@ -647,6 +669,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def get_trader_level() -> str:
         """获取交易员等级和成就进度"""
         profile = growth.get_profile()
@@ -677,6 +700,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def record_trade_result(is_win: bool, stop_loss_executed: bool = False) -> str:
         """记录交易结果（用于更新等级和成就）"""
         result = growth.record_trade(is_win=is_win, stop_loss_executed=stop_loss_executed)
@@ -692,6 +716,7 @@ def register_tools(mcp: Any) -> None:
     # ==================== 第五板块：辅助工具 ====================
 
     @mcp.tool()
+    @mcp_tool_safe
     def calculate_volatility_size(
         symbol: str = "DOGE/USDT",
         intended_size_usdt: float = 1000,
@@ -725,6 +750,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def check_market_events(keywords: str = "") -> str:
         """
         重要事件提醒：提醒你注意可能带来高波动的经济事件。
@@ -746,6 +772,7 @@ def register_tools(mcp: Any) -> None:
         return md
 
     @mcp.tool()
+    @mcp_tool_safe
     def quick_market_overview(symbols: str = "") -> str:
         """
         快速市场扫描：一次性获取多个币种的关键指标。

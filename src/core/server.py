@@ -93,11 +93,10 @@ from mcp.server.fastmcp import FastMCP
 from dotenv import load_dotenv
 from typing import Any, Optional, Dict, List, Callable
 import html
-import functools
-import traceback
 from dataclasses import dataclass, asdict
 
 from utils.project_paths import PROJECT_ROOT
+from core.mcp_safety import mcp_tool_safe
 
 from skills.report.flexible_report.service import register_tools as _register_flexible_report_tools
 from tools.market_analysis_tools import register_tools as _register_market_analysis_tools
@@ -105,6 +104,7 @@ from tools.personal_analytics_tools import register_tools as _register_personal_
 from tools.learning_tools import register_tools as _register_learning_tools
 from tools.orchestration_tools import register_tools as _register_orchestration_tools
 from tools.cloud_tools import register_tools as _register_cloud_tools
+from tools.admin_tools import register_tools as _register_admin_tools
 
 try:
     import markdown as _markdown
@@ -114,55 +114,6 @@ except Exception:
 ################################
 # --- P0-2: 全局异常捕获装饰器 ---
 ################################
-
-DEBUG_MODE = False
-
-def mcp_tool_safe(func: Callable) -> Callable:
-    """
-    MCP工具安全装饰器
-    - 捕获所有异常，防止MCP Server崩溃
-    - 返回友好的错误信息给用户
-    - 记录完整堆栈到日志供调试
-    - 保持MCP连接不断开
-    """
-    @functools.wraps(func)
-    def wrapper(*args, **kwargs) -> Any:
-        try:
-            return func(*args, **kwargs)
-        except Exception as e:
-            # 记录详细错误（供调试）
-            error_detail = {
-                "tool": func.__name__,
-                "error_type": type(e).__name__,
-                "error_msg": str(e),
-                "traceback": traceback.format_exc()
-            }
-            
-            # 使用logging记录（此时logger可能还未初始化，所以用print到stderr作为后备）
-            try:
-                logging.error(f"❌ MCP Tool Error [{func.__name__}]: {error_detail}")
-            except:
-                print(f"❌ MCP Tool Error [{func.__name__}]: {error_detail}", file=sys.stderr)
-            
-            # 返回用户友好的错误信息
-            error_msg = f"""⚠️ 工具执行失败
-
-**错误类型**: {type(e).__name__}
-**错误信息**: {str(e)}
-
-**建议**:
-- 检查参数是否正确
-- 查看日志文件获取详细信息
-- 稍后重试
-
-_工具: {func.__name__}_"""
-            
-            if DEBUG_MODE:
-                error_msg += f"\n\n**调试信息**:\n```\n{error_detail['traceback']}\n```"
-            
-            return error_msg
-    
-    return wrapper
 
 
 ################################
@@ -393,6 +344,11 @@ try:
     _register_cloud_tools(mcp)
 except Exception as _e:
     logger.warning(f"⚠️ cloud 工具注册失败: {type(_e).__name__}: {_e}")
+
+try:
+    _register_admin_tools(mcp)
+except Exception as _e:
+    logger.warning(f"⚠️ admin 工具注册失败: {type(_e).__name__}: {_e}")
 
 # ============================================
 # 1. 基础设施层
