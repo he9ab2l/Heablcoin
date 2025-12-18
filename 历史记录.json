@@ -110,5 +110,12 @@
     "details": "删除被误提交的运行日志产物 logs/system.log.2025-12-16，并同步更新历史记录与任务进度。",
     "change_type": "清理",
     "file_path": "d:/MCP/logs/system.log.2025-12-16,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
+  },
+  {
+    "id": "2025-12-18 21:20:51",
+    "user_intent": "用户要求提交前检查敏感信息并尽量自动化版本控制流程，保证每次改动都能安全提交并推送到当前分支。",
+    "details": "1. 新增 scripts/scan_secrets.py：扫描暂存区文件并检测常见密钥特征，仅输出文件名与命中统计，不输出内容；2. 新增 gp.ps1：在 Windows PowerShell 下实现 add/scan/commit/push 一键化；3. 更新 gp.sh：提交前自动触发密钥扫描；4. 更新开发者文档说明提交流程；5. 同步更新任务进度。",
+    "change_type": "增强",
+    "file_path": "d:/MCP/scripts/scan_secrets.py,d:/MCP/gp.ps1,d:/MCP/gp.sh,d:/MCP/docs/developer/README.md,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
   }
 ]

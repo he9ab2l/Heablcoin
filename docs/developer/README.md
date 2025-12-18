@@ -21,3 +21,9 @@
 ## 项目记录
 13. 项目上下文文档：项目上下文文档.md
 14. 运维流程（Runbooks）：runbooks/多端连接集成流程标准化.md
+
+## 版本控制与安全
+
+- Windows（PowerShell）：`.\gp.ps1 "feat: xxx"`
+- Linux/macOS（bash）：`./gp.sh "feat: xxx"`
+- 提交前自动执行敏感信息扫描：`python scripts/scan_secrets.py --staged`（只输出文件名与命中统计，不输出内容）

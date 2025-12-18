@@ -19,6 +19,10 @@ fi
 branch="$(git rev-parse --abbrev-ref HEAD)"
 
 git add -A
+
+if [[ -f "scripts/scan_secrets.py" ]]; then
+  python "scripts/scan_secrets.py" --staged
+fi
+
 git commit -m "${msg}"
 git push origin "${branch}"
-
