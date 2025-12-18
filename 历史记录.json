@@ -47,5 +47,12 @@
     "details": "1. 新增独立 Prompt 文件：docs/developer/审计专家系统_v4.0_Prompt.md；2. 更新 docs/developer/Prompt备忘录.md 新增审计框架章节引用；3. 增量更新 可视化系统架构.mmd 加入 Documentation 文档层节点。",
     "change_type": "新增",
     "file_path": "d:/MCP/docs/developer/审计专家系统_v4.0_Prompt.md,d:/MCP/docs/developer/Prompt备忘录.md,d:/MCP/可视化系统架构.mmd"
+  },
+  {
+    "id": "2025-12-18 14:32:00",
+    "user_intent": "用户要求清理冗余文档、落盘v5.0 Prompt、整理文档结构，让项目更易于后续开发。项目版本定为v1初版。",
+    "details": "1. 删除5个冗余文档：UPGRADE_LOG_v2.0.md、UPGRADE_SUMMARY.md、UPGRADE_v3.0_COMPLETE.md、IMPLEMENTATION_COMPLETE.md、NEXT_STEPS.md；2. 移动MCP_CONFIG_GUIDE.md到docs/user/MCP配置指南.md；3. 移动ROADMAP.md到docs/developer/路线图.md；4. 新增审计与传承专家系统v5.0 Prompt；5. 更新Prompt备忘录添加v5.0章节；6. 整理开发端和用户端文档README结构。",
+    "change_type": "优化",
+    "file_path": "d:/MCP/docs/developer/审计与传承专家系统_v5.0_Prompt.md,d:/MCP/docs/developer/Prompt备忘录.md,d:/MCP/docs/developer/README.md,d:/MCP/docs/user/README.md,d:/MCP/docs/user/MCP配置指南.md,d:/MCP/docs/developer/路线图.md"
   }
 ]

@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-12-18 14:18:00",
+  "last_updated": "2025-12-18 14:32:00",
   "projects": [
     {
       "project_id": "proj_20251218_01",
@@ -178,6 +178,42 @@
           "progress": 100,
           "status": "已完成",
           "created_at": "2025-12-18 14:18:00"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251218_06",
+      "name": "项目v1版本清理与Prompt规范化",
+      "status": "已完成",
+      "progress": 100,
+      "tasks": [
+        {
+          "task_id": "task_06_01",
+          "description": "删除冗余升级文档（5个）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 14:32:00"
+        },
+        {
+          "task_id": "task_06_02",
+          "description": "移动MCP_CONFIG_GUIDE.md和ROADMAP.md到规范目录",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 14:32:00"
+        },
+        {
+          "task_id": "task_06_03",
+          "description": "落盘审计与传承专家系统v5.0 Prompt",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 14:32:00"
+        },
+        {
+          "task_id": "task_06_04",
+          "description": "整理开发端和用户端文档README结构",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-18 14:32:00"
         }
       ]
     }

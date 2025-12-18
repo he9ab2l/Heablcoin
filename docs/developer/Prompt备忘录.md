@@ -73,3 +73,17 @@
    2. `Deep Audit`（含风险评级 `Critical/High/Mid/Low`）
    3. `Architecture Visual`（Mermaid 代码块）
    4. `Action Items`（Top 3 尖锐提问）
+
+## 6 深度审计与传承专家系统 v5.0 Prompt（移交优化版）
+
+1. 独立文件：`docs/developer/审计与传承专家系统_v5.0_Prompt.md`
+2. 角色：`Chief Architect & Continuity Specialist`
+3. 新增能力
+   1. 上下文压缩与知识包封装
+   2. `HANDOVER_TOKEN` 实时维护，支持 AI-to-AI 无缝接管
+   3. `[PROJECT_BRAIN_DUMP]` 标准化导出格式
+4. 每轮输出必须包含
+   1. `State Snapshot`（含版本号）
+   2. `Deep Audit`
+   3. `Knowledge Update`（全局内存变化）
+   4. `Handover Ready`（500字内压缩版接管摘要）

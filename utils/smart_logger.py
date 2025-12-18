@@ -1,3 +1,39 @@
+############################################################
+# 📘 文件说明：智能日志
+# 本文件实现的功能：多通道日志系统
+#
+# 📋 程序整体伪代码（中文）：
+# 1. 初始化依赖模块和配置
+# 2. 定义核心类和函数
+# 3. 实现主要业务逻辑
+# 4. 提供对外接口
+# 5. 异常处理与日志记录
+#
+# 🔄 程序流程图（逻辑流）：
+# ┌──────────────┐
+# │  输入数据    │
+# └──────┬───────┘
+#        ↓
+# ┌──────────────┐
+# │  核心处理逻辑 │
+# └──────┬───────┘
+#        ↓
+# ┌──────────────┐
+# │  输出结果    │
+# └──────────────┘
+#
+# 📊 数据管道说明：
+# 数据流向：输入源 → 数据处理 → 核心算法 → 输出目标
+#
+# 🧩 文件结构：
+# - 类: SmartLogger
+# - 函数: get_smart_logger, get_logger, log_performance, get_logger, log_performance
+#
+# 🔗 主要依赖：collections, functools, logging, os, pathlib, time, typing
+#
+# 🕒 创建时间：2025-12-18
+############################################################
+
 """
 智能日志系统 - P0-3
 - 多通道日志（system/trading/analysis/error/performance）
@@ -7,11 +43,132 @@
 
 import logging
 import os
+import sys
 import time
+import json
+import traceback
+import inspect
+from datetime import datetime
 from logging.handlers import RotatingFileHandler, TimedRotatingFileHandler
 from pathlib import Path
-from typing import Dict, Any
+from typing import Dict, Any, Optional, Union
 from collections import defaultdict
+from functools import wraps
+
+
+# 错误码前缀映射
+MODULE_ERROR_CODES = {
+    'system': 'E10',
+    'trading': 'E20',
+    'analysis': 'E30',
+    'error': 'E40',
+    'performance': 'E50',
+    'learning': 'E60',
+    'cloud': 'E70',
+    'storage': 'E80',
+}
+
+# 错误计数器
+_error_counters: Dict[str, int] = defaultdict(int)
+
+
+def _get_beijing_time() -> str:
+    """获取北京时间字符串"""
+    from datetime import timezone, timedelta
+    beijing_tz = timezone(timedelta(hours=8))
+    return datetime.now(beijing_tz).strftime('%Y-%m-%d %H:%M:%S')
+
+
+def _generate_error_code(module: str) -> str:
+    """生成错误码: E + 模块编号 + 序号"""
+    prefix = MODULE_ERROR_CODES.get(module, 'E99')
+    _error_counters[module] += 1
+    return f"{prefix}{_error_counters[module]:02d}"
+
+
+class StructuredLogFormatter(logging.Formatter):
+    """
+    结构化日志格式化器
+    输出JSON格式，包含完整的定位信息
+    """
+    
+    def __init__(self, module_name: str = 'system'):
+        super().__init__()
+        self.module_name = module_name
+    
+    def format(self, record: logging.LogRecord) -> str:
+        # 构建结构化日志
+        log_entry = {
+            'timestamp': _get_beijing_time(),
+            'level': record.levelname,
+            'module': self.module_name,
+            'function': record.funcName,
+            'file': record.pathname,
+            'line': record.lineno,
+            'message': record.getMessage(),
+        }
+        
+        # 如果是错误级别，添加错误码
+        if record.levelno >= logging.ERROR:
+            log_entry['error_code'] = _generate_error_code(self.module_name)
+        
+        # 添加额外上下文（如果有）
+        if hasattr(record, 'context') and record.context:
+            log_entry['context'] = record.context
+        
+        # 添加异常信息（如果有）
+        if record.exc_info:
+            log_entry['exception'] = {
+                'type': record.exc_info[0].__name__ if record.exc_info[0] else None,
+                'message': str(record.exc_info[1]) if record.exc_info[1] else None,
+                'traceback': ''.join(traceback.format_exception(*record.exc_info)) if record.exc_info[0] else None
+            }
+        
+        return json.dumps(log_entry, ensure_ascii=False)
+
+
+class HumanReadableFormatter(logging.Formatter):
+    """
+    人类可读格式化器（带颜色和结构）
+    用于控制台输出和快速调试
+    """
+    
+    LEVEL_COLORS = {
+        'DEBUG': '\033[36m',    # 青色
+        'INFO': '\033[32m',     # 绿色
+        'WARNING': '\033[33m',  # 黄色
+        'ERROR': '\033[31m',    # 红色
+        'CRITICAL': '\033[35m', # 紫色
+    }
+    RESET = '\033[0m'
+    
+    def __init__(self, module_name: str = 'system', use_color: bool = True):
+        super().__init__()
+        self.module_name = module_name
+        self.use_color = use_color
+    
+    def format(self, record: logging.LogRecord) -> str:
+        timestamp = _get_beijing_time()
+        level = record.levelname
+        
+        # 颜色处理
+        if self.use_color and level in self.LEVEL_COLORS:
+            level_str = f"{self.LEVEL_COLORS[level]}{level:8s}{self.RESET}"
+        else:
+            level_str = f"{level:8s}"
+        
+        # 位置信息
+        location = f"{record.filename}:{record.lineno}:{record.funcName}"
+        
+        # 基本消息
+        msg = f"[{timestamp}] {level_str} [{self.module_name}] [{location}] {record.getMessage()}"
+        
+        # 错误码（如果是错误级别）
+        if record.levelno >= logging.ERROR:
+            error_code = _generate_error_code(self.module_name)
+            msg = f"[{timestamp}] {level_str} [{error_code}] [{self.module_name}] [{location}] {record.getMessage()}"
+        
+        return msg
 
 
 class SmartLogger:
@@ -48,16 +205,9 @@ class SmartLogger:
     def _setup_loggers(self):
         """配置多通道日志"""
         
-        # 统一格式化器
-        detailed_formatter = logging.Formatter(
-            '[%(asctime)s] %(levelname)-8s [%(name)s:%(funcName)s:%(lineno)d] %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
-        )
-        
-        simple_formatter = logging.Formatter(
-            '[%(asctime)s] %(levelname)-8s %(message)s',
-            datefmt='%Y-%m-%d %H:%M:%S'
-        )
+        # 结构化JSON格式化器（用于机器解析和grep追踪）
+        # 人类可读格式化器（用于快速调试）
+        # 每个通道使用对应模块名的格式化器
         
         # 1. 系统日志（按天轮转）
         system_logger = logging.getLogger('heablcoin.system')
@@ -70,7 +220,7 @@ class SmartLogger:
             backupCount=30,
             encoding='utf-8'
         )
-        system_handler.setFormatter(detailed_formatter)
+        system_handler.setFormatter(StructuredLogFormatter('system'))
         system_logger.addHandler(system_handler)
         self.loggers['system'] = system_logger
         
@@ -85,7 +235,7 @@ class SmartLogger:
             backupCount=10,
             encoding='utf-8'
         )
-        trading_handler.setFormatter(detailed_formatter)
+        trading_handler.setFormatter(StructuredLogFormatter('trading'))
         trading_logger.addHandler(trading_handler)
         self.loggers['trading'] = trading_logger
         
@@ -100,7 +250,7 @@ class SmartLogger:
             backupCount=5,
             encoding='utf-8'
         )
-        analysis_handler.setFormatter(simple_formatter)
+        analysis_handler.setFormatter(StructuredLogFormatter('analysis'))
         analysis_logger.addHandler(analysis_handler)
         self.loggers['analysis'] = analysis_logger
         
@@ -115,7 +265,7 @@ class SmartLogger:
             backupCount=5,
             encoding='utf-8'
         )
-        error_handler.setFormatter(detailed_formatter)
+        error_handler.setFormatter(StructuredLogFormatter('error'))
         error_logger.addHandler(error_handler)
         self.loggers['error'] = error_logger
         
@@ -130,7 +280,7 @@ class SmartLogger:
             backupCount=3,
             encoding='utf-8'
         )
-        perf_handler.setFormatter(simple_formatter)
+        perf_handler.setFormatter(StructuredLogFormatter('performance'))
         perf_logger.addHandler(perf_handler)
         self.loggers['performance'] = perf_logger
         
@@ -145,7 +295,7 @@ class SmartLogger:
             backupCount=5,
             encoding='utf-8'
         )
-        learning_handler.setFormatter(simple_formatter)
+        learning_handler.setFormatter(StructuredLogFormatter('learning'))
         learning_logger.addHandler(learning_handler)
         self.loggers['learning'] = learning_logger
     
@@ -214,9 +364,7 @@ def get_logger(channel: str = 'system') -> logging.Logger:
 
 def log_performance(func):
     """性能记录装饰器"""
-    import functools
-    
-    @functools.wraps(func)
+    @wraps(func)
     def wrapper(*args, **kwargs):
         start = time.time()
         success = True
@@ -231,3 +379,126 @@ def log_performance(func):
             get_smart_logger().log_performance(func.__name__, duration, success)
     
     return wrapper
+
+
+def log_error_with_context(
+    message: str,
+    module: str = 'system',
+    context: Optional[Dict[str, Any]] = None,
+    exc_info: bool = False
+) -> str:
+    """
+    记录带上下文的错误日志
+    
+    Args:
+        message: 错误消息
+        module: 模块名称
+        context: 上下文信息（输入参数、运行状态等）
+        exc_info: 是否包含异常堆栈
+    
+    Returns:
+        error_code: 生成的错误码，可用于追踪
+    
+    Example:
+        error_code = log_error_with_context(
+            "Binance API 返回空响应",
+            module="trading",
+            context={"symbol": "BTCUSDT", "timeframe": "1m"}
+        )
+        # 可通过 grep E2001 快速定位
+    """
+    logger = get_logger(module)
+    error_code = _generate_error_code(module)
+    
+    # 构建完整的错误记录
+    frame = inspect.currentframe()
+    caller_frame = frame.f_back if frame else None
+    
+    extra_info = {
+        'error_code': error_code,
+        'context': context or {},
+    }
+    
+    if caller_frame:
+        extra_info['caller_file'] = caller_frame.f_code.co_filename
+        extra_info['caller_line'] = caller_frame.f_lineno
+        extra_info['caller_function'] = caller_frame.f_code.co_name
+    
+    # 记录日志
+    full_message = f"[{error_code}] {message}"
+    if context:
+        full_message += f" | context={json.dumps(context, ensure_ascii=False)}"
+    
+    logger.error(full_message, exc_info=exc_info)
+    
+    return error_code
+
+
+class HeablcoinError(Exception):
+    """
+    Heablcoin 标准异常类
+    带有错误码和上下文信息，禁止裸异常
+    """
+    
+    def __init__(
+        self,
+        message: str,
+        error_code: Optional[str] = None,
+        module: str = 'system',
+        context: Optional[Dict[str, Any]] = None
+    ):
+        self.message = message
+        self.error_code = error_code or _generate_error_code(module)
+        self.module = module
+        self.context = context or {}
+        self.timestamp = _get_beijing_time()
+        
+        # 获取调用位置
+        frame = inspect.currentframe()
+        caller_frame = frame.f_back if frame else None
+        if caller_frame:
+            self.file = caller_frame.f_code.co_filename
+            self.line = caller_frame.f_lineno
+            self.function = caller_frame.f_code.co_name
+        else:
+            self.file = None
+            self.line = None
+            self.function = None
+        
+        super().__init__(self._format_message())
+    
+    def _format_message(self) -> str:
+        return f"[{self.error_code}] {self.message}"
+    
+    def to_dict(self) -> Dict[str, Any]:
+        """转换为字典格式，便于JSON序列化"""
+        return {
+            'timestamp': self.timestamp,
+            'error_code': self.error_code,
+            'module': self.module,
+            'message': self.message,
+            'file': self.file,
+            'line': self.line,
+            'function': self.function,
+            'context': self.context,
+        }
+    
+    def to_json(self) -> str:
+        """转换为JSON字符串"""
+        return json.dumps(self.to_dict(), ensure_ascii=False, indent=2)
+
+
+# 导出符号
+__all__ = [
+    'SmartLogger',
+    'get_smart_logger',
+    'get_logger',
+    'log_performance',
+    'log_error_with_context',
+    'HeablcoinError',
+    'StructuredLogFormatter',
+    'HumanReadableFormatter',
+    '_get_beijing_time',
+    '_generate_error_code',
+    'MODULE_ERROR_CODES',
+]
