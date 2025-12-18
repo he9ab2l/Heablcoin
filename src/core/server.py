@@ -97,6 +97,7 @@ from dataclasses import dataclass, asdict
 
 from utils.project_paths import PROJECT_ROOT
 from core.mcp_safety import mcp_tool_safe
+from core.exchange import get_exchange as _get_exchange
 
 from skills.report.flexible_report.service import register_tools as _register_flexible_report_tools
 from tools.market_analysis_tools import register_tools as _register_market_analysis_tools
@@ -153,14 +154,6 @@ PERF_DEGRADATION_FACTOR = _env_float('PERF_DEGRADATION_FACTOR', 2.0)
 PERF_DEGRADATION_MIN_CALLS = _env_int('PERF_DEGRADATION_MIN_CALLS', 10)
 
 CACHE_DEFAULT_TTL_SECONDS = _env_int('CACHE_DEFAULT_TTL_SECONDS', 300)
-
-EXCHANGE_POOL_TTL_SECONDS = _env_int('EXCHANGE_POOL_TTL_SECONDS', 60)
-
-CCXT_TIMEOUT_MS = _env_int('CCXT_TIMEOUT_MS', 30000)
-CCXT_ENABLE_RATE_LIMIT = _env_bool('CCXT_ENABLE_RATE_LIMIT', True)
-CCXT_DEFAULT_TYPE = _env_str('CCXT_DEFAULT_TYPE', 'spot')
-CCXT_RECV_WINDOW = _env_int('CCXT_RECV_WINDOW', 10000)
-CCXT_ADJUST_TIME_DIFFERENCE = _env_bool('CCXT_ADJUST_TIME_DIFFERENCE', False)
 
 OHLCV_LIMIT_MARKET_ANALYSIS = _env_int('OHLCV_LIMIT_MARKET_ANALYSIS', 100)
 OHLCV_LIMIT_COMPREHENSIVE_ANALYSIS = _env_int('OHLCV_LIMIT_COMPREHENSIVE_ANALYSIS', 100)
@@ -354,50 +347,9 @@ except Exception as _e:
 # 1. 基础设施层
 # ============================================
 
-class ExchangePool:
-    """交易所连接池（单例模式）"""
-    _instance = None
-    
-    def __new__(cls):
-        if cls._instance is None:
-            cls._instance = super().__new__(cls)
-            cls._instance.exchange = None
-            cls._instance.last_used = 0
-        return cls._instance
-    
-    def get_exchange(self):
-        current_time = time.time()
-        if self.exchange and current_time - self.last_used < EXCHANGE_POOL_TTL_SECONDS:
-            self.last_used = current_time
-            return self.exchange
-        
-        api_key = os.getenv("BINANCE_API_KEY")
-        secret = os.getenv("BINANCE_SECRET_KEY")
-        use_testnet = os.getenv("USE_TESTNET", "True").lower() == "true"
-
-        self.exchange = ccxt.binance({
-            'apiKey': api_key,
-            'secret': secret,
-            'enableRateLimit': CCXT_ENABLE_RATE_LIMIT,
-            'timeout': CCXT_TIMEOUT_MS,
-            'options': {
-                'defaultType': CCXT_DEFAULT_TYPE,
-                'adjustForTimeDifference': CCXT_ADJUST_TIME_DIFFERENCE,
-                'recvWindow': CCXT_RECV_WINDOW
-            }
-        })
-
-        if use_testnet:
-            self.exchange.set_sandbox_mode(True)
-            logger.info("📡 已连接 Binance Testnet")
-        else:
-            logger.info("📡 已连接 Binance 主网")
-        
-        self.last_used = current_time
-        return self.exchange
-
 def get_exchange():
-    return ExchangePool().get_exchange()
+    """获取可复用的交易所连接（来自 core.exchange）"""
+    return _get_exchange()
 
 
 def _safe_filename_component(value: str) -> str:
