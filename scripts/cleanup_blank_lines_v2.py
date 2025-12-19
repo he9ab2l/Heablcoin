@@ -1,3 +1,10 @@
+#!/usr/bin/env python3
+"""
+Cleanup blank lines in Python files.
+- Remove blank lines inside function/class bodies
+- Keep exactly 2 blank lines between top-level definitions
+- Keep 2 blank lines after imports before first def/class
+"""
 import argparse
 import os
 from dataclasses import dataclass
@@ -5,21 +12,10 @@ from pathlib import Path
 
 
 SKIP_DIR_NAMES = {
-    ".git",
-    ".idea",
-    ".vscode",
-    ".pytest_cache",
-    "__pycache__",
-    ".venv",
-    "venv",
-    "env",
-    "node_modules",
-    "dist",
-    "build",
+    ".git", ".idea", ".vscode", ".pytest_cache", "__pycache__",
+    ".venv", "venv", "env", "node_modules", "dist", "build",
 }
-SKIP_DIR_PARTS = {
-    os.path.join("data", "mcp_call_backups"),
-}
+SKIP_DIR_PARTS = {os.path.join("data", "mcp_call_backups")}
 
 
 @dataclass
@@ -35,7 +31,6 @@ def _should_skip_dir(dir_path: Path) -> bool:
     parts = list(dir_path.parts)
     if any(part in SKIP_DIR_NAMES for part in parts):
         return True
-    # Skip known nested dirs by suffix match on the path string
     p = str(dir_path).replace("\\", "/")
     for part in SKIP_DIR_PARTS:
         if p.endswith(part.replace("\\", "/")) or f"/{part.replace('\\', '/')}" in p:
@@ -44,17 +39,20 @@ def _should_skip_dir(dir_path: Path) -> bool:
 
 
 def _detect_newline(raw: bytes) -> str:
-    # Prefer CRLF if the file contains it anywhere.
     return "\r\n" if b"\r\n" in raw else "\n"
 
 
+def _get_indent(line: str) -> int:
+    return len(line) - len(line.lstrip())
+
+
+def _is_def_or_class(line: str) -> bool:
+    s = line.strip()
+    return (s.startswith("def ") or s.startswith("class ") or
+            s.startswith("@") or s.startswith("async def "))
+
+
 def _normalize_blank_lines(text: str) -> str:
-    """
-    Remove unnecessary blank lines while preserving PEP 8 style:
-    - Remove blank lines inside function/class bodies
-    - Keep exactly 2 blank lines between top-level definitions
-    - Keep 1 blank line after imports block before first def/class
-    """
     lines = text.splitlines()
     # Remove leading/trailing blank lines
     while lines and lines[0].strip() == "":
@@ -63,47 +61,41 @@ def _normalize_blank_lines(text: str) -> str:
         lines.pop()
     if not lines:
         return "\n"
-    out = []
+    # First pass: collect non-blank lines with metadata
+    items = []
     i = 0
     n = len(lines)
-    def get_indent(line: str) -> int:
-        return len(line) - len(line.lstrip())
-    def is_toplevel_def(line: str) -> bool:
-        s = line.strip()
-        return (s.startswith("def ") or s.startswith("class ") or
-                s.startswith("@") or s.startswith("async def "))
     while i < n:
         line = lines[i]
-        stripped = line.strip()
-        if stripped == "":
-            # Skip all consecutive blank lines, then decide what to insert
-            while i < n and lines[i].strip() == "":
-                i += 1
-            if i >= n:
-                break
-            next_line = lines[i]
-            next_stripped = next_line.strip()
-            next_indent = get_indent(next_line)
-            prev_line = out[-1] if out else ""
-            prev_stripped = prev_line.strip()
-            prev_indent = get_indent(prev_line) if prev_line else 0
-            # Case 1: Next line is a top-level def/class (indent 0)
-            if next_indent == 0 and is_toplevel_def(next_line) and out:
+        if line.strip() != "":
+            items.append(line)
+        i += 1
+    if not items:
+        return "\n"
+    # Second pass: insert appropriate blank lines
+    out = [items[0]]
+    for j in range(1, len(items)):
+        curr = items[j]
+        prev = items[j - 1]
+        curr_indent = _get_indent(curr)
+        prev_indent = _get_indent(prev)
+        prev_stripped = prev.strip()
+        # Before top-level def/class/decorator (indent 0) => 2 blank lines
+        if curr_indent == 0 and _is_def_or_class(curr):
+            out.append("")
+            out.append("")
+        # After import block before non-import => 2 blank lines  
+        elif (prev_stripped.startswith("import ") or prev_stripped.startswith("from ")):
+            curr_stripped = curr.strip()
+            if not (curr_stripped.startswith("import ") or curr_stripped.startswith("from ")):
                 out.append("")
                 out.append("")
-            # Case 2: After imports, before first def
-            elif (prev_stripped.startswith("import ") or prev_stripped.startswith("from ")) and is_toplevel_def(next_line):
-                out.append("")
-                out.append("")
-            # Case 3: Inside a function/class body - no blank lines
-            # (do nothing, skip the blanks)
-        else:
-            out.append(line)
-            i += 1
+        # No blank lines inside function bodies
+        out.append(curr)
     return "\n".join(out) + "\n"
 
 
-def _read_text_utf8(path: Path) -> tuple[str, str] | tuple[None, str]:
+def _read_text_utf8(path: Path) -> tuple:
     raw = path.read_bytes()
     newline = _detect_newline(raw)
     try:
@@ -114,7 +106,6 @@ def _read_text_utf8(path: Path) -> tuple[str, str] | tuple[None, str]:
 
 
 def _write_text_utf8(path: Path, text_unix: str, newline: str) -> None:
-    # Re-apply original newline style
     text = text_unix.replace("\n", newline)
     path.write_text(text, encoding="utf-8", newline="")
 
@@ -123,9 +114,10 @@ def process_file(path: Path, apply: bool, backup: bool) -> FileResult:
     loaded = _read_text_utf8(path)
     if loaded[0] is None:
         return FileResult(path=path, changed=False, reason=loaded[1])
-    text_unix, newline = loaded  # type: ignore[assignment]
+    text_unix, newline = loaded
     normalized_unix = _normalize_blank_lines(text_unix)
-    if normalized_unix == (text_unix if text_unix.endswith("\n") else text_unix + "\n"):
+    original = text_unix if text_unix.endswith("\n") else text_unix + "\n"
+    if normalized_unix == original:
         return FileResult(path=path, changed=False)
     if apply:
         if backup:
@@ -136,21 +128,15 @@ def process_file(path: Path, apply: bool, backup: bool) -> FileResult:
     return FileResult(path=path, changed=True)
 
 
-def iter_py_files(repo_root: Path) -> list[Path]:
-    results: list[Path] = []
+def iter_py_files(repo_root: Path) -> list:
+    results = []
     for root, dirs, files in os.walk(repo_root):
         root_path = Path(root)
-        # Prune dirs
-        pruned = []
-        for d in dirs:
-            if _should_skip_dir(root_path / d):
-                continue
-            pruned.append(d)
+        pruned = [d for d in dirs if not _should_skip_dir(root_path / d)]
         dirs[:] = pruned
         for f in files:
-            if not f.endswith(".py"):
-                continue
-            results.append(root_path / f)
+            if f.endswith(".py"):
+                results.append(root_path / f)
     return results
 
 

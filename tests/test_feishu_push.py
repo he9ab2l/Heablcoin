@@ -1,23 +1,20 @@
 """
 单元测试：飞书推送（src/core/cloud/pipeline_worker.py）
-
 目标：不发真实网络请求，通过 monkeypatch requests.post 验证：
 1) 未配置 FEISHU_WEBHOOK 时返回友好错误
 2) 配置 webhook 时可正常组装 payload 并判定 success
 3) 配置 FEISHU_SECRET 时会带 timestamp/sign，且 sign 可校验
 """
-
 from __future__ import annotations
-
 import json
 import os
 import sys
+
 
 REPO_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SRC_DIR = os.path.join(REPO_ROOT, "src")
 sys.path.insert(0, REPO_ROOT)
 sys.path.insert(0, SRC_DIR)
-
 from core.cloud import pipeline_worker as pw
 
 
@@ -41,24 +38,18 @@ def test_notify_feishu_payload_without_secret() -> bool:
     old_secret = os.environ.get("FEISHU_SECRET")
     os.environ["FEISHU_WEBHOOK"] = "https://example.com/webhook"
     os.environ["FEISHU_SECRET"] = ""
-
     calls = {}
-
     def fake_post(url, headers=None, data=None, timeout=None):
         calls["url"] = url
         calls["headers"] = headers or {}
         calls["data"] = data
         calls["timeout"] = timeout
-
         class Resp:
             status_code = 200
             text = "ok"
-
             def json(self):
                 return {"StatusCode": 0}
-
         return Resp()
-
     orig = pw.requests.post
     pw.requests.post = fake_post
     try:
@@ -87,24 +78,18 @@ def test_notify_feishu_payload_with_secret() -> bool:
     old_secret = os.environ.get("FEISHU_SECRET")
     os.environ["FEISHU_WEBHOOK"] = "https://example.com/webhook"
     os.environ["FEISHU_SECRET"] = "my_secret"
-
     calls = {}
-
     def fake_post(url, headers=None, data=None, timeout=None):
         calls["url"] = url
         calls["headers"] = headers or {}
         calls["data"] = data
         calls["timeout"] = timeout
-
         class Resp:
             status_code = 200
             text = "ok"
-
             def json(self):
                 return {"StatusCode": 0}
-
         return Resp()
-
     orig = pw.requests.post
     pw.requests.post = fake_post
     try:
@@ -133,7 +118,6 @@ def run_all_tests() -> bool:
     print("=" * 60)
     print("🧪 Feishu Push Tests")
     print("=" * 60)
-
     ok = True
     for fn in [
         test_notify_feishu_missing_webhook,
@@ -148,13 +132,11 @@ def run_all_tests() -> bool:
             print(f"[FAIL] {fn.__name__}: {type(e).__name__}: {e}")
             import traceback
 
-            traceback.print_exc()
 
+            traceback.print_exc()
     print("=" * 60)
     print("PASS" if ok else "FAIL")
     print("=" * 60)
     return ok
-
-
 if __name__ == "__main__":
     raise SystemExit(0 if run_all_tests() else 1)

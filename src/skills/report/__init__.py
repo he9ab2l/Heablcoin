@@ -1,6 +1,4 @@
 from __future__ import annotations
-
-
 from . import flexible_report
 
 

@@ -1,6 +1,5 @@
 """
 批处理脚本：为仓库内所有 Python 代码文件添加标准化文件头注释（任务.txt-任务1）。
-
 执行目标：
 1) 扫描项目中所有 .py 文件（排除虚拟环境与缓存目录）
 2) 为每个文件智能生成符合其实际功能的头注释（基于路径/文件名/docstring/关键字）
@@ -8,9 +7,7 @@
 4) 保留原有的 shebang 与 encoding 声明
 5) 不修改原有业务逻辑代码（只插入注释块）
 """
-
 from __future__ import annotations
-
 import argparse
 import ast
 import os
@@ -20,8 +17,8 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Iterable, List, Sequence, Set, Tuple
 
-_BEIJING_TZ = timezone(timedelta(hours=8))
 
+_BEIJING_TZ = timezone(timedelta(hours=8))
 EXCLUDED_DIRS: Set[str] = {
     ".git",
     "__pycache__",
@@ -36,10 +33,8 @@ EXCLUDED_DIRS: Set[str] = {
     ".mypy_cache",
     ".ruff_cache",
 }
-
 HEADER_BORDER = "############################################################"
 HEADER_MARKER = "# 📘 文件说明："
-
 _ENCODING_RE = re.compile(r"coding[:=]\s*([-\w.]+)")
 _LOCAL_TOPLEVEL = {"core", "tools", "skills", "storage", "utils"}
 
@@ -56,7 +51,6 @@ def _read_text_utf8(path: Path) -> Tuple[str, str, bool]:
     raw = path.read_bytes()
     newline = _detect_newline_style(raw)
     had_trailing_newline = raw.endswith(b"\n")
-
     for enc in ("utf-8", "utf-8-sig"):
         try:
             return raw.decode(enc), newline, had_trailing_newline
@@ -110,7 +104,6 @@ def _extract_docstring_and_imports(source: str) -> Tuple[str, List[str]]:
         tree = ast.parse(source)
     except SyntaxError:
         return "", _extract_imports_regex(source)
-
     doc = ast.get_docstring(tree) or ""
     imports: List[str] = []
     for node in tree.body:
@@ -143,9 +136,7 @@ def _categorize_imports(modules: Sequence[str]) -> Tuple[List[str], List[str], L
     stdlib: Set[str] = set()
     third: Set[str] = set()
     local: Set[str] = set()
-
     stdlib_names = getattr(sys, "stdlib_module_names", set())
-
     for mod in modules:
         mod = (mod or "").strip()
         if not mod:
@@ -153,7 +144,6 @@ def _categorize_imports(modules: Sequence[str]) -> Tuple[List[str], List[str], L
         if mod.startswith("."):
             local.add(mod)
             continue
-
         top = mod.split(".")[0]
         if top in _LOCAL_TOPLEVEL:
             local.add(mod)
@@ -161,7 +151,6 @@ def _categorize_imports(modules: Sequence[str]) -> Tuple[List[str], List[str], L
             stdlib.add(top)
         else:
             third.add(top)
-
     return sorted(stdlib), sorted(third), sorted(local)
 
 
@@ -179,11 +168,9 @@ def _guess_description(rel_path: str, docstring: str, source: str) -> str:
     first_doc = _safe_first_line(docstring)
     if 6 <= len(first_doc) <= 120:
         return first_doc
-
     name = Path(rel_path).stem
     if name == "__init__":
         return "包初始化：聚合导出符号并提供稳定的导入入口。"
-
     lowered = (rel_path + "\n" + source[:4000]).lower()
     if rel_path.replace("\\", "/").startswith("tests/"):
         return f"测试用例：验证 {name} 相关逻辑的正确性与回归。"
@@ -201,7 +188,6 @@ def _guess_description(rel_path: str, docstring: str, source: str) -> str:
         return "市场研究/分析模块：提供数据分析、质量评估与研究辅助能力。"
     if "logger" in lowered or "logging" in lowered:
         return "日志模块：提供结构化日志、分通道输出与性能记录能力。"
-
     parts = rel_path.replace("\\", "/").split("/")
     if parts[:2] == ["src", "core"]:
         return f"核心模块：提供 {name} 相关的基础能力与公共接口。"
@@ -215,13 +201,11 @@ def _guess_description(rel_path: str, docstring: str, source: str) -> str:
         return f"通用工具模块：提供 {name} 相关的辅助函数与基础组件。"
     if parts and parts[0] in {"scripts", "dev"}:
         return f"工程脚本：提供 {name} 的自动化工具与批处理能力。"
-
     return f"模块：{name}（提供相关功能实现与公共接口）。"
 
 
 def _render_header(rel_path: str, description: str, imports: Sequence[str]) -> str:
     stdlib, third, local = _categorize_imports(imports)
-
     lines = [
         HEADER_BORDER,
         "# 📘 文件说明：",
@@ -268,23 +252,18 @@ def process_file(path: Path, base: Path, dry_run: bool = False) -> bool:
     except Exception as exc:
         print(f"[WARN] read failed {path}: {exc}")
         return False
-
     if _header_exists(text):
         return True
-
     rel_path = str(path.relative_to(base)).replace("\\", "/")
     docstring, imports = _extract_docstring_and_imports(text)
     description = _guess_description(rel_path, docstring, text)
     header = _render_header(rel_path, description, imports)
-
     lines = text.splitlines()
     preserved, remainder = _split_preserve_preamble(lines)
     new_content = "\n".join(preserved + [header] + remainder)
-
     if dry_run:
         print(f"[DRY] would update {rel_path}")
         return True
-
     try:
         _write_text_utf8(path, new_content, newline, trailing_newline)
         print(f"[OK] header added: {rel_path}")
@@ -307,11 +286,9 @@ def main() -> int:
     parser.add_argument("--path", default=".", help="Root directory to scan, default current.")
     parser.add_argument("--dry-run", action="store_true", help="Preview changes without writing.")
     args = parser.parse_args()
-
     root = Path(args.path).resolve()
     py_files = sorted(iter_python_files(root))
     print(f"[INFO] scanning {root} ({len(py_files)} python files)")
-
     success = 0
     failed = 0
     for file_path in py_files:
@@ -319,10 +296,7 @@ def main() -> int:
             success += 1
         else:
             failed += 1
-
     print(f"[SUMMARY] success={success} failed={failed} total={len(py_files)}")
     return 0 if failed == 0 else 1
-
-
 if __name__ == "__main__":
     raise SystemExit(main())

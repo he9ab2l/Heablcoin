@@ -1,14 +1,10 @@
 #!/usr/bin/env python
 """UTF-8 encoding guard script.
-
 - Enforces UTF-8 (no BOM) for selected text files.
 - Keeps existing project rule: forbid ASCII '?' placeholder in 历史记录.json / 任务进度.json.
-
 This script is intentionally dependency-free.
 """
-
 from __future__ import annotations
-
 import argparse
 from pathlib import Path
 
@@ -26,7 +22,6 @@ DEFAULT_EXTS = {
     ".ps1",
     ".sh",
 }
-
 DEFAULT_EXCLUDE_DIRS = {
     ".git",
     ".venv",
@@ -98,28 +93,21 @@ def main() -> int:
         help="Path substring to skip (repeatable). Example: --skip '分析/添加功能.md'",
     )
     args = parser.parse_args()
-
     root = Path(args.root).resolve()
     exts = set(DEFAULT_EXTS)
     exts.update({e if e.startswith(".") else f".{e}" for e in args.ext})
-
     exclude_dirs = set(DEFAULT_EXCLUDE_DIRS)
     exclude_dirs.update(set(args.exclude_dir))
-
     skip_substrings = [s.replace("\\", "/") for s in args.skip]
-
     failures: list[str] = []
-
     for p in _iter_files(root, exts, exclude_dirs):
         rel = p.relative_to(root).as_posix()
         if any(s in rel for s in skip_substrings):
             continue
-
         raw = p.read_bytes()
         ok, reason = _is_utf8_no_bom(raw)
         if not ok:
             failures.append(f"{rel}: {reason}")
-
     # Strong checks for the two project record files.
     for required in ["历史记录.json", "任务进度.json"]:
         path = root / required
@@ -127,16 +115,12 @@ def main() -> int:
             ok, reason = _check_no_ascii_question(path)
             if not ok:
                 failures.append(f"{required}: {reason}")
-
     if failures:
         print("UTF-8 check failed:")
         for item in failures:
             print(f" - {item}")
         return 1
-
     print("UTF-8 check passed.")
     return 0
-
-
 if __name__ == "__main__":
     raise SystemExit(main())
