@@ -59,6 +59,49 @@ from utils.smart_logger import get_logger
 
 logger = get_logger("system")
 
+TASK_TEMPLATES: List[Dict[str, Any]] = [
+    {
+        "id": "market_top_market_cap",
+        "task_type": "market_analysis",
+        "action": "top_market_cap",
+        "title": "Top10 市值查询",
+        "description": "查询当前市值最高的币种列表，并输出摘要。",
+        "example_params": {"limit": 10},
+    },
+    {
+        "id": "market_funding_rate_watch",
+        "task_type": "market_analysis",
+        "action": "funding_rate_watch",
+        "title": "资金费率监控",
+        "description": "监控指定币对资金费率并触发通知（示例参数）。",
+        "example_params": {"symbol": "BTC/USDT", "threshold": 0.02},
+    },
+    {
+        "id": "data_whale_alert",
+        "task_type": "data_fetch",
+        "action": "whale_alert",
+        "title": "鲸鱼钱包预警",
+        "description": "监控地址大额转账并推送通知（示例参数）。",
+        "example_params": {"address": "0xabc...", "threshold_amount": 1000, "asset": "ETH"},
+    },
+    {
+        "id": "report_daily_market_report",
+        "task_type": "report_generation",
+        "action": "daily_market_report",
+        "title": "行情日报",
+        "description": "生成日报类报告并可选通知。",
+        "example_params": {"symbol": "BTC/USDT", "sections": ["price", "sentiment", "news"]},
+    },
+    {
+        "id": "ai_reasoning",
+        "task_type": "ai_call",
+        "action": "ai_reasoning",
+        "title": "AI 推理调用",
+        "description": "按角色调用模型完成推理/分析类任务（示例参数）。",
+        "example_params": {"role": "ai_reasoning", "prompt": "用三点概括 BTC 当前风险点"},
+    },
+]
+
 
 def register_tools(mcp: Any) -> None:
     scheduler = CloudScheduler()
@@ -278,6 +321,111 @@ def register_tools(mcp: Any) -> None:
 
     @mcp.tool()
     @mcp_tool_safe
+    def list_task_templates(task_type: str = "", action: str = "") -> str:
+        """
+        列出任务模板（用于“AI 工单模板/一键发布”）。
+
+        Args:
+            task_type: 可选过滤（如 market_analysis / ai_call / report_generation）
+            action: 可选过滤（如 top_market_cap）
+        """
+        ft = (task_type or "").strip().lower()
+        fa = (action or "").strip().lower()
+
+        templates = TASK_TEMPLATES
+        if ft:
+            templates = [t for t in templates if str(t.get("task_type", "")).lower() == ft]
+        if fa:
+            templates = [t for t in templates if str(t.get("action", "")).lower() == fa]
+
+        return json.dumps({"success": True, "templates": templates}, ensure_ascii=False, indent=2)
+
+    @mcp.tool()
+    @mcp_tool_safe
+    def render_task_template(template_id: str, overrides_json: str = "{}") -> str:
+        """
+        根据模板生成 publish_task 可用的参数骨架（JSON）。
+
+        Args:
+            template_id: list_task_templates 返回的模板 id
+            overrides_json: JSON 字符串，合并覆盖 example_params
+        """
+        tid = (template_id or "").strip()
+        tpl = next((t for t in TASK_TEMPLATES if t.get("id") == tid), None)
+        if not tpl:
+            return json.dumps({"success": False, "error": f"unknown template_id: {tid}"}, ensure_ascii=False, indent=2)
+
+        params: Dict[str, Any] = dict(tpl.get("example_params") or {})
+        if overrides_json:
+            try:
+                overrides = json.loads(overrides_json)
+                if isinstance(overrides, dict):
+                    params.update(overrides)
+            except Exception:
+                pass
+
+        payload = {
+            "task_type": tpl.get("task_type"),
+            "action": tpl.get("action"),
+            "params": params,
+        }
+        return json.dumps({"success": True, "template": tpl, "payload": payload}, ensure_ascii=False, indent=2)
+
+    @mcp.tool()
+    @mcp_tool_safe
+    def wait_for_task(task_id: str, timeout_seconds: float = 60.0, poll_interval: float = 1.0) -> str:
+        """
+        等待增强队列任务完成（或超时），便于“发布 -> 等待 -> 取结果”的一站式体验。
+
+        Args:
+            task_id: publish_task 返回的 task_id
+            timeout_seconds: 超时秒数
+            poll_interval: 轮询间隔秒
+        """
+        start = time.time()
+        timeout = max(float(timeout_seconds), 0.0)
+        interval = max(float(poll_interval), 0.2)
+
+        while True:
+            task = enhanced_publisher.get_task(task_id)
+            if not task:
+                return json.dumps({"success": False, "error": "task not found", "task_id": task_id}, ensure_ascii=False, indent=2)
+
+            if task.status in {
+                TaskStatus.COMPLETED.value,
+                TaskStatus.FAILED.value,
+                TaskStatus.CANCELLED.value,
+                TaskStatus.EXPIRED.value,
+            }:
+                return json.dumps(
+                    {
+                        "success": True,
+                        "task_id": task_id,
+                        "status": task.status,
+                        "result": task.result,
+                        "error": task.error,
+                        "updated_at": task.updated_at,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+
+            if timeout and (time.time() - start) >= timeout:
+                return json.dumps(
+                    {
+                        "success": False,
+                        "error": "timeout",
+                        "task_id": task_id,
+                        "status": task.status,
+                        "updated_at": task.updated_at,
+                    },
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            time.sleep(interval)
+
+    @mcp.tool()
+    @mcp_tool_safe
     def add_api_endpoint(
         name: str,
         base_url: str,
@@ -382,3 +530,44 @@ def register_tools(mcp: Any) -> None:
         rid = _redis_from_env()
         data = rid.hget_json(key, task_id)
         return json.dumps({"success": True, "task_id": task_id, "result_hash_key": key, "data": data}, ensure_ascii=False, indent=2)
+
+    @mcp.tool()
+    @mcp_tool_safe
+    def wait_for_pipeline_result(
+        task_id: str,
+        timeout_seconds: float = 60.0,
+        poll_interval: float = 1.0,
+        result_hash_key: str = "",
+    ) -> str:
+        """
+        等待云端 pipeline worker 写回结果（或超时）。
+
+        Args:
+            task_id: publish_pipeline_task 返回的 task_id
+            timeout_seconds: 超时秒数
+            poll_interval: 轮询间隔秒
+            result_hash_key: 可选，覆盖结果 hash key（默认 RESULT_HASH_KEY 或 mcp:results）
+        """
+        start = time.time()
+        timeout = max(float(timeout_seconds), 0.0)
+        interval = max(float(poll_interval), 0.2)
+
+        key = (result_hash_key or os.getenv("RESULT_HASH_KEY") or "mcp:results").strip()
+        rid = _redis_from_env()
+
+        while True:
+            data = rid.hget_json(key, task_id)
+            if data is not None:
+                return json.dumps(
+                    {"success": True, "task_id": task_id, "result_hash_key": key, "data": data},
+                    ensure_ascii=False,
+                    indent=2,
+                )
+
+            if timeout and (time.time() - start) >= timeout:
+                return json.dumps(
+                    {"success": False, "error": "timeout", "task_id": task_id, "result_hash_key": key},
+                    ensure_ascii=False,
+                    indent=2,
+                )
+            time.sleep(interval)
