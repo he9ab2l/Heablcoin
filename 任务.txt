@@ -15,9 +15,9 @@
 
 ## 进行中任务
 - 任务发布系统：`publish_task` 接口 + Redis 队列，扩充任务模板并实现 webhook 回调
-- 云端自动化：补完 `scripts/setup.sh` / `scripts/deploy.sh`，涵盖 Docker、Redis、PM2 与 Nginx
-- 文档发布：维护 `README.md`、`API_SPEC.md`、`DEPLOY_GUIDE.md`、`examples.md`
-- 测试体系：`tests/run_tests.py` 提供 unit/integration/stress 三种入口，覆盖率 ≥ 85%
+- 云端自动化：`scripts/setup.sh` / `scripts/deploy.sh` 支持多模式部署（pipeline_worker/inspector），并同步 `DEPLOY_GUIDE.md`
+- 文档发布：维护 `README.md`、`API_SPEC.md`、`DEPLOY_GUIDE.md`、`examples.md`（持续迭代）
+- 测试体系：`tests/run_tests.py` 提供 unit/integration/stress 三种入口；覆盖率门槛（≥ 85%）待引入 coverage 方案落地
 - 命名巡检：新增 `scripts/check_naming.py`，每次 CI 执行；flexible_report 模块已完成首批重构
 
 ## 最新进展
@@ -27,10 +27,16 @@
 - 2025-12-19：新增策略注册/启停/冲突检测工具，并扩展市场结构质量评分模块。
 - 2025-12-19：重写 `历史记录.json`，改用 ASCII 安全输出并补齐治理条目；`test_project_records.py` 与命名巡检均已通过。
 - 2025-12-19：落地策略资金池/波动率仓位/熔断工具，补充策略绩效、AI 置信度、偏差诊断、审计日志，并更新 README/API_SPEC/API参考/examples。
+- 2025-12-19：任务1 完成：全仓库 Python 文件统一标准化头注释（169 个文件），批处理脚本为 `dev/add_headers.py`。
+- 2025-12-19：任务2 完成：生成代码使用全景图（按时间轴）：`docs/user/代码使用全景图_按时间轴_20251219.md`。
+- 2025-12-19：MCP 调用审计与备份：每次工具调用记录结构化日志（`logs/mcp.log`）并可选落盘备份（`data/mcp_call_backups/`）。
+- 2025-12-19：测试体系增强：新增 `stress` 套件（200 并发任务发布 + 执行器消费）并增强任务发布器进程内并发安全。
+- 2025-12-19：云端任务增强：新增 AI 工单模板与等待结果工具（`list_task_templates`/`render_task_template`/`wait_for_task`/`wait_for_pipeline_result`）。
+- 2025-12-19：部署脚本优化：`scripts/setup.sh` / `scripts/deploy.sh` 支持可选 Docker/Nginx/Node/pm2，并增强云端 worker 可直接脚本运行。
 
 ## 待办事项
 1. 任务发布系统
-   - 图形化界面 & AI 工单模版
+   - 图形化界面（可选）
    - 任务状态通知（Webhook + MCP 推送）
 2. 风控策略库
    - 统一 RiskControlTool 接口，输出 JSON 诊断
@@ -39,8 +45,8 @@
    - `examples.md` 补足 DeFi/NFT/跨链 16 例
    - `DEPLOY_GUIDE.md` 增加 SSL/Nginx/Inspector 远程调试截图
 4. 测试
-   - 引入 pytest-mock、coverage xml，上报到 CI
-   - 新增压力测试脚本：模拟 200 并发任务
+   - 引入 coverage xml，上报到 CI（覆盖率门槛 ≥ 85%）
+   - （已完成）新增压力测试脚本：模拟 200 并发任务（见 `python tests/run_tests.py stress`）
 
 ## 已完成（详见 `已完成/README.md`）
 - 2025-12-19：`flexible_report` 模块函数命名改为 snake_case，消除 render_A/default_A 等不一致

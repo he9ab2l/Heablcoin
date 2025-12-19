@@ -215,5 +215,12 @@
     "details": "Enhanced scripts/setup.sh and scripts/deploy.sh with safer optional flags (docker/nginx/node/pm2) and multi-mode deployment (pipeline_worker/inspector/mcp_server), updated DEPLOY_GUIDE.md accordingly, and added src path bootstrap in src/core/cloud/pipeline_worker.py so it can run via `python src/core/cloud/pipeline_worker.py`.",
     "change_type": "enhance",
     "file_path": "d:/MCP/scripts/setup.sh,d:/MCP/scripts/deploy.sh,d:/MCP/DEPLOY_GUIDE.md,d:/MCP/src/core/cloud/pipeline_worker.py"
+  },
+  {
+    "id": "2025-12-19 16:08:19",
+    "user_intent": "Finalize repo hygiene: refresh the live task plan and ignore runtime MCP call backups.",
+    "details": "Updated 任务.txt to reflect the latest completed work and remaining to-dos, and extended .gitignore to exclude data/mcp_call_backups/ so runtime per-call backups never get committed.",
+    "change_type": "clean",
+    "file_path": "d:/MCP/任务.txt,d:/MCP/.gitignore"
   }
 ]
