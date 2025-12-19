@@ -62,10 +62,23 @@ import hashlib
 import hmac
 import json
 import os
+import sys
 import time
 from typing import Any, Dict, List, Optional
 
 import requests
+
+
+# --- src 分层目录支持 ---
+# 该文件可能以脚本方式运行：`python src/core/cloud/pipeline_worker.py`。
+# 为确保可导入 core/tools/skills/utils/storage，在此做一次兜底 sys.path 初始化。
+try:
+    _REPO_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+    _SRC_DIR = os.path.join(_REPO_ROOT, "src")
+    if _SRC_DIR not in sys.path:
+        sys.path.insert(0, _SRC_DIR)
+except Exception:
+    pass
 
 from storage.redis_adapter import RedisAdapter
 from core.orchestration.ai_router import LLMRouter

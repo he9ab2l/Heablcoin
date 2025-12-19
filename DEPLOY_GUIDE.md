@@ -7,7 +7,7 @@
 | 初始化服务器依赖 | `sudo bash scripts/setup.sh` |
 | 拉取更新 + 测试 + PM2 守护 | `APP_DIR=/opt/heablcoin bash scripts/deploy.sh` |
 
-> `setup.sh` 安装 Python/Node/Redis/pm2；`deploy.sh` 默认使用 `.venv` 与 `pm2` 守护 `Heablcoin.py`。
+> `setup.sh` 按需安装 Python/Node/pm2/Docker/Nginx（由环境变量开关控制）；`deploy.sh` 默认使用 `.venv` 与 `pm2` 守护云端 worker（可切换为 inspector 或 mcp_server）。
 
 ## 2. 本地开发
 1. `cp .env.example .env`，填入 Binance/Redis/API Key（建议 Testnet）。
@@ -18,8 +18,17 @@
 ## 3. 服务器部署
 1. 准备 `/opt/heablcoin`，`git clone` 仓库。
 2. 运行 `scripts/setup.sh`（或参照脚本手动执行 apt/pip 安装）。
-3. 运行 `scripts/deploy.sh`，PM2 会注册 `heablcoin-mcp`。
-4. `pm2 log heablcoin-mcp` 查看日志；`pm2 save` 持久化。
+3. 运行 `scripts/deploy.sh`（默认 `DEPLOY_MODE=pipeline_worker`）。
+4. `pm2 log` 查看日志；`pm2 save` 持久化。
+
+常用参数：
+```bash
+# 仅部署云端 pipeline worker（默认）
+DEPLOY_MODE=pipeline_worker RUN_TESTS=unit APP_DIR=/opt/heablcoin bash scripts/deploy.sh
+
+# 部署 inspector（用于远程调试 MCP）
+DEPLOY_MODE=inspector RUN_TESTS=none APP_DIR=/opt/heablcoin bash scripts/deploy.sh
+```
 
 ## 4. Redis & 任务队列
 - `.env` 配置 `REDIS_URL`（或 host/pass），默认端口 6379。
