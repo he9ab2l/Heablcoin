@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-12-19 15:38:16",
+  "last_updated": "2025-12-19 15:49:54",
   "projects": [
     {
       "project_id": "proj_20251218_01",
@@ -629,9 +629,31 @@
         {
           "task_id": "task_tasktxt_04",
           "description": "后续：API 接口可调节选项扩展、MCP 连接优化、云端工具对接、通知/AI 测试、市场研究增强、学习协作、完善说明文档",
-          "progress": 10,
+          "progress": 20,
           "status": "进行中",
           "created_at": "2025-12-19 15:27:23"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251219_154954_04",
+      "name": "测试体系增强（stress suite）",
+      "status": "已完成",
+      "progress": 100,
+      "tasks": [
+        {
+          "task_id": "task_17_01",
+          "description": "EnhancedCloudTaskPublisher：并发安全（进程内加锁，避免并发 publish/update 写坏 JSON）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 15:49:54"
+        },
+        {
+          "task_id": "task_17_02",
+          "description": "tests/run_tests.py：新增 stress 套件 + 200 并发任务压力脚本",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 15:49:54"
         }
       ]
     }
