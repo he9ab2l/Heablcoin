@@ -208,5 +208,12 @@
     "details": "Added list_task_templates/render_task_template plus wait_for_task (enhanced queue) and wait_for_pipeline_result (Redis hash) into src/tools/cloud_tools.py, then updated API_SPEC.md and docs/developer/API参考.md to document the new tools and the pipeline endpoints.",
     "change_type": "enhance",
     "file_path": "d:/MCP/src/tools/cloud_tools.py,d:/MCP/API_SPEC.md,d:/MCP/docs/developer/API参考.md"
+  },
+  {
+    "id": "2025-12-19 16:03:11",
+    "user_intent": "Harden cloud deployment and make the pipeline worker runnable as a standalone script.",
+    "details": "Enhanced scripts/setup.sh and scripts/deploy.sh with safer optional flags (docker/nginx/node/pm2) and multi-mode deployment (pipeline_worker/inspector/mcp_server), updated DEPLOY_GUIDE.md accordingly, and added src path bootstrap in src/core/cloud/pipeline_worker.py so it can run via `python src/core/cloud/pipeline_worker.py`.",
+    "change_type": "enhance",
+    "file_path": "d:/MCP/scripts/setup.sh,d:/MCP/scripts/deploy.sh,d:/MCP/DEPLOY_GUIDE.md,d:/MCP/src/core/cloud/pipeline_worker.py"
   }
 ]

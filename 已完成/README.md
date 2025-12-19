@@ -9,3 +9,4 @@
 | 2025-12-19 | 任务2：生成代码使用全景图文档（按时间轴）：`docs/user/代码使用全景图_按时间轴_20251219.md` |
 | 2025-12-19 | 测试体系：新增 `stress` 套件（200 并发任务）+ EnhancedCloudTaskPublisher 进程内并发安全 |
 | 2025-12-19 | 云端任务增强：新增 AI 工单模板（`list_task_templates`/`render_task_template`）+ 等待结果工具（`wait_for_task`/`wait_for_pipeline_result`） |
+| 2025-12-19 | 部署脚本优化：`scripts/setup.sh`/`scripts/deploy.sh` 支持多模式部署（pipeline worker/inspector）并更新 `DEPLOY_GUIDE.md` |
