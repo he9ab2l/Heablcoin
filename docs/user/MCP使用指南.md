@@ -182,4 +182,4 @@ python tests/test_email_connection.py
 
 ## 更多文档
 
-- [文档索引](INDEX.md)
+- [文档索引](README.md)

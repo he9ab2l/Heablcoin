@@ -1,6 +1,6 @@
 # Heablcoin MCP Trading System
 
-[English](README.md) | [????](README.zh-CN.md)
+[English](README.md) | [中文](README.zh-CN.md)
 
 > Intelligent, modular crypto trading assistant compliant with the Model Context Protocol (MCP).
 
@@ -33,12 +33,14 @@ Heablcoin is a modular trading system built for MCP clients (Claude Desktop, Win
 
 ## Quick Links
 
-- [Installation Guide](docs/user/????.md)
-- [Configuration Guide](docs/user/????.md)
-- [API Reference](docs/developer/API??.md)
+- [Quick Start](docs/user/快速开始.md)
+- [Installation Guide](docs/user/安装指南.md)
+- [Configuration Guide](docs/user/配置指南.md)
+- [MCP Configuration](docs/user/MCP配置指南.md)
+- [API Reference](docs/developer/API参考.md)
 - [API Spec (Tools & Payloads)](API_SPEC.md)
 - [Deployment Guide](DEPLOY_GUIDE.md)
-- [Architecture](docs/developer/????.md)
+- [Architecture](docs/developer/架构设计.md)
 - [Task Examples](examples.md)
 
 ## Environment Variables (core)
@@ -151,7 +153,7 @@ python tests/run_tests.py --quick
 # Dev server (MCP stdio)
 python Heablcoin.py
 ```
-Guides: `dev/DEVELOPER_GUIDE.md`, `dev/DEV_LOG.md`, `docs/developer/Prompt???.md` (response rules & conventions).
+Guides: `dev/DEVELOPER_GUIDE.md`, `dev/DEV_LOG.md`, `docs/developer/Prompt备忘录.md` (response rules & conventions).
 
 ## Logs, Data, and Persistence
 
