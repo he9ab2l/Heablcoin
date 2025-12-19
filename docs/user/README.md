@@ -11,6 +11,6 @@
 7. `docs/user/功能概览.md`
 8. `docs/user/邮件配置指南.md`
 9. `docs/user/故障排查.md`
-10. `docs/user/代码使用全景图_按时间轴.md`（代码层面全景图/时间轴）
+10. `docs/user/代码使用全景图_按时间轴_20251219.md`（代码层面全景图/时间轴，最新版）
 
 开发者文档入口见：`docs/developer/README.md`
