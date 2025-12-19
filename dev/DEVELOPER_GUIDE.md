@@ -16,7 +16,7 @@
 - 数据目录：`data/` 仅存持久数据，建议使用 `data/persist/` 与 `data/tmp/` 分离，详见 `data/README.md`。
 
 ## 开发调试建议
-1) 保持 `USE_TESTNET=True` 先跑 `python tests/run_tests.py --quick`。  
+1) 保持 `USE_TESTNET=True` 先跑 `python tests/run_tests.py unit`。  
 2) Redis/青龙：设置 `REDIS_URL`，本地可先 `set_cloud_sentry` 后用 `RUN_ONCE=true python qinglong_worker.py` 验证一轮。  
 3) Notion：填好 `NOTION_API_KEY`/`NOTION_DATABASE_ID`，用 `sync_session_to_notion` 测试。  
 4) 多模型：在 `.env` 中只填一个 Key 也可运行；`AI_DEFAULT_PROVIDER` 控制兜底。  

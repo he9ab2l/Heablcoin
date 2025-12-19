@@ -5,7 +5,7 @@
 ### 1. 快速验证（推荐）
 ```bash
 cd tests
-python run_tests.py --quick
+python run_tests.py --file test_integration_simple.py
 ```
 
 **预期输出**:

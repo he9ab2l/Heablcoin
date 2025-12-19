@@ -32,7 +32,7 @@ python run_tests.py
 ### 2. 快速测试（推荐首次运行）
 
 ```bash
-python run_tests.py --quick
+python run_tests.py --file test_integration_simple.py
 ```
 
 ### 3. 运行特定测试套件
@@ -57,36 +57,36 @@ python run_tests.py --file test_smart_cache.py
 python run_tests.py --list
 ```
 
-## 📋 测试套件说明
+## 测试套件说明
 
 ### 单元测试 (Unit Tests)
 
 #### `test_smart_logger.py` - 智能日志系统
-- ✅ SmartLogger 创建和初始化
-- ✅ 5个日志通道（system/trading/analysis/error/performance）
-- ✅ 性能记录和统计
-- ✅ 性能装饰器
-- ✅ 全局单例模式
+- SmartLogger 创建和初始化
+- 5个日志通道（system/trading/analysis/error/performance）
+- 性能记录和统计
+- 性能装饰器
+- 全局单例模式
 
 **测试数量**: 5个测试
 
 #### `test_smart_cache.py` - 智能缓存系统
-- ✅ 基本缓存操作（get/set）
-- ✅ TTL过期机制
-- ✅ 缓存未命中处理
-- ✅ 缓存统计（命中率、键数）
-- ✅ 缓存清除（全部/模式匹配）
-- ✅ 缓存装饰器
-- ✅ 全局单例模式
+- 基本缓存操作（get/set）
+- TTL过期机制
+- 缓存未命中处理
+- 缓存统计（命中率、键数）
+- 缓存清除（全部/模式匹配）
+- 缓存装饰器
+- 全局单例模式
 
 **测试数量**: 7个测试
 
 #### `test_mcp_tools.py` - MCP工具功能
-- ✅ MCP工具安全装饰器
-- ✅ stdout隔离机制
-- ✅ 环境变量辅助函数
-- ✅ 通知开关逻辑
-- ✅ 安全文件名生成
+- MCP工具安全装饰器
+- stdout隔离机制
+- 环境变量辅助函数
+- 通知开关逻辑
+- 安全文件名生成
 
 **测试数量**: 5个测试
 
@@ -95,11 +95,11 @@ python run_tests.py --list
 #### `test_integration_simple.py` - 简单集成测试
 快速验证核心功能，适合日常开发。
 
-- ✅ 工具模块导入
-- ✅ 日志和缓存集成
-- ✅ 性能监控
-- ✅ 异常处理
-- ✅ 日志文件创建
+- 工具模块导入
+- 日志和缓存集成
+- 性能监控
+- 异常处理
+- 日志文件创建
 
 **测试数量**: 5个测试  
 **运行时间**: ~1秒
@@ -107,39 +107,39 @@ python run_tests.py --list
 #### `test_integration_full.py` - 完整集成测试
 全面测试所有优化功能的协同工作。
 
-- ✅ P0-1: stdout隔离机制
-- ✅ P0-2: 全局异常保护
-- ✅ P0-3: 智能日志系统
-- ✅ P1-1: 智能缓存系统
-- ✅ 日志+缓存协同工作
-- ✅ 错误日志+缓存协同
-- ✅ 所有优化功能状态
+- P0-1: stdout隔离机制
+- P0-2: 全局异常保护
+- P0-3: 智能日志系统
+- P1-1: 智能缓存系统
+- 日志+缓存协同工作
+- 错误日志+缓存协同
+- 所有优化功能状态
 
 **测试数量**: 7个测试  
 **运行时间**: ~2秒
 
-## 📊 测试覆盖
+## 测试覆盖
 
 ### P0 - 稳定性功能
-- ✅ stdout隔离 (防止污染MCP协议)
-- ✅ 异常捕获 (防止MCP崩溃)
-- ✅ 智能日志 (多通道 + 性能监控)
+- stdout隔离 (防止污染MCP协议)
+- 异常捕获 (防止MCP崩溃)
+- 智能日志 (多通道 + 性能监控)
 
 ### P1 - 性能功能
-- ✅ 智能缓存 (TTL + 统计)
-- ✅ 性能监控 (慢查询检测)
+- 智能缓存 (TTL + 统计)
+- 性能监控 (慢查询检测)
 
 ### 集成功能
-- ✅ 日志和缓存协同
-- ✅ 错误处理和日志
-- ✅ 性能装饰器
+- 日志和缓存协同
+- 错误处理和日志
+- 性能装饰器
 
-## 🎯 使用场景
+## 使用场景
 
 ### 开发时
 ```bash
 # 快速验证改动
-python run_tests.py --quick
+python run_tests.py --file test_integration_simple.py
 
 # 验证特定模块
 python run_tests.py --file test_smart_cache.py

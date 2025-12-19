@@ -153,13 +153,18 @@ pip install -r requirements.txt
 - `reports/query_backups/YYYYMMDD/`
 
 ---
-
 ## 验证步骤
 
 1. 先在终端运行：
 
 ```bash
-python tests/run_tests.py --quick
+python tests/run_tests.py unit
+```
+
+如需验证交易所连通性（可能需要联网与交易所配置），可运行：
+
+```bash
+python Heablcoin-test.py --quick
 ```
 
 ### 邮箱配置验证（可选）

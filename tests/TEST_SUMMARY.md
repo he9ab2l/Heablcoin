@@ -40,17 +40,15 @@
 
 ### 集成功能 (100%)
 ✅ 日志+缓存协同  
-✅ 性能装饰器  
-✅ 错误处理集成  
 
 ---
 
-## 🚀 快速使用
+## 快速使用
 
 ### 1. 快速测试（推荐）
 ```bash
 cd tests
-python run_tests.py --quick
+python run_tests.py --file test_integration_simple.py
 ```
 **运行时间**: ~1秒  
 **测试数量**: 5个
@@ -196,11 +194,11 @@ python run_tests.py --file test_smart_cache.py
 1. 运行单个测试文件定位问题
 2. 查看详细错误信息和堆栈跟踪
 3. 检查 `logs/` 目录下的日志文件
-4. 使用 `--quick` 快速迭代
+4. 使用 `--file <测试文件>` 快速迭代
 
 ---
 
-## 📚 相关文档
+## 相关文档
 
 - [测试README](README.md) - 详细使用说明
 - [升级文档](../升级.md) - 优化功能说明

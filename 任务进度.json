@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-12-19 16:08:19",
+  "last_updated": "2025-12-19 18:30:50",
   "projects": [
     {
       "project_id": "proj_20251218_01",
@@ -683,6 +683,35 @@
           "progress": 100,
           "status": "已完成",
           "created_at": "2025-12-19 15:55:19"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251219_183050_06",
+      "name": "文档与测试说明对齐 + Windsurf MCP 配置精简",
+      "status": "已完成",
+      "progress": 100,
+      "tasks": [
+        {
+          "task_id": "task_19_01",
+          "description": "统一文档口径：Python 3.10+，修正 tests/run_tests.py 参数说明并清理旧的 --quick/pytest 描述",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 18:30:50"
+        },
+        {
+          "task_id": "task_19_02",
+          "description": "统一测试说明：快速冒烟用 --file test_integration_simple.py；对外文档 grep 校验清零",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 18:30:50"
+        },
+        {
+          "task_id": "task_19_03",
+          "description": "Windsurf mcp_config.json：移除超长 disabledTools，改用 server-side TOOLS_DISABLED（并保持 paper/testnet 默认与 UTF-8 env）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 18:30:50"
         }
       ]
     }

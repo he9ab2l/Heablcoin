@@ -6,7 +6,7 @@
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 
 Heablcoin is a modular trading system built for MCP clients (Claude Desktop, Windsurf). It provides market analysis, trading execution, reporting, and personal performance tracking with safety-first defaults.
 
@@ -74,7 +74,7 @@ cp .env.example .env
 pip install -r requirements.txt
 
 # 4) Verify
-python tests/run_tests.py --quick
+python tests/run_tests.py unit
 ```
 
 ## MCP Usage
@@ -145,10 +145,12 @@ python tests/run_tests.py email
 # Lint / format (optional hooks)
 python scripts/scan_secrets.py --staged
 
-# Run full tests
-python -m pytest
-# or quick
-python tests/run_tests.py --quick
+# Run unit tests
+python tests/run_tests.py unit
+# Run integration tests
+python tests/run_tests.py integration
+# Run full suite
+python tests/run_tests.py all
 
 # Dev server (MCP stdio)
 python Heablcoin.py

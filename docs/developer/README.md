@@ -25,5 +25,5 @@
 ## 本地验证
 
 - 启动 MCP：`python Heablcoin.py`
-- 快速回归：`python tests/run_tests.py --quick`
+- 快速回归：`python tests/run_tests.py --file test_integration_simple.py`
 - 全量回归：`python tests/run_tests.py all`

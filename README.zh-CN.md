@@ -6,7 +6,7 @@
 
 ![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
-![Python](https://img.shields.io/badge/python-3.8+-blue.svg)
+![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 
 ## 功能亮点
 
@@ -47,7 +47,7 @@
 ```bash
 pip install -r requirements.txt
 cp .env.example .env
-python tests/run_tests.py --quick
+python tests/run_tests.py unit
 ```
 
 ## MCP 使用
