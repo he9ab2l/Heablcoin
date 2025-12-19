@@ -9,7 +9,13 @@
 | 学习 | `start_learning_session` | 学习对话 |
 | 任务 | `publish_task` | 发布异步任务 |
 | 任务 | `get_task_status` | 查询任务状态 |
+| 任务 | `wait_for_task` | 等待任务完成（轮询） |
+| 任务 | `list_task_templates` | AI 工单模板列表 |
+| 任务 | `render_task_template` | 生成 publish_task 参数骨架 |
 | 任务 | `list_enhanced_tasks` | 查看增强队列 |
+| 任务 | `publish_pipeline_task` | 发布 Redis pipeline 任务（list） |
+| 任务 | `get_pipeline_result` | 查询 Redis pipeline 结果（hash） |
+| 任务 | `wait_for_pipeline_result` | 等待 pipeline 结果回写（轮询） |
 | 哨兵 | `set_cloud_sentry` | 写入 Redis 价格哨兵 |
 | AI | `ai_call_role` | 按角色调用模型 |
 | 研究 | `generate_quant_research_prompts` | 量化研究提示词 |

@@ -126,6 +126,14 @@
 - 兼容版任务（面向 MCP 调用）：
   - `publish_task(...)`
   - `get_task_status(task_id)`
+  - `wait_for_task(task_id, timeout_seconds=60.0, poll_interval=1.0)`
+- AI 工单模板（便于“选择模板→一键发布”）：
+  - `list_task_templates(task_type="", action="")`
+  - `render_task_template(template_id, overrides_json="{}")`
+- Redis Pipeline（list → worker → hash）：
+  - `publish_pipeline_task(query, task_id="", notify="", extra_payload_json="{}", queue_key="")`
+  - `get_pipeline_result(task_id, result_hash_key="")`
+  - `wait_for_pipeline_result(task_id, timeout_seconds=60.0, poll_interval=1.0, result_hash_key="")`
 - API Manager：
   - `add_api_endpoint(name, base_url, api_key, model, priority=1, max_requests_per_minute=60, timeout=30.0)`
   - `get_api_manager_stats()` / `reset_api_stats()`
