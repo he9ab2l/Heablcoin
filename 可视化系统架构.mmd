@@ -1,4 +1,4 @@
-%% 可视化系统架构 - 自动生成（更新时间：2025-12-18 21:37:17）
+%% 可视化系统架构 - 自动生成（更新时间：2025-12-19 15:12:23）
 %% 可直接导入 https://www.mermaidchart.com/
 %% Heablcoin - MCP 驱动的加密交易系统（src 分层架构）
 
@@ -25,6 +25,7 @@ graph TB
         DS_Redis["Redis（任务队列/缓存）"]
         DS_LLM["LLM Providers（OpenAI/DeepSeek/Claude/Gemini/...）"]
         DS_Notify["通知通道（SMTP/Server酱/飞书/...）"]
+        DS_Audit["审计日志/备份（logs/mcp.log + data/mcp_call_backups/*）"]
     end
 
     subgraph Core["核心层 Core（src/core）"]
@@ -88,6 +89,7 @@ graph TB
         UT_Windsurf["Windsurf（MCP Client）"]
         UT_Test["Heablcoin-test.py（终端自检）"]
         UT_Qinglong["qinglong_worker.py（青龙 Worker）"]
+        UT_PipelineWorker["src/core/cloud/pipeline_worker.py（云端 Pipeline Worker）"]
     end
 
     %% 主要数据流/调用链
@@ -102,11 +104,16 @@ graph TB
 
     CORE_McpSafety --> CORE_ToolRegistry
     ToolsLayer --> CORE_ToolRegistry
+    CORE_McpSafety --> DS_Audit
 
     DS_Exchange --> U_ExchangeAdapter
     DS_Redis --> ST_Redis
     DS_LLM --> CORE_Orch
     DS_Notify --> ST_Email
+    UT_PipelineWorker --> DS_Redis
+    UT_PipelineWorker --> DS_LLM
+    UT_PipelineWorker --> DS_Notify
+    T_Cloud --> DS_Redis
 
     SERVER -->|"MCP JSON-RPC"| UT_Claude
     SERVER -->|"MCP JSON-RPC"| UT_Windsurf
@@ -114,13 +121,13 @@ graph TB
     UT_Qinglong --> CORE_Cloud
 
     %% 样式应用
-    class DS_Config,DS_Exchange,DS_Redis,DS_LLM,DS_Notify datasource
+    class DS_Config,DS_Exchange,DS_Redis,DS_LLM,DS_Notify,DS_Audit datasource
     class CORE_Path,CORE_Exchange,CORE_McpSafety,CORE_ToolRegistry,CORE_Cloud,CORE_Orch core
     class T_Market,T_Personal,T_Learning,T_Orch,T_Cloud,T_Admin tools
     class SK_Market,SK_Personal,SK_Learning,SK_Report,SK_Data skills
     class U_Paths,U_Env,U_Logger,U_Cache,U_Risk,U_ExchangeAdapter,U_Notifier utils
     class ST_File,ST_Redis,ST_Email,ST_Notion storage
     class ENTRY,SERVER,SystemArchitecture terminal
-    class UT_Claude,UT_Windsurf,UT_Test,UT_Qinglong terminal
+    class UT_Claude,UT_Windsurf,UT_Test,UT_Qinglong,UT_PipelineWorker terminal
     class DOC_User,DOC_Dev,DOC_Lesson terminal
     class DEV_GpSh,DEV_GpPs1,DEV_SecretScan,DEV_CI terminal

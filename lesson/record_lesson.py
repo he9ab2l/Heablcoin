@@ -3,6 +3,7 @@ from __future__ import annotations
 import argparse
 import os
 import re
+import sys
 from dataclasses import dataclass
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -90,7 +91,7 @@ def main() -> int:
     )
 
     path = write_lesson(record, output_dir=args.output_dir)
-    os.stdout.write(str(path))
+    sys.stdout.write(str(path))
     return 0
 
 

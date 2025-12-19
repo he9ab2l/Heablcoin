@@ -173,5 +173,12 @@
     "details": "Added fund allocator, volatility sizer, circuit breaker, strategy performance tracker, AI governance monitors, audit log, flow pressure + market quality modules, docs/examples updates.",
     "change_type": "enhance",
     "file_path": "d:/MCP/src/skills/risk,d:/MCP/src/skills/strategy,d:/MCP/src/skills/governance,d:/MCP/src/skills/market_analysis/modules/flow_pressure.py,d:/MCP/src/skills/market_analysis/modules/market_quality.py,d:/MCP/src/tools/risk_tools.py,d:/MCP/src/tools/strategy_tools.py,d:/MCP/src/tools/governance_tools.py,d:/MCP/tests/test_risk_extensions.py,d:/MCP/tests/test_strategy_performance.py,d:/MCP/tests/test_market_quality_modules.py,d:/MCP/tests/test_governance_monitors.py,d:/MCP/README.md,d:/MCP/README.zh-CN.md,d:/MCP/API_SPEC.md,d:/MCP/docs/developer,d:/MCP/examples.md"
+  },
+  {
+    "id": "2025-12-19 15:12:23",
+    "user_intent": "Audit every MCP tool call and expose Redis-based cloud pipeline controls.",
+    "details": "Enhanced core.mcp_safety.mcp_tool_safe to emit structured audit logs and optional per-call JSON backups with key-based redaction; added safe print-to-stderr protection without breaking MCP stdio; introduced Redis-backed publish_pipeline_task/get_pipeline_result tools and documented new env knobs; added unit tests for call backups and Feishu push signature/payload.",
+    "change_type": "enhance",
+    "file_path": "d:/MCP/src/core/mcp_safety.py,d:/MCP/src/core/server.py,d:/MCP/src/tools/cloud_tools.py,d:/MCP/src/utils/smart_logger.py,d:/MCP/src/skills/report/flexible_report/service.py,d:/MCP/docs/user/配置指南.md,d:/MCP/docs/developer/资源与环境变量.md,d:/MCP/.env.example,d:/MCP/tests/test_mcp_call_backups.py,d:/MCP/tests/test_feishu_push.py,d:/MCP/tests/run_tests.py,d:/MCP/tests/test_llm_router.py,d:/MCP/tests/test_mcp_stdio_startup.py,d:/MCP/tests/test_smart_logger.py"
   }
 ]

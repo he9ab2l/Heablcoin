@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-12-19 00:40:00",
+  "last_updated": "2025-12-19 15:12:23",
   "projects": [
     {
       "project_id": "proj_20251218_01",
@@ -553,6 +553,49 @@
           "progress": 90,
           "status": "进行中",
           "created_at": "2025-12-19 00:25:00"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251219_151223_02",
+      "name": "MCP 调用审计与云端 Pipeline 对接",
+      "status": "已完成",
+      "progress": 100,
+      "tasks": [
+        {
+          "task_id": "task_16_01",
+          "description": "SmartLogger 增加 cloud/storage/mcp 日志通道",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 15:12:23"
+        },
+        {
+          "task_id": "task_16_02",
+          "description": "mcp_tool_safe：调用审计日志 + 备份落盘 + 脱敏与截断开关",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 15:12:23"
+        },
+        {
+          "task_id": "task_16_03",
+          "description": "MCP stdout 保护：默认仅重定向 print() 到 stderr（不破坏 stdio 协议）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 15:12:23"
+        },
+        {
+          "task_id": "task_16_04",
+          "description": "新增云端工具：publish_pipeline_task/get_pipeline_result（Redis list/hash）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 15:12:23"
+        },
+        {
+          "task_id": "task_16_05",
+          "description": "补齐测试与文档：MCP 备份脱敏、飞书签名与 env 变量说明",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 15:12:23"
         }
       ]
     }
