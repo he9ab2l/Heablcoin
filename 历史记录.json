@@ -180,5 +180,12 @@
     "details": "Enhanced core.mcp_safety.mcp_tool_safe to emit structured audit logs and optional per-call JSON backups with key-based redaction; added safe print-to-stderr protection without breaking MCP stdio; introduced Redis-backed publish_pipeline_task/get_pipeline_result tools and documented new env knobs; added unit tests for call backups and Feishu push signature/payload.",
     "change_type": "enhance",
     "file_path": "d:/MCP/src/core/mcp_safety.py,d:/MCP/src/core/server.py,d:/MCP/src/tools/cloud_tools.py,d:/MCP/src/utils/smart_logger.py,d:/MCP/src/skills/report/flexible_report/service.py,d:/MCP/docs/user/配置指南.md,d:/MCP/docs/developer/资源与环境变量.md,d:/MCP/.env.example,d:/MCP/tests/test_mcp_call_backups.py,d:/MCP/tests/test_feishu_push.py,d:/MCP/tests/run_tests.py,d:/MCP/tests/test_llm_router.py,d:/MCP/tests/test_mcp_stdio_startup.py,d:/MCP/tests/test_smart_logger.py"
+  },
+  {
+    "id": "2025-12-19 15:27:23",
+    "user_intent": "Standardize Python file headers across the whole repo with an automated batch script.",
+    "details": "Upgraded dev/add_headers.py to generate the required standardized header template, infer per-file functional description, extract import dependencies into the \"文件结构\" section, preserve shebang/encoding, and apply the header to all Python files in the repository (169 files) without changing business logic.",
+    "change_type": "add",
+    "file_path": "d:/MCP/dev/add_headers.py,d:/MCP/src,d:/MCP/tests,d:/MCP/scripts,d:/MCP/lesson,d:/MCP/Heablcoin.py,d:/MCP/Heablcoin-test.py"
   }
 ]
