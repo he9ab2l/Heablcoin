@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-12-19 15:27:23",
+  "last_updated": "2025-12-19 15:38:16",
   "projects": [
     {
       "project_id": "proj_20251218_01",
@@ -603,7 +603,7 @@
       "project_id": "proj_20251219_152723_03",
       "name": "任务.txt 执行（heablcoin_v2）",
       "status": "进行中",
-      "progress": 40,
+      "progress": 70,
       "tasks": [
         {
           "task_id": "task_tasktxt_01",
@@ -622,8 +622,8 @@
         {
           "task_id": "task_tasktxt_03",
           "description": "任务2：生成代码使用全景图文档（按时间轴，文件名带日期后缀）",
-          "progress": 0,
-          "status": "待办",
+          "progress": 100,
+          "status": "已完成",
           "created_at": "2025-12-19 15:27:23"
         },
         {

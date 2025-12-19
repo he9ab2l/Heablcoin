@@ -187,5 +187,12 @@
     "details": "Upgraded dev/add_headers.py to generate the required standardized header template, infer per-file functional description, extract import dependencies into the \"文件结构\" section, preserve shebang/encoding, and apply the header to all Python files in the repository (169 files) without changing business logic.",
     "change_type": "add",
     "file_path": "d:/MCP/dev/add_headers.py,d:/MCP/src,d:/MCP/tests,d:/MCP/scripts,d:/MCP/lesson,d:/MCP/Heablcoin.py,d:/MCP/Heablcoin-test.py"
+  },
+  {
+    "id": "2025-12-19 15:38:16",
+    "user_intent": "Generate the repository-wide code usage panorama document (timeline view) for onboarding and operations.",
+    "details": "Created docs/user/代码使用全景图_按时间轴_20251219.md following the required structure (tech stack + timeline flows + ASCII diagrams + file/data flow maps), updated the legacy docs/user/代码使用全景图_按时间轴.md with a pointer to the latest snapshot, and refreshed docs/user/README.md navigation.",
+    "change_type": "add",
+    "file_path": "d:/MCP/docs/user/代码使用全景图_按时间轴_20251219.md,d:/MCP/docs/user/代码使用全景图_按时间轴.md,d:/MCP/docs/user/README.md"
   }
 ]
