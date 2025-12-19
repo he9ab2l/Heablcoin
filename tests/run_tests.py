@@ -14,6 +14,7 @@ TEST_SUITES = {
         "test_tool_registry.py",
         "test_visualization_output.py",
         "test_risk_management.py",
+        "test_risk_extensions.py",
         "test_notifier.py",
         "test_backtesting.py",
         "test_exchange_adapter.py",
@@ -22,6 +23,9 @@ TEST_SUITES = {
         "test_project_records.py",
         "test_validators.py",
         "test_task_executor.py",
+        "test_strategy_performance.py",
+        "test_market_quality_modules.py",
+        "test_governance_monitors.py",
     ],
     "email": [
         "test_email_connection.py",

@@ -1,156 +1,177 @@
 [
   {
     "id": "2025-12-18 13:04:00",
-    "user_intent": "用户希望为项目建立完整的工程化管理体系，包括结构化记忆、系统架构可视化、任务追踪和可定位日志。",
-    "details": "1. 为112个Python文件添加标准化头注释；2. 生成代码使用全景图文档；3. 新增exchange_adapter、backtesting、notifier、risk_management四个utils模块；4. 更新README中英文版本；5. 建立历史记录、任务进度、系统架构可视化等工程化管理文件。",
-    "change_type": "新增",
+    "user_intent": "Establish a full engineering management layer with historical records, visual architecture, and trackable tasks/logs.",
+    "details": "Added standardized headers, shipped the project panorama doc, introduced exchange/backtesting/notifier/risk utils, refreshed both README variants, and created traceable management assets.",
+    "change_type": "add",
     "file_path": "d:/MCP/历史记录.json,d:/MCP/任务进度.json,d:/MCP/可视化系统架构.mmd,d:/MCP/docs/代码使用全景图_按时间轴_20251218.md,d:/MCP/dev/add_headers.py,d:/MCP/utils/exchange_adapter.py,d:/MCP/utils/backtesting.py,d:/MCP/utils/notifier.py,d:/MCP/utils/risk_management.py"
   },
   {
     "id": "2025-12-18 13:10:00",
-    "user_intent": "用户要求优化日志系统，实现结构化JSON输出、错误码追踪、北京时间戳和完整的文件/行号定位。",
-    "details": "1. 新增StructuredLogFormatter类输出JSON格式日志；2. 新增HumanReadableFormatter类用于控制台调试；3. 实现错误码生成器（E+模块编号+序号）；4. 新增log_error_with_context函数支持带上下文的错误记录；5. 新增HeablcoinError标准异常类禁止裸异常；6. 所有日志通道切换为结构化格式化器。",
-    "change_type": "强化",
+    "user_intent": "Harden logging with structured JSON output, error codes, Beijing timestamps, and precise file/line tracking.",
+    "details": "Introduced StructuredLogFormatter/HumanReadableFormatter, an automatic error-code generator, log_error_with_context, and HeablcoinError before switching all channels to structured format.",
+    "change_type": "enhance",
     "file_path": "d:/MCP/utils/smart_logger.py"
   },
   {
     "id": "2025-12-18 13:15:00",
-    "user_intent": "用户要求创建多端连接集成的流程标准化文档，涵盖MCP本地、云端服务器、多AI、多通道推送的完整集成流程。",
-    "details": "创建30步详细流程文档，分为五个阶段：1.MCP本地服务配置(6步)；2.云端服务器部署(7步)；3.多AI提供商集成(5步)；4.多通道信息推送配置(8步)；5.四层联动验证(4步)。覆盖Redis、OpenAI、DeepSeek、Anthropic、Telegram、Discord、企业微信、钉钉等全部组件。",
-    "change_type": "新增",
-    "file_path": "d:/MCP/docs/流程标准化_Heablcoin多端连接集成.md"
+    "user_intent": "Create a multi-end integration runbook covering MCP local setup, cloud deployment, AI providers, and push channels.",
+    "details": "Published a 30-step guide across local prep, cloud rollout, AI integrations, multi-channel notifications, and validation for Redis/OpenAI/DeepSeek/Anthropic/Telegram/Discord/WeCom/DingTalk.",
+    "change_type": "add",
+    "file_path": "d:/MCP/docs/developer/多端连接集成流程标准化.md"
   },
   {
     "id": "2025-12-18 13:36:00",
-    "user_intent": "用户要求将项目上下文文档与其提供的关键提示词落盘保存，并作为后续会话可复用记忆。",
-    "details": "1. 新增项目上下文文档：docs/项目上下文文档_ProjectContext_20251218.md；2. 新增提示词备忘录：docs/Prompt_备忘录_20251218.md。",
-    "change_type": "新增",
+    "user_intent": "Persist the provided project context and prompts as reusable knowledge assets.",
+    "details": "Saved the project context reference plus the prompt memo so future sessions can reload the same constraints.",
+    "change_type": "add",
     "file_path": "d:/MCP/docs/项目上下文文档_ProjectContext_20251218.md,d:/MCP/docs/Prompt_备忘录_20251218.md"
   },
   {
     "id": "2025-12-18 13:50:00",
-    "user_intent": "用户要求将文档按用户/开发者分离并进行结构化整理，命名语义化且尽量去日期化，同时修复所有引用链接。",
-    "details": "1. 新增 docs/user 与 docs/developer（含 runbooks）目录并将文档分类归档；2. 将带日期文件名改为稳定语义化命名；3. 更新 README 与相关文档中旧 docs 路径引用到新路径；4. 补充 .gitignore 忽略 logs/*.log.* 轮转日志。",
-    "change_type": "修改",
+    "user_intent": "Restructure docs by audience, rename files semantically, and fix cross references.",
+    "details": "Created docs/user and docs/developer trees, removed dated filenames, updated README links, and expanded .gitignore to cover rotated logs.",
+    "change_type": "modify",
     "file_path": "d:/MCP/docs,d:/MCP/README.md,d:/MCP/README.zh-CN.md,d:/MCP/tests/README.md,d:/MCP/.gitignore"
   },
   {
     "id": "2025-12-18 13:52:00",
-    "user_intent": "用户要求文档放置结构化、命名规范易懂且用户文档与开发者文档分离，并补齐入口导航。",
-    "details": "新增文档入口导航：docs/README.md、docs/user/README.md、docs/developer/README.md，用于统一入口与用户/开发者分层导航。",
-    "change_type": "新增",
+    "user_intent": "Provide clear navigation entries for users vs developers.",
+    "details": "Added docs/README plus dedicated user/developer entry points for predictable onboarding.",
+    "change_type": "add",
     "file_path": "d:/MCP/docs/README.md,d:/MCP/docs/user/README.md,d:/MCP/docs/developer/README.md"
   },
   {
     "id": "2025-12-18 14:18:00",
-    "user_intent": "用户要求将深度审计专家系统 v4.0 Prompt 固化为可复用工程资产，并作为后续会话默认审计框架。",
-    "details": "1. 新增独立 Prompt 文件：docs/developer/审计专家系统_v4.0_Prompt.md；2. 更新 docs/developer/Prompt备忘录.md 新增审计框架章节引用；3. 增量更新 可视化系统架构.mmd 加入 Documentation 文档层节点。",
-    "change_type": "新增",
+    "user_intent": "Preserve the deep-audit expert prompt v4.0 as a reusable framework.",
+    "details": "Stored the prompt independently, referenced it from the prompt memo, and added a documentation node to the architecture diagram.",
+    "change_type": "add",
     "file_path": "d:/MCP/docs/developer/审计专家系统_v4.0_Prompt.md,d:/MCP/docs/developer/Prompt备忘录.md,d:/MCP/可视化系统架构.mmd"
   },
   {
     "id": "2025-12-18 14:32:00",
-    "user_intent": "用户要求清理冗余文档、落盘v5.0 Prompt、整理文档结构，让项目更易于后续开发。项目版本定为v1初版。",
-    "details": "1. 删除5个冗余文档：UPGRADE_LOG_v2.0.md、UPGRADE_SUMMARY.md、UPGRADE_v3.0_COMPLETE.md、IMPLEMENTATION_COMPLETE.md、NEXT_STEPS.md；2. 移动MCP_CONFIG_GUIDE.md到docs/user/MCP配置指南.md；3. 移动ROADMAP.md到docs/developer/路线图.md；4. 新增审计与传承专家系统v5.0 Prompt；5. 更新Prompt备忘录添加v5.0章节；6. 整理开发端和用户端文档README结构。",
-    "change_type": "优化",
+    "user_intent": "Clean redundant docs, land the v5 prompt, and keep names semantic for the v1 baseline.",
+    "details": "Deleted legacy upgrade docs, relocated MCP config guide and roadmap, published the v5 audit/inheritance prompt, refreshed the memo, and aligned README structures.",
+    "change_type": "optimize",
     "file_path": "d:/MCP/docs/developer/审计与传承专家系统_v5.0_Prompt.md,d:/MCP/docs/developer/Prompt备忘录.md,d:/MCP/docs/developer/README.md,d:/MCP/docs/user/README.md,d:/MCP/docs/user/MCP配置指南.md,d:/MCP/docs/developer/路线图.md"
   },
   {
     "id": "2025-12-18 14:45:00",
-    "user_intent": "用户要求实现 lesson/ 经验复盘机制、规范化 __init__.py 导出、补齐单元测试并完成全量测试，以提升项目后续开发可维护性。",
-    "details": "1. 新增 lesson/ 目录、TEMPLATE.md 与 record_lesson.py（非交互参数驱动，自动生成带时间戳的复盘文件）；2. 为关键包 __init__.py 统一相对导入并明确 __all__（cloud/orchestration/data/market_analysis/learning/personal_analytics/storage/report/utils）；3. 新增单元测试：risk_management/notifier/backtesting/exchange_adapter/lesson_recorder，并接入 tests/run_tests.py 的 unit/all 套件；4. 完整跑通测试：--quick、unit、integration、all。",
-    "change_type": "强化",
+    "user_intent": "Introduce the lesson/ retrospective mechanism, standardize __init__ exports, and extend unit tests.",
+    "details": "Created lesson/TEMPLATE + generator, normalized package exports, authored tests for risk/notifier/backtesting/exchange/lesson, and wired them into the runner.",
+    "change_type": "enhance",
     "file_path": "d:/MCP/lesson,d:/MCP/tests/run_tests.py,d:/MCP/tests/test_risk_management.py,d:/MCP/tests/test_notifier.py,d:/MCP/tests/test_backtesting.py,d:/MCP/tests/test_exchange_adapter.py,d:/MCP/tests/test_lesson_recorder.py,d:/MCP/cloud/__init__.py,d:/MCP/orchestration/__init__.py,d:/MCP/data/__init__.py,d:/MCP/market_analysis/__init__.py,d:/MCP/market_analysis/modules/__init__.py,d:/MCP/learning/__init__.py,d:/MCP/personal_analytics/__init__.py,d:/MCP/storage/__init__.py,d:/MCP/report/__init__.py,d:/MCP/report/flexible_report/__init__.py,d:/MCP/utils/__init__.py"
   },
   {
     "id": "2025-12-18 15:15:00",
-    "user_intent": "用户要求结合 KISS/YAGNI/SOLID 原则进行全局架构审计与重构，消除代码重复，完善项目功能。",
-    "details": "1. 抽取重复的环境变量工具函数到 utils/env_helpers.py（env_str/env_int/env_float/env_bool/resolve_path/parse_symbols）；2. 更新 Heablcoin.py 和 learning/core.py 引用新模块；3. 新增 test_env_helpers.py 单元测试并接入测试套件；4. 全量测试通过（12/12）。",
-    "change_type": "重构",
+    "user_intent": "Apply KISS/YAGNI/SOLID to env helpers and remove duplication.",
+    "details": "Centralized env helper utilities, updated Heablcoin.py and learning/core.py, added dedicated tests, and re-ran the suite.",
+    "change_type": "refactor",
     "file_path": "d:/MCP/utils/env_helpers.py,d:/MCP/utils/__init__.py,d:/MCP/Heablcoin.py,d:/MCP/learning/core.py,d:/MCP/tests/test_env_helpers.py,d:/MCP/tests/run_tests.py"
   },
   {
     "id": "2025-12-18 15:45:24",
-    "user_intent": "（历史记录修复）该条原始内容在早期写入时发生编码替换，已丢失细节，暂以占位说明并等待后续补全。",
-    "details": "原记录内容包含大量“？”占位符，无法可靠还原；后续可通过 git 历史/日志补全该条的真实变更说明。",
-    "change_type": "修复",
+    "user_intent": "Document the earlier corrupted entry as a placeholder pending recovery.",
+    "details": "Left an explicit placeholder stating the lost data should be reconstructed from git logs later.",
+    "change_type": "fix",
     "file_path": "d:/MCP/历史记录.json,d:/MCP/任务进度.json"
   },
   {
     "id": "2025-12-18 16:14:43",
-    "user_intent": "用户要求固化 MCP SYSTEM DEVELOPMENT PROMPT v1.0 为工程资产。",
-    "details": "新增 docs/developer/MCP_SYSTEM_DEVELOPMENT_PROMPT_v1.0.md，包含 Meta/Context/Role/Task/I/O/Example/Validation/Safety 等层，规范工具开发与输出格式。",
-    "change_type": "新增",
+    "user_intent": "Persist MCP SYSTEM DEVELOPMENT PROMPT v1.0 as a governing spec.",
+    "details": "Added MCP_SYSTEM_DEVELOPMENT_PROMPT_v1.0.md covering Meta/Context/Role/Task/I-O/Example/Validation/Safety layers.",
+    "change_type": "add",
     "file_path": "d:/MCP/docs/developer/MCP_SYSTEM_DEVELOPMENT_PROMPT_v1.0.md"
   },
   {
     "id": "2025-12-18 16:42:56",
-    "user_intent": "用户要求提升“使用者能跑通”的可用性：补齐 README/配置文档、统一邮箱收件人变量、修复 Windows UTF-8 输出问题。",
-    "details": "1. 更新 README/README.zh-CN：补齐 Claude Desktop / Windsurf MCP 配置示例与 UTF-8 环境变量建议；2. 统一邮箱收件人变量：新增 RECIPIENT_EMAIL 为主变量，并兼容 RECEIVER_EMAIL/NOTIFY_EMAIL；3. 修复 flexible_report 邮件服务读取收件人逻辑（优先 RECIPIENT_EMAIL）；4. 测试运行器与相关文档补齐 PYTHONIOENCODING/PYTHONUTF8 提示，避免 Windows 控制台编码异常；5. 新增 lesson 复盘：测试输出编码错误。",
-    "change_type": "优化",
+    "user_intent": "Improve usability so operators can \"just run it\": README fixes, email recipient unification, UTF-8 guidance.",
+    "details": "Updated READMEs and troubleshooting docs, normalized RECIPIENT_EMAIL handling in flexible_report, documented Python UTF-8 env vars, and recorded a lesson entry about console encoding.",
+    "change_type": "optimize",
     "file_path": "d:/MCP/README.md,d:/MCP/README.zh-CN.md,d:/MCP/docs/user/快速开始.md,d:/MCP/docs/user/故障排查.md,d:/MCP/docs/developer/报告系统指南.md,d:/MCP/docs/developer/README.md,d:/MCP/src/skills/report/flexible_report/service.py,d:/MCP/tests/run_tests.py,d:/MCP/lesson/测试输出编码错误_20251218_1642.md"
   },
   {
     "id": "2025-12-18 18:11:11",
-    "user_intent": "用户要求对仓库进行“项目化/分层化”重构：落地 src 分层（tools/skills/core/utils/storage），并保证可跑通、可测试、可扩展。",
-    "details": "1. 目录迁移到 src：core/cloud、core/orchestration、skills/*、tools/*、utils/*、storage/*；2. MCP 入口拆分：核心实现迁移到 src/core/server.py，仓库根 Heablcoin.py 保持稳定启动入口（包装器）；3. MCP 工具收敛：market/personal/learning/orchestration/cloud 工具模块迁移到 src/tools 并统一注册；4. 引入 core.path_setup + utils.project_paths 统一 sys.path 与仓库根路径解析，避免迁移后的相对路径失效；5. 更新 .env.example 与 docs/developer/资源与环境变量.md，补齐 Redis/通知/LLM 模板（不含任何真实密钥）；6. 更新 可视化系统架构.mmd 反映新的 src 分层架构，减少编码风险（不使用 emoji）。",
-    "change_type": "重构",
+    "user_intent": "Projectize the repo with explicit src layering and keep the MCP entry stable.",
+    "details": "Moved code into src/*, split Heablcoin.py vs core/server.py, centralized tool registration, added path_setup/project_paths, refreshed env templates/docs, and synced the architecture diagram.",
+    "change_type": "refactor",
     "file_path": "d:/MCP/src,d:/MCP/Heablcoin.py,d:/MCP/src/core/server.py,d:/MCP/src/core/path_setup.py,d:/MCP/src/tools,d:/MCP/src/skills,d:/MCP/src/utils/project_paths.py,d:/MCP/tests/run_tests.py,d:/MCP/.env.example,d:/MCP/docs/developer/资源与环境变量.md,d:/MCP/可视化系统架构.mmd"
   },
   {
     "id": "2025-12-18 19:05:00",
-    "user_intent": "用户反馈历史记录与任务进度文件出现问号乱码，要求修复并保持可读性与可追溯性。",
-    "details": "1. 修复 历史记录.json 中 4 条乱码记录（补全中文描述/路径/变更类型）；2. 修复 任务进度.json 中 proj_20251218_164256_09 与 proj_20251218_10 的中文字段；3. 新增回归测试 test_project_records.py，确保记录文件可解析且不包含 ASCII 问号占位符；4. 新增 lesson 复盘，记录本次问题与防复发措施。",
-    "change_type": "修复",
+    "user_intent": "Fix the question-mark corruption inside history and task files and guard against regressions.",
+    "details": "Rewrote the impacted entries, patched the task progress file, added test_project_records.py, and logged the remediation via lesson.",
+    "change_type": "fix",
     "file_path": "d:/MCP/历史记录.json,d:/MCP/任务进度.json,d:/MCP/tests/test_project_records.py,d:/MCP/lesson/历史记录任务进度乱码_20251218_1905.md"
   },
   {
     "id": "2025-12-18 21:14:48",
-    "user_intent": "用户要求清理仓库中无用文件并在上传前检查敏感信息，避免将运行产物与潜在敏感信息提交到仓库。",
-    "details": "删除被误提交的运行日志产物 logs/system.log.2025-12-16，并同步更新历史记录与任务进度。",
-    "change_type": "清理",
+    "user_intent": "Ensure no stray runtime artifacts or sensitive info remain committed.",
+    "details": "Removed an accidentally committed rotated log and synced the management docs.",
+    "change_type": "clean",
     "file_path": "d:/MCP/logs/system.log.2025-12-16,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
   },
   {
     "id": "2025-12-18 21:20:51",
-    "user_intent": "用户要求提交前检查敏感信息并尽量自动化版本控制流程，保证每次改动都能安全提交并推送到当前分支。",
-    "details": "1. 新增 scripts/scan_secrets.py：扫描暂存区文件并检测常见密钥特征，仅输出文件名与命中统计，不输出内容；2. 新增 gp.ps1：在 Windows PowerShell 下实现 add/scan/commit/push 一键化；3. 更新 gp.sh：提交前自动触发密钥扫描；4. 更新开发者文档说明提交流程；5. 同步更新任务进度。",
-    "change_type": "增强",
+    "user_intent": "Automate commit/push with built-in secret scanning.",
+    "details": "Added scan_secrets.py plus gp.ps1/gp.sh wrappers, documented the workflow, and updated tracking files.",
+    "change_type": "enhance",
     "file_path": "d:/MCP/scripts/scan_secrets.py,d:/MCP/gp.ps1,d:/MCP/gp.sh,d:/MCP/docs/developer/README.md,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
   },
   {
     "id": "2025-12-18 21:30:04",
-    "user_intent": "用户要求继续完善架构与可扩展性，减少重复实现并保证核心能力复用。",
-    "details": "server.py 去重：删除重复的交易所连接池实现与相关配置读取，统一使用 core.exchange.get_exchange；保留 core.server.get_exchange 作为兼容包装；通过简单集成测试验证导入与核心链路。",
-    "change_type": "重构",
+    "user_intent": "Remove duplicate exchange connection logic and converge on core.exchange.",
+    "details": "Cleaned server.py so compatibility paths share one accessor and revalidated imports.",
+    "change_type": "refactor",
     "file_path": "d:/MCP/src/core/server.py,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
   },
   {
     "id": "2025-12-18 21:33:31",
-    "user_intent": "用户要求项目成熟化并强调测试闭环与可用性，需增加持续集成保证每次提交可复现通过。",
-    "details": "1. 新增 GitHub Actions 工作流：在 Ubuntu 环境安装 requirements.txt 并运行 `python tests/run_tests.py all`；2. 本地全量测试通过（14/14）；3. 同步更新历史记录与任务进度。",
-    "change_type": "增强",
+    "user_intent": "Enforce continuous testing coverage through CI.",
+    "details": "Created the GitHub Actions workflow that installs deps and runs `python tests/run_tests.py all`, mirroring local runs.",
+    "change_type": "enhance",
     "file_path": "d:/MCP/.github/workflows/tests.yml,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
   },
   {
     "id": "2025-12-18 21:42:17",
-    "user_intent": "用户要求继续完善并保持架构文档与代码同步，确保使用者与开发者能快速理解全局结构。",
-    "details": "更新 可视化系统架构.mmd：补充 core.mcp_safety/tool_registry、tools.admin_tools，以及 DevOps（gp 脚本、敏感信息扫描、CI 测试）；同时移除 UTF-8 BOM，减少编辑器与工具链乱码风险；同步更新历史记录与任务进度。",
-    "change_type": "优化",
+    "user_intent": "Keep the visual architecture diagram synced with MCP safety/tooling/DevOps blocks.",
+    "details": "Added nodes for mcp_safety/tool_registry/admin tools plus DevOps scripts, removed BOM, and synced docs.",
+    "change_type": "optimize",
     "file_path": "d:/MCP/可视化系统架构.mmd,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
   },
   {
     "id": "2025-12-18 21:58:54",
-    "user_intent": "用户要求将 Heablcoin MCP 导入 Codex CLI 与 Claude Desktop，以便在两个客户端中直接调用 MCP 工具。",
-    "details": "1. 使用 `codex mcp add heablcoin -- python d:/MCP/Heablcoin.py` 将服务器写入 `~/.codex/config.toml` 并设置 UTF-8 环境变量；2. 检查并确认 Claude Desktop 配置文件 `%APPDATA%/Claude/claude_desktop_config.json` 已包含 heablcoin 配置；3. 更新 docs/user/MCP配置指南.md，补充 Codex CLI 配置章节；4. 同步更新历史记录与任务进度。",
-    "change_type": "增强",
+    "user_intent": "Register Heablcoin MCP in Codex CLI and Claude Desktop for immediate usage.",
+    "details": "Added the server definition into ~/.codex/config.toml and Claude Desktop config, then documented the setup in the user MCP guide.",
+    "change_type": "enhance",
     "file_path": "c:/Users/16864/.codex/config.toml,c:/Users/16864/AppData/Roaming/Claude/claude_desktop_config.json,d:/MCP/docs/user/MCP配置指南.md,d:/MCP/历史记录.json,d:/MCP/任务进度.json"
   },
   {
     "id": "2025-12-19 00:40:00",
-    "user_intent": "交付任务发布系统与部署文档",
-    "details": "1. 新增 publish_task/get_task_status 工具 + Webhook；2. 启动 TaskExecutor 并扩展增强队列；3. 补齐 validators、task_executor、mcp_stdio 测试；4. 新增 examples.md/API_SPEC.md/DEPLOY_GUIDE.md 与 setup/deploy 脚本；5. 更新 README/.env.example/任务.txt/任务进度.json 记录。",
-    "change_type": "新增",
-    "file_path": "d:/MCP/src/core/cloud/enhanced_publisher.py,d:/MCP/src/core/cloud/task_executor.py,d:/MCP/src/tools/cloud_tools.py,d:/MCP/src/core/server.py,d:/MCP/src/utils/validators.py,d:/MCP/tests/test_validators.py,d:/MCP/tests/test_task_executor.py,d:/MCP/tests/test_mcp_stdio_startup.py,d:/MCP/tests/run_tests.py,d:/MCP/examples.md,d:/MCP/API_SPEC.md,d:/MCP/DEPLOY_GUIDE.md,d:/MCP/scripts/setup.sh,d:/MCP/scripts/deploy.sh,d:/MCP/README.md,d:/MCP/任务.txt,d:/MCP/任务进度.json"
+    "user_intent": "Ship the task publishing system so AI can push conditional orders into a queue.",
+    "details": "Extended cloud/task_executor with publish_task, state tracking, and webhook callbacks; exposed cloud_tools entry points; extended validators/tests; and refreshed README/API_SPEC/DEPLOY_GUIDE/examples.",
+    "change_type": "add",
+    "file_path": "d:/MCP/src/core/cloud/task_executor.py,d:/MCP/src/tools/cloud_tools.py,d:/MCP/tests/test_task_executor.py,d:/MCP/examples.md,d:/MCP/API_SPEC.md,d:/MCP/DEPLOY_GUIDE.md"
+  },
+  {
+    "id": "2025-12-19 01:40:00",
+    "user_intent": "Provide quant research helpers that combine prompt templates, ai_research, and Notion logging.",
+    "details": "Introduced skills/research/quant_research plus research_tools MCP wrappers, optionally syncing to Notion, and updated README/API spec/API参考/examples/任务.txt.",
+    "change_type": "add",
+    "file_path": "d:/MCP/src/skills/research/quant_research.py,d:/MCP/src/tools/research_tools.py,d:/MCP/README.md,d:/MCP/README.zh-CN.md,d:/MCP/API_SPEC.md,d:/MCP/docs/developer/API参考.md,d:/MCP/examples.md,d:/MCP/任务.txt"
+  },
+  {
+    "id": "2025-12-19 02:20:00",
+    "user_intent": "Deploy governance upgrades: risk budgets, strategy registry lifecycle, and market structure quality scoring.",
+    "details": "Added skills/risk/budget_manager + risk_tools, strategy registry + tools, MarketAnalyzer structure_quality module, associated tests, and document updates across README/API spec/API参考/examples/任务.txt.",
+    "change_type": "enhance",
+    "file_path": "d:/MCP/src/skills/risk/budget_manager.py,d:/MCP/src/tools/risk_tools.py,d:/MCP/src/skills/strategy/registry.py,d:/MCP/src/tools/strategy_tools.py,d:/MCP/src/skills/market_analysis/modules/structure_quality.py,d:/MCP/tests/test_risk_budget.py,d:/MCP/tests/test_strategy_registry.py,d:/MCP/tests/test_structure_quality_module.py,d:/MCP/README.md,d:/MCP/README.zh-CN.md,d:/MCP/API_SPEC.md,d:/MCP/docs/developer/API参考.md,d:/MCP/examples.md,d:/MCP/任务.txt"
+  },
+  {
+    "id": "2025-12-19 03:30:00",
+    "user_intent": "Extend risk governance with capital pools, volatility sizing, circuit breakers, AI confidence, bias detection, and audit trail.",
+    "details": "Added fund allocator, volatility sizer, circuit breaker, strategy performance tracker, AI governance monitors, audit log, flow pressure + market quality modules, docs/examples updates.",
+    "change_type": "enhance",
+    "file_path": "d:/MCP/src/skills/risk,d:/MCP/src/skills/strategy,d:/MCP/src/skills/governance,d:/MCP/src/skills/market_analysis/modules/flow_pressure.py,d:/MCP/src/skills/market_analysis/modules/market_quality.py,d:/MCP/src/tools/risk_tools.py,d:/MCP/src/tools/strategy_tools.py,d:/MCP/src/tools/governance_tools.py,d:/MCP/tests/test_risk_extensions.py,d:/MCP/tests/test_strategy_performance.py,d:/MCP/tests/test_market_quality_modules.py,d:/MCP/tests/test_governance_monitors.py,d:/MCP/README.md,d:/MCP/README.zh-CN.md,d:/MCP/API_SPEC.md,d:/MCP/docs/developer,d:/MCP/examples.md"
   }
 ]

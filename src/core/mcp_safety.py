@@ -75,4 +75,3 @@ def mcp_tool_safe(func: Callable) -> Callable:
 
 
 __all__ = ["mcp_tool_safe"]
-

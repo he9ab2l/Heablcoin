@@ -1,39 +1,3 @@
-############################################################
-# 📘 文件说明：报告渲染
-# 本文件实现的功能：报告的格式化和渲染
-#
-# 📋 程序整体伪代码（中文）：
-# 1. 初始化依赖模块和配置
-# 2. 定义核心类和函数
-# 3. 实现主要业务逻辑
-# 4. 提供对外接口
-# 5. 异常处理与日志记录
-#
-# 🔄 程序流程图（逻辑流）：
-# ┌──────────────┐
-# │  输入数据    │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  核心处理逻辑 │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  输出结果    │
-# └──────────────┘
-#
-# 📊 数据管道说明：
-# 数据流向：输入源 → 数据处理 → 核心算法 → 输出目标
-#
-# 🧩 文件结构：
-# - 类: EmailBuilder
-# - 函数: color_side, label_side, color_level, pill, progress_bar
-#
-# 🔗 主要依赖：__future__, math, report, typing
-#
-# 🕒 创建时间：2025-12-18
-############################################################
-
 from __future__ import annotations
 
 import math
@@ -214,7 +178,7 @@ class EmailBuilder:
             + "</table>"
         )
 
-    def render_A(self, data: Dict[str, Any]) -> str:
+    def render_section_a(self, data: Dict[str, Any]) -> str:
         side = label_side(data.get("side", ""))
         accent = color_side(side)
         cost_ccy = esc(data.get("cost_ccy", "USDT"))
@@ -248,7 +212,7 @@ class EmailBuilder:
         )
         return self._card("A. 交易执行通知", inner, accent_color=accent)
 
-    def render_B(self, data: Dict[str, Any]) -> str:
+    def render_section_b(self, data: Dict[str, Any]) -> str:
         holdings: List[Dict[str, Any]] = list(data.get("holdings") or [])
 
         rows = []
@@ -295,7 +259,7 @@ class EmailBuilder:
         )
         return self._card("B. 账户资产快照", inner, accent_color="#2563eb")
 
-    def render_C(self, data: Dict[str, Any]) -> str:
+    def render_section_c(self, data: Dict[str, Any]) -> str:
         action = (data.get("advice") or "观望").upper().strip()
         action_color = "#16a34a" if action in {"BUY", "买入"} else ("#dc2626" if action in {"SELL", "卖出"} else "#64748b")
 
@@ -331,7 +295,7 @@ class EmailBuilder:
         )
         return self._card("C. AI 交易决策", inner, accent_color=action_color)
 
-    def render_D(self, data: Dict[str, Any]) -> str:
+    def render_section_d(self, data: Dict[str, Any]) -> str:
         pnl = 0.0
         try:
             pnl = float(data.get("pnl", 0))
@@ -467,7 +431,7 @@ class EmailBuilder:
 
         return self._card("D. 绩效复盘 (PnL)", inner, accent_color=pnl_color)
 
-    def render_E(self, data: Dict[str, Any]) -> str:
+    def render_section_e(self, data: Dict[str, Any]) -> str:
         level = data.get("level", "中")
         palette = color_level(str(level))
         reasons = list(data.get("reasons") or [])
@@ -493,7 +457,7 @@ class EmailBuilder:
 
         return self._card("E. 风险与安全警报", inner, accent_color=palette["border"])
 
-    def render_F(self, data: Dict[str, Any]) -> str:
+    def render_section_f(self, data: Dict[str, Any]) -> str:
         trades: List[Dict[str, Any]] = list(data.get("trades") or [])
         rows = []
         for t in trades[:5]:
@@ -529,7 +493,7 @@ class EmailBuilder:
 
         return self._card("F. 最近交易历史", table_html, accent_color="#0ea5e9")
 
-    def render_G(self, data: Dict[str, Any]) -> str:
+    def render_section_g(self, data: Dict[str, Any]) -> str:
         try:
             fg = float(data.get("fear_greed", 50))
         except Exception:
@@ -609,7 +573,7 @@ class EmailBuilder:
 
         return self._card("G. 市场情绪概览", inner, accent_color=bar_color)
 
-    def render_H(self, data: Dict[str, Any]) -> str:
+    def render_section_h(self, data: Dict[str, Any]) -> str:
         orders: List[Dict[str, Any]] = list(data.get("orders") or [])
 
         rows = []
@@ -648,7 +612,7 @@ class EmailBuilder:
 
         return self._card("H. 当前挂单状态", table_html, accent_color="#8b5cf6")
 
-    def render_I(self, data: Dict[str, Any]) -> str:
+    def render_section_i(self, data: Dict[str, Any]) -> str:
         url = (data.get("url") or "https://example.com").strip()
         label = (data.get("label") or "打开 Heablcoin 面板").strip()
 

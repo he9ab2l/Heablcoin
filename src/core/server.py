@@ -1,39 +1,3 @@
-############################################################
-# 📘 文件说明：MCP Server 主入口
-# 本文件实现的功能：智能加密货币量化交易系统的核心服务端，注册所有MCP工具，提供市场分析、交易执行、账户管理等功能
-#
-# 📋 程序整体伪代码（中文）：
-# 1. 初始化依赖模块和配置
-# 2. 定义核心类和函数
-# 3. 实现主要业务逻辑
-# 4. 提供对外接口
-# 5. 异常处理与日志记录
-#
-# 🔄 程序流程图（逻辑流）：
-# ┌──────────────┐
-# │  输入数据    │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  核心处理逻辑 │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  输出结果    │
-# └──────────────┘
-#
-# 📊 数据管道说明：
-# 数据流向：输入源 → 数据处理 → 核心算法 → 输出目标
-#
-# 🧩 文件结构：
-# - 类: ExchangePool, CandleData, IndicatorData
-# - 函数: mcp_tool_safe, get_exchange, send_email, send_notification, send_trade_notification
-#
-# 🔗 主要依赖：asyncio, ccxt, cloud, csv, dataclasses, datetime, dotenv, email
-#
-# 🕒 创建时间：2025-12-18
-############################################################
-
 """
 Heablcoin MCP Server
 ====================
@@ -105,7 +69,11 @@ from tools.personal_analytics_tools import register_tools as _register_personal_
 from tools.learning_tools import register_tools as _register_learning_tools
 from tools.orchestration_tools import register_tools as _register_orchestration_tools
 from tools.cloud_tools import register_tools as _register_cloud_tools
+from tools.risk_tools import register_tools as _register_risk_tools
+from tools.strategy_tools import register_tools as _register_strategy_tools
+from tools.research_tools import register_tools as _register_research_tools
 from tools.admin_tools import register_tools as _register_admin_tools
+from tools.governance_tools import register_tools as _register_governance_tools
 from core.cloud.task_executor import start_executor
 
 try:
@@ -332,6 +300,21 @@ except Exception as _e:
     logger.warning(f"⚠️ learning 工具注册失败: {type(_e).__name__}: {_e}")
 
 try:
+    _register_risk_tools(mcp)
+except Exception as _e:
+    logger.warning(f"⚠️ risk 工具注册失败: {type(_e).__name__}: {_e}")
+
+try:
+    _register_strategy_tools(mcp)
+except Exception as _e:
+    logger.warning(f"⚠️ strategy 工具注册失败: {type(_e).__name__}: {_e}")
+
+try:
+    _register_research_tools(mcp)
+except Exception as _e:
+    logger.warning(f"⚠️ research 工具注册失败: {type(_e).__name__}: {_e}")
+
+try:
     _register_orchestration_tools(mcp)
 except Exception as _e:
     logger.warning(f"⚠️ orchestration 工具注册失败: {type(_e).__name__}: {_e}")
@@ -345,6 +328,11 @@ try:
     _register_admin_tools(mcp)
 except Exception as _e:
     logger.warning(f"⚠️ admin 工具注册失败: {type(_e).__name__}: {_e}")
+
+try:
+    _register_governance_tools(mcp)
+except Exception as _e:
+    logger.warning(f"⚠️ governance 工具注册失败: {type(_e).__name__}: {_e}")
 
 task_executor_instance = None
 if ENABLE_TASK_EXECUTOR:

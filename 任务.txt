@@ -1,65 +1,61 @@
-# 任务 / 资源清单
+﻿# 任务 / 资源清单
 
-## 1. 云端环境
+## 环境概览
+- 云服务器：阿里云 ECS（Ubuntu 24.04 LTS），Docker + Redis + 青龙 Worker 已部署
+- Redis：Docker 容器并启用 AUTH，本地经 SSH 隧道映射 6379 -> 26739
+- Python：Anaconda / Python 3.13，本地可直接连接云端 Redis
+- 自动化脚本：`scripts/setup.sh`、`scripts/deploy.sh`、`gp.sh`、`gp.ps1`
 
-- 云服务器：阿里云 ECS（Ubuntu 24.04 LTS）
-- Docker：运行中
-- 青龙：运行中（单 Worker Pipeline）
-- Redis：Docker 容器，已启用 AUTH
-  - 宿主端口：26739
-  - 本地映射端口：6379（SSH 隧道）
-- SSH：ED25519 免密 + 端口 22
+## 命名与结构规范
+1. **工具抽象**：Tool、Skill、Core、Storage、Utils、Tests 均需模块化，可按需切换
+2. **命名统一**：函数/变量必须 snake_case；类名使用 PascalCase；常量全大写
+3. **校验脚本**：`python scripts/check_naming.py` 覆盖 `src/`, `tools/`, `skills/`, `utils/`, `tests/`
+4. **编码约束**：所有文档统一 UTF-8，禁止再出现乱码；提交前运行 `scripts/scan_secrets.py --staged`
+5. **任务管理**：`任务.txt` 仅保留最新计划，历史迁移到 `历史记录.json`；完成事项同步到 `已完成/`
 
-## 2. 本地 <-> 云端通信
+## 进行中任务
+- 任务发布系统：`publish_task` 接口 + Redis 队列，扩充任务模板并实现 webhook 回调
+- 云端自动化：补完 `scripts/setup.sh` / `scripts/deploy.sh`，涵盖 Docker、Redis、PM2 与 Nginx
+- 文档发布：维护 `README.md`、`API_SPEC.md`、`DEPLOY_GUIDE.md`、`examples.md`
+- 测试体系：`tests/run_tests.py` 提供 unit/integration/stress 三种入口，覆盖率 ≥ 85%
+- 命名巡检：新增 `scripts/check_naming.py`，每次 CI 执行；flexible_report 模块已完成首批重构
 
-本地通过 SSH 隧道访问云端 Redis（示例）：
+## 最新进展
+- 2025-12-19：新增量化研究工具（`generate_quant_research_prompts` / `run_quant_research`），自动调用 `ai_research` 并可选同步到 Notion。
+- 2025-12-19：README/API_SPEC/例子 等文档同步更新，给出量化研究调用示例。
+- 2025-12-19：上线风险预算系统（每日/每周/每月）与 MCP 工具，支持事件记录、预算调节与冻结控制。
+- 2025-12-19：新增策略注册/启停/冲突检测工具，并扩展市场结构质量评分模块。
+- 2025-12-19：重写 `历史记录.json`，改用 ASCII 安全输出并补齐治理条目；`test_project_records.py` 与命名巡检均已通过。
+- 2025-12-19：落地策略资金池/波动率仓位/熔断工具，补充策略绩效、AI 置信度、偏差诊断、审计日志，并更新 README/API_SPEC/API参考/examples。
 
+## 待办事项
+1. 任务发布系统
+   - 图形化界面 & AI 工单模版
+   - 任务状态通知（Webhook + MCP 推送）
+2. 风控策略库
+   - 统一 RiskControlTool 接口，输出 JSON 诊断
+   - 与 AutoTradingSkill 联动，形成策略回放
+3. 文档与示例
+   - `examples.md` 补足 DeFi/NFT/跨链 16 例
+   - `DEPLOY_GUIDE.md` 增加 SSL/Nginx/Inspector 远程调试截图
+4. 测试
+   - 引入 pytest-mock、coverage xml，上报到 CI
+   - 新增压力测试脚本：模拟 200 并发任务
+
+## 已完成（详见 `已完成/README.md`）
+- 2025-12-19：`flexible_report` 模块函数命名改为 snake_case，消除 render_A/default_A 等不一致
+- 2025-12-19：新增 `scripts/check_naming.py`，提供命名巡检入口
+- 2025-12-19：修复任务/历史/日志等文档乱码，统一为 UTF-8
+
+## 参考命令
 ```bash
+# SSH 隧道示例
 ssh -N -L 6379:127.0.0.1:26739 root@<ECS_IP>
+
+# 命名检查
+python scripts/check_naming.py
+
+# 单元 & 集成测试
+python tests/run_tests.py unit
+python tests/run_tests.py integration
 ```
-
-- 本地 Python（Anaconda / Python 3.13）可直接读写 Redis
-
-## 3. 云服务器资源
-
-- 阿里云：用于托管 MCP 项目，可能涉及计算、存储和网络资源。
-- Redis：作为缓存和消息队列系统，用于存储会话数据、任务队列等。
-- 青龙：青龙面板作为任务调度工具，帮助自动化任务管理。
-
-## 4. API 资源
-
-- OpenAI：用于调用 GPT 模型进行文本生成、对话管理等。
-- Claude：作为 AI 提供商，支持多模态的对话和任务处理。
-- Binance API：用于获取市场数据、执行交易等操作，主要通过测试网进行操作。
-
-## 5. 第三方服务
-
-- 飞书 Webhook：用于发送通知和报告，增强通信能力。
-- Server酱：用于发送推送通知，将结果或警告推送到用户手机等设备。
-- Notion：用于信息管理，任务和项目的可视化整理，方便团队协作。
-
-## 6. 代码库与开源工具
-
-- CCXT：用于加密货币交易所的接口管理，支持与 Binance 等多个交易所的集成。
-- Python 库：如 Pandas、NumPy 等，用于数据处理和分析。
-
-## 7. 项目目录结构
-
-```text
-/src
-  ├── /tools            # 各类功能工具，例如市场数据获取、风险控制、交易执行等
-  ├── /skills           # 复杂技能模块，例如自动交易策略、风险管理策略等
-  ├── /core             # 核心业务逻辑，例如调度、MCP 主协议、工具注册管理
-  ├── /storage          # 数据存储，例如交易记录、市场数据缓存、历史数据存储
-  ├── /utils            # 工具类库，辅助功能（如日志、缓存、性能监控等）
-  └── /tests            # 单元测试和集成测试：各模块拆分，允许迁移/合并现有模块
-```
-
-## 8. 进行中任务（执行中）
-- 任务发布系统：`publish_task` 接口 + Redis 队列（已落地，等待进一步扩展策略模板）
-- 部署脚本：`scripts/setup.sh` / `scripts/deploy.sh`
-- 文档补全：`README`、`API_SPEC.md`、`DEPLOY_GUIDE.md`
-
-## 已完成
-- 2025-12-19：新增异步任务接口、Webhook 回调、任务示例 `examples.md`
-- 2025-12-19：测试覆盖扩展（validators、task_executor、mcp stdio）

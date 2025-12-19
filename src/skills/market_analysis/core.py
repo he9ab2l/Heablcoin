@@ -1,39 +1,3 @@
-############################################################
-# 📘 文件说明：市场分析核心
-# 本文件实现的功能：技术分析、情绪分析、信号生成的核心逻辑
-#
-# 📋 程序整体伪代码（中文）：
-# 1. 初始化依赖模块和配置
-# 2. 定义核心类和函数
-# 3. 实现主要业务逻辑
-# 4. 提供对外接口
-# 5. 异常处理与日志记录
-#
-# 🔄 程序流程图（逻辑流）：
-# ┌──────────────┐
-# │  输入数据    │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  核心处理逻辑 │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  输出结果    │
-# └──────────────┘
-#
-# 📊 数据管道说明：
-# 数据流向：交易所API → 数据处理 → 指标计算 → 分析结果输出
-#
-# 🧩 文件结构：
-# - 类: MarketAnalyzer
-# - 函数: analyze
-#
-# 🔗 主要依赖：__future__, market_analysis, typing
-#
-# 🕒 创建时间：2025-12-18
-############################################################
-
 from __future__ import annotations
 
 from typing import Any, Dict, List, Optional
@@ -45,6 +9,9 @@ from .modules.trading_signals import analyze_trading_signals
 from .modules.sentiment import analyze_sentiment
 from .modules.patterns import detect_patterns
 from .modules.market_structure import analyze_structure
+from .modules.structure_quality import analyze_structure_quality
+from .modules.flow_pressure import analyze_flow_pressure
+from .modules.market_quality import analyze_market_quality
 from .report_generator import to_json, to_markdown
 
 
@@ -65,6 +32,12 @@ class MarketAnalyzer:
             self.registry.register("patterns", detect_patterns, enabled_by_default=False)
         if self.registry.get("structure") is None:
             self.registry.register("structure", analyze_structure, enabled_by_default=False)
+        if self.registry.get("structure_quality") is None:
+            self.registry.register("structure_quality", analyze_structure_quality, enabled_by_default=False)
+        if self.registry.get("flow_pressure") is None:
+            self.registry.register("flow_pressure", analyze_flow_pressure, enabled_by_default=False)
+        if self.registry.get("market_quality") is None:
+            self.registry.register("market_quality", analyze_market_quality, enabled_by_default=False)
 
     def analyze(
         self,

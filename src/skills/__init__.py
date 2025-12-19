@@ -6,4 +6,3 @@
 """
 
 __all__ = ["data", "learning", "market_analysis", "personal_analytics", "report"]
-

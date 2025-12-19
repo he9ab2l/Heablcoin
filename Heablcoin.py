@@ -37,4 +37,3 @@ if __name__ == "__main__":
     from core.server import mcp
 
     mcp.run()
-

@@ -39,4 +39,3 @@ def project_path(*parts: str) -> Path:
 
 
 __all__ = ["PROJECT_ROOT", "find_repo_root", "project_path"]
-

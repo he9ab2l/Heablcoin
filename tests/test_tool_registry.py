@@ -77,4 +77,3 @@ def run_all_tests() -> bool:
 
 if __name__ == "__main__":
     sys.exit(0 if run_all_tests() else 1)
-

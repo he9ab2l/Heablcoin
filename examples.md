@@ -159,3 +159,68 @@
   "output_format": "markdown"
 }
 ```
+
+### 17. 量化研究提示词
+```
+mcp://heablcoin/generate_quant_research_prompts?topic=BTC/USDT&focus=alpha
+```
+
+### 18. 量化研究聚合
+```
+mcp://heablcoin/run_quant_research?topic=BTC/USDT&focus=balanced&save_to_notion=true&tags=quant,daily
+```
+
+### 19. 风险预算记录
+```
+mcp://heablcoin/record_risk_event?loss_amount=150&tag=manual_stop
+mcp://heablcoin/get_risk_budget_status
+```
+
+### 20. 策略注册与启停
+```
+mcp://heablcoin/register_strategy?name=grid_guard&version=0.2&owner=deskA&symbol=ETH/USDT&timeframe=4h&direction=short&risk_level=high
+mcp://heablcoin/list_strategies?include_conflicts=true
+mcp://heablcoin/set_strategy_enabled?name=grid_guard&enabled=false
+```
+
+### 21. ?????????
+```
+mcp://heablcoin/set_strategy_pool?name=alpha&capital=15000&max_drawdown_pct=0.25
+mcp://heablcoin/allocate_strategy_capital?name=alpha&amount=4000
+mcp://heablcoin/list_strategy_pools
+```
+
+### 22. ?????????
+```
+mcp://heablcoin/suggest_vol_adjusted_notional?account_balance=20000&risk_pct=0.02&symbol=ETH/USDT&timeframe=1h&target_vol=0.02
+```
+
+### 23. ????
+```
+mcp://heablcoin/configure_circuit_breaker?symbol=BTC/USDT&threshold_pct=0.05&cooldown_minutes=15
+mcp://heablcoin/check_circuit_breaker?symbol=BTC/USDT&move_pct=0.06&liquidity_score=0.2&reason=flash_move
+```
+
+### 24. ??????
+```
+mcp://heablcoin/record_strategy_performance?name=trend_alpha&pnl=380&exposure_minutes=60&tags=trend,ai
+mcp://heablcoin/strategy_performance_report
+```
+
+### 25. AI ???
+```
+mcp://heablcoin/score_ai_decision?decision_id=rebalance-01&inputs_json={"signal_strength":0.8,"data_quality":0.9,"risk_alignment":0.7,"latency":0.6}
+mcp://heablcoin/recent_confidence_entries?limit=5
+```
+
+### 26. ????
+```
+mcp://heablcoin/record_bias_sample?direction=long&result=win&pnl=120&market_state=trend
+mcp://heablcoin/bias_report
+```
+
+### 27. ????
+```
+mcp://heablcoin/log_audit_event?event_type=task_publish&severity=info&payload_json={"task":"buy_breakout"}
+mcp://heablcoin/list_audit_events?limit=10
+```

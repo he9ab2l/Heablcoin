@@ -1,38 +1,3 @@
-############################################################
-# 📘 文件说明：报告默认值
-# 本文件实现的功能：报告的默认配置和模板
-#
-# 📋 程序整体伪代码（中文）：
-# 1. 初始化依赖模块和配置
-# 2. 定义核心类和函数
-# 3. 实现主要业务逻辑
-# 4. 提供对外接口
-# 5. 异常处理与日志记录
-#
-# 🔄 程序流程图（逻辑流）：
-# ┌──────────────┐
-# │  输入数据    │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  核心处理逻辑 │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  输出结果    │
-# └──────────────┘
-#
-# 📊 数据管道说明：
-# 数据流向：输入源 → 数据处理 → 核心算法 → 输出目标
-#
-# 🧩 文件结构：
-# - 函数: provider_call, default_A, default_B, default_C, default_D
-#
-# 🔗 主要依赖：__future__, report, typing
-#
-# 🕒 创建时间：2025-12-18
-############################################################
-
 from __future__ import annotations
 
 from typing import Any, Dict
@@ -53,7 +18,7 @@ def provider_call(name: str, **kwargs: Any) -> Any:
         return None
 
 
-def default_A() -> Dict[str, Any]:
+def default_section_a() -> Dict[str, Any]:
     rows = read_trade_log(limit=1)
     if not rows:
         return {"order_id": "", "symbol": "", "side": "", "price": 0, "qty": 0, "cost": 0, "cost_ccy": "USDT", "time": now_str()}
@@ -64,14 +29,14 @@ def default_A() -> Dict[str, Any]:
     return {"order_id": r.get("订单ID") or "", "symbol": r.get("交易对") or "", "side": r.get("方向") or "", "price": price, "qty": qty, "cost": cost, "cost_ccy": "USDT", "time": r.get("时间") or now_str()}
 
 
-def default_B() -> Dict[str, Any]:
+def default_section_b() -> Dict[str, Any]:
     data = provider_call("account_snapshot")
     if isinstance(data, dict):
         return data
     return {"total_equity": 0.0, "available_usdt": 0.0, "holdings": []}
 
 
-def default_C(kwargs: Dict[str, Any]) -> Dict[str, Any]:
+def default_section_c(kwargs: Dict[str, Any]) -> Dict[str, Any]:
     symbol = str(kwargs.get("symbol") or kwargs.get("C_symbol") or "BTC/USDT")
     mode = str(kwargs.get("mode") or kwargs.get("C_mode") or "simple")
     data = provider_call("ai_decision", symbol=symbol, mode=mode)
@@ -80,7 +45,7 @@ def default_C(kwargs: Dict[str, Any]) -> Dict[str, Any]:
     return {"advice": "HOLD", "confidence": 0, "rsi": "", "macd": "", "support": "", "resistance": ""}
 
 
-def default_D(kwargs: Dict[str, Any]) -> Dict[str, Any]:
+def default_section_d(kwargs: Dict[str, Any]) -> Dict[str, Any]:
     rows = read_trade_log(limit=None)
     init_capital = kwargs.get("initial_capital_usdt")
     init_capital_f = None
@@ -105,8 +70,8 @@ def default_D(kwargs: Dict[str, Any]) -> Dict[str, Any]:
     }
 
 
-def default_E(kwargs: Dict[str, Any]) -> Dict[str, Any]:
-    d = default_D(kwargs)
+def default_section_e(kwargs: Dict[str, Any]) -> Dict[str, Any]:
+    d = default_section_d(kwargs)
     mdd = safe_float(d.get("max_drawdown"), 0.0)
     sharpe = safe_float(d.get("sharpe"), 0.0)
     lvl = "低"
@@ -119,7 +84,7 @@ def default_E(kwargs: Dict[str, Any]) -> Dict[str, Any]:
     return {"level": lvl, "reasons": reasons, "action": action}
 
 
-def default_F() -> Dict[str, Any]:
+def default_section_f() -> Dict[str, Any]:
     rows = read_trade_log(limit=50)
     trades = []
     for r in rows[::-1]:
@@ -130,7 +95,7 @@ def default_F() -> Dict[str, Any]:
     return {"trades": trades}
 
 
-def default_G(kwargs: Dict[str, Any]) -> Dict[str, Any]:
+def default_section_g(kwargs: Dict[str, Any]) -> Dict[str, Any]:
     symbol = str(kwargs.get("symbol") or kwargs.get("G_symbol") or "BTC/USDT")
     data = provider_call("market_sentiment", symbol=symbol)
     if isinstance(data, dict):
@@ -138,7 +103,7 @@ def default_G(kwargs: Dict[str, Any]) -> Dict[str, Any]:
     return {"fear_greed": 50, "label": "中性", "trend": "震荡", "top_gainers": [], "top_losers": []}
 
 
-def default_H(kwargs: Dict[str, Any]) -> Dict[str, Any]:
+def default_section_h(kwargs: Dict[str, Any]) -> Dict[str, Any]:
     symbol = kwargs.get("symbol") or kwargs.get("H_symbol")
     data = provider_call("open_orders", symbol=symbol)
     if isinstance(data, dict):
@@ -148,12 +113,12 @@ def default_H(kwargs: Dict[str, Any]) -> Dict[str, Any]:
 
 __all__ = [
     "provider_call",
-    "default_A",
-    "default_B",
-    "default_C",
-    "default_D",
-    "default_E",
-    "default_F",
-    "default_G",
-    "default_H",
+    "default_section_a",
+    "default_section_b",
+    "default_section_c",
+    "default_section_d",
+    "default_section_e",
+    "default_section_f",
+    "default_section_g",
+    "default_section_h",
 ]

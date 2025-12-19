@@ -1,38 +1,3 @@
-############################################################
-# 📘 文件说明：报告服务
-# 本文件实现的功能：报告生成的核心服务
-#
-# 📋 程序整体伪代码（中文）：
-# 1. 初始化依赖模块和配置
-# 2. 定义核心类和函数
-# 3. 实现主要业务逻辑
-# 4. 提供对外接口
-# 5. 异常处理与日志记录
-#
-# 🔄 程序流程图（逻辑流）：
-# ┌──────────────┐
-# │  输入数据    │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  核心处理逻辑 │
-# └──────┬───────┘
-#        ↓
-# ┌──────────────┐
-# │  输出结果    │
-# └──────────────┘
-#
-# 📊 数据管道说明：
-# 数据流向：输入源 → 数据处理 → 核心算法 → 输出目标
-#
-# 🧩 文件结构：
-# - 函数: notify_allowed, send_raw_html_smtp, coalesce_data, register_tools, send_flexible_report
-#
-# 🔗 主要依赖：__future__, email, json, os, report, smtplib, typing
-#
-# 🕒 创建时间：2025-12-18
-############################################################
-
 from __future__ import annotations
 
 import os
@@ -44,14 +9,14 @@ import json
 from typing import Any, Dict, List, Optional
 
 from .defaults import (
-    default_A,
-    default_B,
-    default_C,
-    default_D,
-    default_E,
-    default_F,
-    default_G,
-    default_H,
+    default_section_a,
+    default_section_b,
+    default_section_c,
+    default_section_d,
+    default_section_e,
+    default_section_f,
+    default_section_g,
+    default_section_h,
 )
 from .render import EmailBuilder, render_base_email
 from .state import set_data_providers, set_notify_switch_fn, set_send_email_fn, get_send_email_fn, get_notify_switch_fn
@@ -176,49 +141,49 @@ def send_flexible_report(
     resolved_data: Dict[str, Any] = {}
 
     if enabled["A"]:
-        data = coalesce_data(kwargs, "A", default_A())
+        data = coalesce_data(kwargs, "A", default_section_a())
         resolved_data["A"] = data
-        parts.append(builder.render_A(data))
+        parts.append(builder.render_section_a(data))
 
     if enabled["B"]:
-        data = coalesce_data(kwargs, "B", default_B())
+        data = coalesce_data(kwargs, "B", default_section_b())
         resolved_data["B"] = data
-        parts.append(builder.render_B(data))
+        parts.append(builder.render_section_b(data))
 
     if enabled["C"]:
-        data = coalesce_data(kwargs, "C", default_C(kwargs))
+        data = coalesce_data(kwargs, "C", default_section_c(kwargs))
         resolved_data["C"] = data
-        parts.append(builder.render_C(data))
+        parts.append(builder.render_section_c(data))
 
     if enabled["D"]:
-        data = coalesce_data(kwargs, "D", default_D(kwargs))
+        data = coalesce_data(kwargs, "D", default_section_d(kwargs))
         resolved_data["D"] = data
-        parts.append(builder.render_D(data))
+        parts.append(builder.render_section_d(data))
 
     if enabled["E"]:
-        data = coalesce_data(kwargs, "E", default_E(kwargs))
+        data = coalesce_data(kwargs, "E", default_section_e(kwargs))
         resolved_data["E"] = data
-        parts.append(builder.render_E(data))
+        parts.append(builder.render_section_e(data))
 
     if enabled["F"]:
-        data = coalesce_data(kwargs, "F", default_F())
+        data = coalesce_data(kwargs, "F", default_section_f())
         resolved_data["F"] = data
-        parts.append(builder.render_F(data))
+        parts.append(builder.render_section_f(data))
 
     if enabled["G"]:
-        data = coalesce_data(kwargs, "G", default_G(kwargs))
+        data = coalesce_data(kwargs, "G", default_section_g(kwargs))
         resolved_data["G"] = data
-        parts.append(builder.render_G(data))
+        parts.append(builder.render_section_g(data))
 
     if enabled["H"]:
-        data = coalesce_data(kwargs, "H", default_H(kwargs))
+        data = coalesce_data(kwargs, "H", default_section_h(kwargs))
         resolved_data["H"] = data
-        parts.append(builder.render_H(data))
+        parts.append(builder.render_section_h(data))
 
     if enabled["I"]:
         data = coalesce_data(kwargs, "I", {"url": "https://example.com/heablcoin", "label": "打开控制台"})
         resolved_data["I"] = data
-        parts.append(builder.render_I(data))
+        parts.append(builder.render_section_i(data))
 
     content_html = "".join(parts)
     full_html = render_base_email(title, content_html)

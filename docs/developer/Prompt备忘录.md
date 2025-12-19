@@ -1,89 +1,39 @@
-# Prompt 备忘录（用于后续会话复用与注入）
+# Prompt 备忘录（工程化规范版）
 
-## 1 工程化约定（长期有效）
+## 1. 工程化约束
+1) 历史与任务：所有对话结论写入 `历史记录.json`、`任务进度.json`，使用北京时间 `YYYY-MM-DD HH:mm:ss`。
+2) 架构同步：涉及分层/数据流/工具清单的改动，手工更新 `可视化系统架构.mmd`。
+3) 记录格式：日志与记录文件禁止问号占位，统一 UTF-8；提交前跑 `scripts/check_naming.py` 与 `tests/run_tests.py unit`。
+4) 输出风格：回答以 Markdown 数字序号为主，避免冗长口水，聚焦可执行步骤。
 
-1. 每次完成对话后，自动在项目根目录维护 `历史记录.json`，以追加方式记录本次变更
-2. `历史记录.json` 的记录结构严格仅包含字段：`id`、`user_intent`、`details`、`change_type`、`file_path`
-3. `历史记录.json` 的 `id` 使用北京时间 `YYYY-MM-DD HH:mm:ss` 作为唯一标识
-4. `历史记录.json` 必须仅追加，禁止覆盖历史，支持 JSON 数组或 JSONL
-5. 一次对话若影响多个文件，`file_path` 使用英文逗号 `,` 分隔多个绝对路径
-6. 每次对项目代码结构、模块依赖或数据流进行调整时，自动生成或更新 `可视化系统架构.mmd`
-7. `可视化系统架构.mmd` 使用 Mermaid `graph TB`，采用 `subgraph` 分层并包含 Layered System Architecture Diagram + Data Flow Graph
-8. `可视化系统架构.mmd` 顶部必须包含头注释
-9. 每次对话后在项目根目录维护 `任务进度.json`，两级结构 Project / Task
-10. `任务进度.json` 使用北京时间写入 `last_updated`，并维护 project/task 的状态与进度
-11. 日志与报错可定位约定：所有错误输出必须包含北京时间、模块名、函数名、文件路径与行号、错误码、错误信息、关键上下文
-12. 日志要求结构化输出（JSON 或 key=value），允许通过 `grep error_code` 或 `trace_id` 快速定位
-13. MCP Server 进程中禁止向 stdout 直接 print 输出污染 JSONRPC
-14. 语言要求：使用中文回答用户
+## 2. 对话输出模板（当用户索要“流程/方案”）
+1. 目的与适用范围
+2. 前置假设 / 输入要求
+3. 操作步骤（1,2,3…）
+4. 校验与回退
+5. 风险与注意事项
+6. 下一步 / 未决事项
 
-## 2 流程标准化文档输出提示（当用户要求流程标准化时使用）
+## 3. 关键文件约定
+- `历史记录.json`：`id/user_intent/details/change_type/file_path`，追加写入，不能覆盖旧记录。
+- `任务进度.json`：Project/Task 双层结构，`last_updated` 用北京时间。
+- `可视化系统架构.mmd`：Mermaid `graph TB`，分层节点 + 数据流。
+- `lesson/`：复盘使用 `record_lesson.py` 生成，不手写时间戳。
 
-1. 你是一名专业的流程标准化专家
-2. 将用户输入任何内容转化为清晰、结构化、可执行的流程标准化文档
-3. 输出要求
-4. 禁止复杂排版
-5. 输出格式必须使用 Markdown 的数字序号语法
-6. 整体表达必须直接、精准、详细，只看这一个文档就能完全掌握
-7. 文档结尾不允许出现句号
-8. 输出中不得包含任何额外解释，只能输出完整的流程标准化文档
-9. 文档结构必须且只能包含以下部分
-10. 目的
-11. 适用范围
-12. 注意事项
-13. 相关模板或工具（如适用）
-14. 流程步骤（使用 Markdown 数字编号 1, 2, 3 …）
+## 4. 环境变量（核心说明）
+- 交易所：`BINANCE_API_KEY` / `BINANCE_SECRET_KEY`（测试网）；默认 `EXCHANGE=binance`, `NETWORK=testnet`。
+- LLM/路由：`HEABL_OPENAI_KEY`、`HEABL_DEEPSEEK_KEY`、`HEABL_GEMINI_KEY`，默认提供者 `HEABL_LLM_DEFAULT`。
+- 通知：`SENDER_EMAIL`、`SENDER_PASSWORD`、`RECIPIENT_EMAIL`、`SMTP_SERVER`、`SMTP_PORT`。
+- Redis/队列：`REDIS_HOST`、`REDIS_PORT`、`REDIS_PASSWORD`。
+- 运行开关：`ENABLE_TASK_EXECUTOR`、`TASK_EXECUTOR_POLL_INTERVAL`、`TOOLS_DISABLED` / `TOOLS_ENABLED_ONLY`。
+所有密钥均放 `.env`，提交前运行 `scripts/scan_secrets.py --staged`。
 
-## 3 项目上下文文档生成提示（Project Context Document Prompt）
+## 5. 使用者能跑通的最小指导
+- 新环境：`cp .env.example .env`，填好上面的 API/SMTP/Redis；Windows 需设 `PYTHONIOENCODING=utf-8` 与 `PYTHONUTF8=1`。
+- 自检：`python tests/run_tests.py unit`；如需全链路：`python tests/run_tests.py all`。
+- MCP 客户端：在 Claude/Windsurf 的配置文件中指向 `python D:/MCP/Heablcoin.py`，并设置 UTF-8 环境变量。
 
-1. 角色
-2. 你是具备高级信息抽象、结构化整理与工程化表达能力的 AI 助手
-3. 目标
-4. 基于当前对话中的全部已知信息生成完整、结构化、可迁移、可长期维护的项目上下文文档
-5. 规则
-6. 若字段未明确出现或无法合理推断，必须保留字段并填写为“暂无信息”
-7. 不得自行虚构事实，不得省略字段
-8. 输出内容必须结构稳定、层级清晰、可直接复制使用
-9. 输出模块固定包含
-10. 项目概要
-11. 范围定义
-12. 关键实体与关系
-13. 功能模块拆解
-14. 技术方向与关键决策
-15. 交互、风格与输出约定
-16. 当前进展总结
-17. 后续计划与风险
-
-## 4 多端连接集成目标提示（MCP 本地 + 云端 + 多 AI + 多通道推送）
-
-1. 下一阶段目标
-2. 进行各个部分的连接，包括 MCP 本地、云端服务器、多 AI、多种信息推送
-3. 需要输出可执行流程与后续落地规划
-
-## 5 深度审计专家系统 v4.0 Prompt（审计输出框架）
-
-1. 独立文件：`docs/developer/审计专家系统_v4.0_Prompt.md`
-2. 角色：`Chief System Audit Officer`
-3. 关键约束
-   1. 禁止瞎猜接口，必须基于代码/文档原文
-   2. 发现信息缺失必须输出 `CLARIFICATION_REQUIRED`
-   3. 结论必须给出证据与影响分析，无证据标注为 `架构师猜想`
-4. 每轮输出必须包含
-   1. `State Snapshot`
-   2. `Deep Audit`（含风险评级 `Critical/High/Mid/Low`）
-   3. `Architecture Visual`（Mermaid 代码块）
-   4. `Action Items`（Top 3 尖锐提问）
-
-## 6 深度审计与传承专家系统 v5.0 Prompt（移交优化版）
-
-1. 独立文件：`docs/developer/审计与传承专家系统_v5.0_Prompt.md`
-2. 角色：`Chief Architect & Continuity Specialist`
-3. 新增能力
-   1. 上下文压缩与知识包封装
-   2. `HANDOVER_TOKEN` 实时维护，支持 AI-to-AI 无缝接管
-   3. `[PROJECT_BRAIN_DUMP]` 标准化导出格式
-4. 每轮输出必须包含
-   1. `State Snapshot`（含版本号）
-   2. `Deep Audit`
-   3. `Knowledge Update`（全局内存变化）
-   4. `Handover Ready`（500字内压缩版接管摘要）
+## 6. 回答要求
+- 不猜接口，先查文档/代码；不模糊执行，先确认边界。
+- 优先复用现有工具，避免新造接口；改动需写测试与文档。
+- 发现/修复问题必须触发 lesson 记录，命名 `lesson/问题_YYYYMMDD_HHMM.md`。
