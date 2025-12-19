@@ -73,6 +73,9 @@ TEST_SUITES = {
         "test_mcp_stdio_startup.py",
         "test_integration_full.py",
     ],
+    "stress": [
+        "test_stress_task_executor.py",
+    ],
 }
 
 TEST_SUITES["all"] = TEST_SUITES["unit"] + TEST_SUITES["integration"]
@@ -117,7 +120,7 @@ def main():
         nargs="?",
         default="all",
         choices=list(TEST_SUITES.keys()),
-        help="unit/email/integration/all",
+        help="unit/email/integration/stress/all",
     )
     parser.add_argument("--list", action="store_true", help="list available tests")
     parser.add_argument("--file", help="run a single test file")

@@ -42,6 +42,7 @@ from __future__ import annotations
 
 import json
 import time
+import threading
 from dataclasses import dataclass, field, asdict
 from pathlib import Path
 from typing import Any, Dict, List, Optional, Callable
@@ -122,6 +123,7 @@ class EnhancedCloudTaskPublisher:
         self.path = Path(path)
         self.path.parent.mkdir(parents=True, exist_ok=True)
         self._task_handlers: Dict[str, Callable] = {}
+        self._lock = threading.RLock()
     
     def _load(self) -> List[EnhancedCloudTask]:
         """加载任务"""
@@ -194,31 +196,32 @@ class EnhancedCloudTaskPublisher:
             max_retries: 最大重试次数
             callback_url: 回调URL
         """
-        tasks = self._load()
-        task_id = f"{int(time.time()*1000)}_{len(tasks)+1}"
-        
-        expires_at = None
-        if expires_in:
-            expires_at = time.time() + expires_in
-        
-        task = EnhancedCloudTask(
-            task_id=task_id,
-            name=name,
-            payload=payload,
-            priority=priority,
-            schedule=schedule,
-            tags=tags or [],
-            timeout=timeout,
-            expires_at=expires_at,
-            depends_on=depends_on or [],
-            max_retries=max_retries,
-            callback_url=callback_url,
-        )
-        
-        tasks.append(task)
-        self._save(tasks)
-        logger.info(f"[EnhancedPublisher] published task={name} id={task_id} priority={priority}")
-        return task
+        with self._lock:
+            tasks = self._load()
+            task_id = f"{int(time.time()*1000)}_{len(tasks)+1}"
+            
+            expires_at = None
+            if expires_in:
+                expires_at = time.time() + expires_in
+            
+            task = EnhancedCloudTask(
+                task_id=task_id,
+                name=name,
+                payload=payload,
+                priority=priority,
+                schedule=schedule,
+                tags=tags or [],
+                timeout=timeout,
+                expires_at=expires_at,
+                depends_on=depends_on or [],
+                max_retries=max_retries,
+                callback_url=callback_url,
+            )
+            
+            tasks.append(task)
+            self._save(tasks)
+            logger.info(f"[EnhancedPublisher] published task={name} id={task_id} priority={priority}")
+            return task
     
     def list_tasks(
         self,
@@ -236,31 +239,33 @@ class EnhancedCloudTaskPublisher:
             priority_min: 最小优先级
             limit: 返回数量限制
         """
-        tasks = self._load()
-        
-        # 过滤
-        if status:
-            tasks = [t for t in tasks if t.status == status]
-        if tags:
-            tasks = [t for t in tasks if any(tag in t.tags for tag in tags)]
-        if priority_min:
-            tasks = [t for t in tasks if t.priority >= priority_min]
-        
-        # 按优先级和创建时间排序
-        tasks.sort(key=lambda x: (-x.priority, x.created_at))
-        
-        if limit:
-            tasks = tasks[:limit]
-        
-        return tasks
+        with self._lock:
+            tasks = self._load()
+            
+            # 过滤
+            if status:
+                tasks = [t for t in tasks if t.status == status]
+            if tags:
+                tasks = [t for t in tasks if any(tag in t.tags for tag in tags)]
+            if priority_min:
+                tasks = [t for t in tasks if t.priority >= priority_min]
+            
+            # 按优先级和创建时间排序
+            tasks.sort(key=lambda x: (-x.priority, x.created_at))
+            
+            if limit:
+                tasks = tasks[:limit]
+            
+            return tasks
     
     def get_task(self, task_id: str) -> Optional[EnhancedCloudTask]:
         """获取单个任务"""
-        tasks = self._load()
-        for task in tasks:
-            if task.task_id == task_id:
-                return task
-        return None
+        with self._lock:
+            tasks = self._load()
+            for task in tasks:
+                if task.task_id == task_id:
+                    return task
+            return None
     
     def update_status(
         self,
@@ -270,36 +275,37 @@ class EnhancedCloudTaskPublisher:
         error: Optional[str] = None,
     ) -> Optional[EnhancedCloudTask]:
         """更新任务状态"""
-        tasks = self._load()
-        updated = None
-        
-        for task in tasks:
-            if task.task_id == task_id:
-                task.status = status
-                task.updated_at = time.time()
-                
-                if status == TaskStatus.RUNNING.value and task.started_at is None:
-                    task.started_at = time.time()
-                
-                if status in [TaskStatus.COMPLETED.value, TaskStatus.FAILED.value, TaskStatus.CANCELLED.value]:
-                    task.completed_at = time.time()
-                
-                if result is not None:
-                    task.result = result
-                
-                if error is not None:
-                    task.error = error
-                
-                updated = task
-                break
-        
-        if updated:
-            if self._should_fire_callback(updated, status):
-                self._invoke_callback(updated)
-            self._save(tasks)
-            logger.info(f"[EnhancedPublisher] task id={task_id} -> {status}")
-        
-        return updated
+        with self._lock:
+            tasks = self._load()
+            updated = None
+            
+            for task in tasks:
+                if task.task_id == task_id:
+                    task.status = status
+                    task.updated_at = time.time()
+                    
+                    if status == TaskStatus.RUNNING.value and task.started_at is None:
+                        task.started_at = time.time()
+                    
+                    if status in [TaskStatus.COMPLETED.value, TaskStatus.FAILED.value, TaskStatus.CANCELLED.value]:
+                        task.completed_at = time.time()
+                    
+                    if result is not None:
+                        task.result = result
+                    
+                    if error is not None:
+                        task.error = error
+                    
+                    updated = task
+                    break
+            
+            if updated:
+                if self._should_fire_callback(updated, status):
+                    self._invoke_callback(updated)
+                self._save(tasks)
+                logger.info(f"[EnhancedPublisher] task id={task_id} -> {status}")
+            
+            return updated
 
     @staticmethod
     def _should_fire_callback(task: EnhancedCloudTask, status: str) -> bool:
@@ -339,22 +345,23 @@ class EnhancedCloudTaskPublisher:
     
     def retry_task(self, task_id: str) -> Optional[EnhancedCloudTask]:
         """重试失败的任务"""
-        tasks = self._load()
-        
-        for task in tasks:
-            if task.task_id == task_id and task.status == TaskStatus.FAILED.value:
-                if task.can_retry():
-                    task.status = TaskStatus.PENDING.value
-                    task.retry_count += 1
-                    task.updated_at = time.time()
-                    task.error = None
-                    self._save(tasks)
-                    logger.info(f"[EnhancedPublisher] task id={task_id} retry={task.retry_count}")
-                    return task
-                else:
-                    logger.warning(f"[EnhancedPublisher] task id={task_id} max retries reached")
-        
-        return None
+        with self._lock:
+            tasks = self._load()
+            
+            for task in tasks:
+                if task.task_id == task_id and task.status == TaskStatus.FAILED.value:
+                    if task.can_retry():
+                        task.status = TaskStatus.PENDING.value
+                        task.retry_count += 1
+                        task.updated_at = time.time()
+                        task.error = None
+                        self._save(tasks)
+                        logger.info(f"[EnhancedPublisher] task id={task_id} retry={task.retry_count}")
+                        return task
+                    else:
+                        logger.warning(f"[EnhancedPublisher] task id={task_id} max retries reached")
+            
+            return None
     
     def cancel_task(self, task_id: str) -> Optional[EnhancedCloudTask]:
         """取消任务"""
@@ -362,78 +369,81 @@ class EnhancedCloudTaskPublisher:
     
     def cleanup_expired(self) -> int:
         """清理过期任务"""
-        tasks = self._load()
-        cleaned = 0
-        
-        for task in tasks:
-            if task.is_expired() and task.status not in [TaskStatus.COMPLETED.value, TaskStatus.CANCELLED.value]:
-                task.status = TaskStatus.EXPIRED.value
-                task.updated_at = time.time()
-                cleaned += 1
-        
-        if cleaned > 0:
-            self._save(tasks)
-            logger.info(f"[EnhancedPublisher] cleaned {cleaned} expired tasks")
-        
-        return cleaned
+        with self._lock:
+            tasks = self._load()
+            cleaned = 0
+            
+            for task in tasks:
+                if task.is_expired() and task.status not in [TaskStatus.COMPLETED.value, TaskStatus.CANCELLED.value]:
+                    task.status = TaskStatus.EXPIRED.value
+                    task.updated_at = time.time()
+                    cleaned += 1
+            
+            if cleaned > 0:
+                self._save(tasks)
+                logger.info(f"[EnhancedPublisher] cleaned {cleaned} expired tasks")
+            
+            return cleaned
     
     def get_ready_tasks(self, limit: Optional[int] = None) -> List[EnhancedCloudTask]:
         """获取准备好执行的任务（考虑依赖关系）"""
-        tasks = self._load()
-        
-        # 获取已完成的任务ID集合
-        completed_ids = {t.task_id for t in tasks if t.status == TaskStatus.COMPLETED.value}
-        
-        # 筛选准备好的任务
-        ready = [
-            t for t in tasks
-            if t.status == TaskStatus.PENDING.value
-            and not t.is_expired()
-            and t.is_ready(completed_ids)
-        ]
-        
-        # 按优先级排序
-        ready.sort(key=lambda x: (-x.priority, x.created_at))
-        
-        if limit:
-            ready = ready[:limit]
-        
-        return ready
+        with self._lock:
+            tasks = self._load()
+            
+            # 获取已完成的任务ID集合
+            completed_ids = {t.task_id for t in tasks if t.status == TaskStatus.COMPLETED.value}
+            
+            # 筛选准备好的任务
+            ready = [
+                t for t in tasks
+                if t.status == TaskStatus.PENDING.value
+                and not t.is_expired()
+                and t.is_ready(completed_ids)
+            ]
+            
+            # 按优先级排序
+            ready.sort(key=lambda x: (-x.priority, x.created_at))
+            
+            if limit:
+                ready = ready[:limit]
+            
+            return ready
     
     def get_stats(self) -> Dict[str, Any]:
         """获取统计信息"""
-        tasks = self._load()
-        
-        stats = {
-            "total": len(tasks),
-            "by_status": {},
-            "by_priority": {},
-            "expired": 0,
-            "avg_completion_time": 0.0,
-        }
-        
-        completion_times = []
-        
-        for task in tasks:
-            # 按状态统计
-            stats["by_status"][task.status] = stats["by_status"].get(task.status, 0) + 1
+        with self._lock:
+            tasks = self._load()
             
-            # 按优先级统计
-            priority_name = f"priority_{task.priority}"
-            stats["by_priority"][priority_name] = stats["by_priority"].get(priority_name, 0) + 1
+            stats = {
+                "total": len(tasks),
+                "by_status": {},
+                "by_priority": {},
+                "expired": 0,
+                "avg_completion_time": 0.0,
+            }
             
-            # 过期任务
-            if task.is_expired():
-                stats["expired"] += 1
+            completion_times = []
             
-            # 完成时间
-            if task.completed_at and task.started_at:
-                completion_times.append(task.completed_at - task.started_at)
-        
-        if completion_times:
-            stats["avg_completion_time"] = sum(completion_times) / len(completion_times)
-        
-        return stats
+            for task in tasks:
+                # 按状态统计
+                stats["by_status"][task.status] = stats["by_status"].get(task.status, 0) + 1
+                
+                # 按优先级统计
+                priority_name = f"priority_{task.priority}"
+                stats["by_priority"][priority_name] = stats["by_priority"].get(priority_name, 0) + 1
+                
+                # 过期任务
+                if task.is_expired():
+                    stats["expired"] += 1
+                
+                # 完成时间
+                if task.completed_at and task.started_at:
+                    completion_times.append(task.completed_at - task.started_at)
+            
+            if completion_times:
+                stats["avg_completion_time"] = sum(completion_times) / len(completion_times)
+            
+            return stats
     
     def register_handler(self, task_name: str, handler: Callable) -> None:
         """注册任务处理器"""
