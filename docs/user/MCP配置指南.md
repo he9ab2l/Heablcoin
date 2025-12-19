@@ -20,7 +20,7 @@
   "mcpServers": {
     "heablcoin": {
       "command": "python",
-      "args": ["d:\\MCP\\Heablcoin.py"],
+      "args": ["/absolute/path/to/your/Heablcoin.py"],
       "env": {
         "PYTHONIOENCODING": "utf-8",
         "PYTHONUTF8": "1"
@@ -31,7 +31,7 @@
 ```
 
 **重要提示**:
-- ✅ 使用**绝对路径** `d:\\MCP\\Heablcoin.py`
+- ✅ 使用**绝对路径** `/absolute/path/to/your/Heablcoin.py`
 - ✅ Windows 路径使用双反斜杠 `\\` 或单正斜杠 `/`
 - ✅ 确保 `python` 命令在 PATH 中可用
 - ✅ 配置后需要**完全重启** Claude Desktop
@@ -51,7 +51,7 @@ New-Item -ItemType Directory -Force -Path "$env:APPDATA\Claude"
   "mcpServers": {
     "heablcoin": {
       "command": "python",
-      "args": ["d:\\MCP\\Heablcoin.py"],
+      "args": ["/absolute/path/to/your/Heablcoin.py"],
       "env": {
         "PYTHONIOENCODING": "utf-8",
         "PYTHONUTF8": "1"
@@ -78,7 +78,7 @@ New-Item -ItemType Directory -Force -Path "$env:APPDATA\Claude"
   "mcpServers": {
     "heablcoin": {
       "command": "python",
-      "args": ["d:/MCP/Heablcoin.py"],
+      "args": ["/absolute/path/to/your/Heablcoin.py"],
       "disabled": false,
       "env": {
         "PYTHONIOENCODING": "utf-8",
@@ -90,7 +90,7 @@ New-Item -ItemType Directory -Force -Path "$env:APPDATA\Claude"
 ```
 
 **重要提示**:
-- ✅ 使用**绝对路径** `d:/MCP/Heablcoin.py`
+- ✅ 使用**绝对路径** `/absolute/path/to/your/Heablcoin.py`
 - ✅ Windsurf 推荐使用正斜杠 `/`
 - ✅ 设置 `"disabled": false` 启用服务器
 - ✅ 配置后需要**重启** Windsurf 或重新加载 MCP
@@ -108,7 +108,7 @@ New-Item -ItemType Directory -Force -Path "$env:APPDATA\Windsurf"
   "mcpServers": {
     "heablcoin": {
       "command": "python",
-      "args": ["d:/MCP/Heablcoin.py"],
+      "args": ["/absolute/path/to/your/Heablcoin.py"],
       "disabled": false,
       "env": {
         "PYTHONIOENCODING": "utf-8",
@@ -129,7 +129,7 @@ Codex CLI 支持以 MCP Client 方式连接本地/远程 MCP Server，并将其�
 ### 配置命令（Windows 示例）
 
 ```powershell
-codex mcp add heablcoin --env PYTHONIOENCODING=utf-8 --env PYTHONUTF8=1 -- python d:/MCP/Heablcoin.py
+codex mcp add heablcoin --env PYTHONIOENCODING=utf-8 --env PYTHONUTF8=1 -- python /absolute/path/to/your/Heablcoin.py
 codex mcp list
 ```
 
@@ -169,7 +169,7 @@ where.exe python
   "mcpServers": {
     "heablcoin": {
       "command": "C:\\Users\\YourName\\anaconda3\\python.exe",
-      "args": ["d:\\MCP\\Heablcoin.py"]
+      "args": ["/absolute/path/to/your/Heablcoin.py"]
     }
   }
 }
@@ -182,10 +182,10 @@ where.exe python
 **解决方案**:
 ```powershell
 # 检查文件是否存在
-Test-Path "d:\MCP\Heablcoin.py"
+Test-Path "/absolute/path/to/your/Heablcoin.py"
 
 # 获取绝对路径
-(Get-Item "d:\MCP\Heablcoin.py").FullName
+(Get-Item "/absolute/path/to/your/Heablcoin.py").FullName
 ```
 
 ### 问题 3: 编码问题
@@ -236,7 +236,7 @@ BINANCE_SECRET_KEY=your_secret
 
 ```bash
 # 进入项目目录
-cd d:\MCP
+cd /absolute/path/to/your/project
 
 # 直接运行测试
 python Heablcoin.py
@@ -281,7 +281,7 @@ python Heablcoin-test.py --self-check
 
 ```powershell
 # Heablcoin 日志
-Get-Content "d:\MCP\logs\heablcoin.log" -Tail 50
+Get-Content "/absolute/path/to/your/project/logs/heablcoin.log" -Tail 50
 
 # Claude Desktop 日志 (Windows)
 Get-Content "$env:APPDATA\Claude\logs\mcp*.log" -Tail 50
@@ -301,7 +301,7 @@ Get-Content "$env:APPDATA\Claude\logs\mcp*.log" -Tail 50
   "mcpServers": {
     "heablcoin": {
       "command": "python",
-      "args": ["d:\\MCP\\Heablcoin.py"],
+      "args": ["/absolute/path/to/your/Heablcoin.py"],
       "env": {
         "PYTHONIOENCODING": "utf-8",
         "PYTHONUTF8": "1"
@@ -326,7 +326,7 @@ Get-Content "$env:APPDATA\Claude\logs\mcp*.log" -Tail 50
 ```powershell
 # Heablcoin MCP 一键配置脚本
 
-$projectPath = "d:\MCP"
+$projectPath = "C:\path\to\your\project"
 $pythonCmd = (Get-Command python -ErrorAction SilentlyContinue).Source
 
 if (-not $pythonCmd) {

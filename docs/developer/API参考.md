@@ -8,11 +8,11 @@
 
 请优先阅读：`docs/user/MCP配置指南.md`
 
-- Claude Desktop：配置 `claude_desktop_config.json`，`command: python`，`args: ["D:/MCP/Heablcoin.py"]`
+- Claude Desktop：配置 `claude_desktop_config.json`，`command: python`，`args: ["/absolute/path/to/your/Heablcoin.py"]`
 - Windsurf：配置 `mcp_config.json`，建议带上
   - `PYTHONIOENCODING=utf-8`
   - `PYTHONUTF8=1`
-- Codex CLI：`codex mcp add heablcoin --env PYTHONIOENCODING=utf-8 --env PYTHONUTF8=1 -- python d:/MCP/Heablcoin.py`
+- Codex CLI：`codex mcp add heablcoin --env PYTHONIOENCODING=utf-8 --env PYTHONUTF8=1 -- python /absolute/path/to/your/Heablcoin.py`
 
 ---
 

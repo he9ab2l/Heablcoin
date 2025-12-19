@@ -61,7 +61,7 @@ python tests/run_tests.py unit
   "mcpServers": {
     "heablcoin": {
       "command": "python",
-      "args": ["D:/MCP/Heablcoin.py"],
+      "args": ["/absolute/path/to/your/Heablcoin.py"],
       "env": {
         "PYTHONIOENCODING": "utf-8",
         "PYTHONUTF8": "1"
@@ -78,7 +78,7 @@ python tests/run_tests.py unit
   "mcpServers": {
     "heablcoin": {
       "command": "python",
-      "args": ["d:/MCP/Heablcoin.py"],
+      "args": ["/absolute/path/to/your/Heablcoin.py"],
       "disabled": false,
       "env": {
         "PYTHONIOENCODING": "utf-8",
@@ -92,7 +92,7 @@ python tests/run_tests.py unit
 ### Codex CLI
 
 ```powershell
-codex mcp add heablcoin --env PYTHONIOENCODING=utf-8 --env PYTHONUTF8=1 -- python d:/MCP/Heablcoin.py
+codex mcp add heablcoin --env PYTHONIOENCODING=utf-8 --env PYTHONUTF8=1 -- python /absolute/path/to/your/Heablcoin.py
 codex mcp list
 ```
 

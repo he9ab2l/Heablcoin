@@ -31,7 +31,7 @@
 ## 5. 使用者能跑通的最小指导
 - 新环境：`cp .env.example .env`，填好上面的 API/SMTP/Redis；Windows 需设 `PYTHONIOENCODING=utf-8` 与 `PYTHONUTF8=1`。
 - 自检：`python tests/run_tests.py unit`；如需全链路：`python tests/run_tests.py all`。
-- MCP 客户端：在 Claude/Windsurf 的配置文件中指向 `python D:/MCP/Heablcoin.py`，并设置 UTF-8 环境变量。
+- MCP 客户端：在 Claude/Windsurf 的配置文件中指向 `python /absolute/path/to/your/Heablcoin.py`，并设置 UTF-8 环境变量。
 
 ## 6. 回答要求
 - 不猜接口，先查文档/代码；不模糊执行，先确认边界。

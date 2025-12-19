@@ -86,7 +86,7 @@ Add to `claude_desktop_config.json`:
   "mcpServers": {
     "heablcoin": {
       "command": "python",
-      "args": ["D:/MCP/Heablcoin.py"]
+      "args": ["/absolute/path/to/your/Heablcoin.py"]
     }
   }
 }
@@ -99,7 +99,7 @@ Then ask: ?Analyze BTC price action? or ?Check my account balance?.
 {
   "mcpServers": {
     "heablcoin": {
-      "args": ["d:/MCP/Heablcoin.py"],
+      "args": ["/absolute/path/to/your/Heablcoin.py"],
       "command": "python",
       "disabled": false,
       "env": {
