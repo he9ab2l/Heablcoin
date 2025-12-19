@@ -1,25 +1,21 @@
-# Changelog
+# 变更记录
 
-All notable changes to this project will be documented in this file.
+本项目当前为初版迭代，变更以“按时间追加”的方式记录（不使用版本号）。
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+## 未发布
 
-## [Unreleased]
+## 2025-12-19
 
-## [0.1.0] - 2025-12-19
+### 新增
+- MCP Server 主入口：`Heablcoin.py`（兼容 MCP stdio/JSON-RPC 调用方式）
+- 市场分析：指标/情绪/信号等模块化分析工具
+- 交易执行：Binance（测试网/主网）接入与基础安全校验
+- 云端能力：Redis 任务队列、Webhook 回调、异步任务执行与 pipeline 对接
+- 报告系统：Markdown/PDF 报告生成与邮件通知
+- 风控治理：限额、熔断、策略登记等基础框架
+- 文档：安装/配置/API/运维等说明
+- 测试：统一测试入口 `tests/run_tests.py`
 
-### Added
-- **Core MCP Server**: Implemented `Heablcoin.py` as the main entry point compatible with MCP protocol.
-- **Market Analysis**: Modular analysis tools including technical indicators, sentiment analysis, and trading signals.
-- **Trading Execution**: Support for Binance (testnet/mainnet) with safety checks via `exchange_adapter`.
-- **Cloud Integration**: Redis-backed task queue (`qinglong_worker`), webhooks, and asynchronous task execution.
-- **Personal Analytics**: Tools for performance tracking, portfolio analysis, and trade journaling.
-- **Reporting**: PDF/Markdown report generation and flexible email notification system.
-- **Governance & Risk**: Risk budget management, circuit breakers, and strategy registry.
-- **Documentation**: Comprehensive guides in `docs/` covering installation, configuration, and API usage.
-- **Testing**: Unified test runner `tests/run_tests.py` for unit and integration tests.
-
-### Security
-- Environment variable management via `.env`.
-- Hardcoded sensitive paths removed from documentation.
+### 安全
+- 敏感参数统一使用 `.env` / 环境变量管理
+- 文档中不硬编码敏感路径/密钥

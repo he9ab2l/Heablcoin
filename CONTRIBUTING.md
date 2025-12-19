@@ -23,7 +23,7 @@ Feature requests are welcome. Please provide:
 1. **Fork the repository** and clone it locally.
 2. **Create a branch** for your feature or fix: `git checkout -b my-new-feature`.
 3. **Install dependencies**: `pip install -r requirements.txt`.
-4. **Follow Coding Standards**: Please refer to `dev/DEVELOPER_GUIDE.md` for detailed guidelines.
+4. **Follow Coding Standards**: Please refer to [DEVELOPER_GUIDE](dev/DEVELOPER_GUIDE.md) for detailed guidelines.
    - Run linter/formatter if configured.
    - Ensure clean code and comments.
 5. **Run Tests**:

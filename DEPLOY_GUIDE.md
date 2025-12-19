@@ -10,10 +10,11 @@
 > `setup.sh` 按需安装 Python/Node/pm2/Docker/Nginx（由环境变量开关控制）；`deploy.sh` 默认使用 `.venv` 与 `pm2` 守护云端 worker（可切换为 inspector 或 mcp_server）。
 
 ## 2. 本地开发
-1. `cp .env.example .env`，填入 Binance/Redis/API Key（建议 Testnet）。
-2. `pip install -r requirements.txt`
-3. `python tests/run_tests.py unit`
-4. `python Heablcoin.py` 验证 MCP 客户端能连通。
+1. 从模板复制 `.env`：`cp .env.example .env`（Windows PowerShell：`Copy-Item .env.example .env`）
+2. 填写 `.env`（完整说明见 `env配置说明.md`，建议优先使用 Testnet / paper 模式）
+3. 安装依赖：`pip install -r requirements.txt`
+4. 运行回归：`python tests/run_tests.py unit`
+5. 启动 MCP：`python Heablcoin.py`，在 MCP Client 侧验证可连通
 
 ## 3. 服务器部署
 1. 准备 `/opt/heablcoin`，`git clone` 仓库。

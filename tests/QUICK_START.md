@@ -92,4 +92,4 @@ pip install -r ../requirements.txt
 
 - [完整测试文档](README.md)
 - [测试总结](TEST_SUMMARY.md)
-- [升级完成报告](../UPGRADE_COMPLETE.md)
+- [系统化测试指南](../docs/测试/系统化测试指南.md)

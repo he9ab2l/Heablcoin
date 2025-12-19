@@ -260,9 +260,9 @@ if __name__ == "__main__":
 
 ## 🔗 相关文档
 
-- [升级文档](../升级.md) - 查看优化功能详情
-- [主README](../README.md) - 项目总览
-- [使用指南](../docs/user/MCP使用指南.md) - MCP使用说明
+- [系统化测试指南](../docs/测试/系统化测试指南.md) - 建议的验收顺序与测试矩阵
+- [Claude/Windsurf 验收清单](../docs/客户端/Claude_Windsurf_验收清单.md) - 客户端导入与场景化验收
+- [主 README](../README.md) - 项目总览
 
 ## 📞 支持
 

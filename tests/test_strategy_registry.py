@@ -1,68 +1,61 @@
-############################################################
-# 📘 文件说明：
-# 本文件实现的功能：测试用例：验证 test_strategy_registry 相关逻辑的正确性与回归。
-#
-# 📋 程序整体伪代码（中文）：
-# 1. 初始化主要依赖与变量
-# 2. 加载输入数据或接收外部请求
-# 3. 执行主要逻辑步骤（如计算、处理、训练、渲染等）
-# 4. 输出或返回结果
-# 5. 异常处理与资源释放
-#
-# 🔄 程序流程图（逻辑流）：
-# ┌──────────┐
-# │  输入数据 │
-# └─────┬────┘
-#       ↓
-# ┌────────────┐
-# │  核心处理逻辑 │
-# └─────┬──────┘
-#       ↓
-# ┌──────────┐
-# │  输出结果 │
-# └──────────┘
-#
-# 📊 数据管道说明：
-# 数据流向：输入源 → 数据清洗/转换 → 核心算法模块 → 输出目标（文件 / 接口 / 终端）
-#
-# 🧩 文件结构：
-# - 依赖（标准库）：无
-# - 依赖（第三方）：无
-# - 依赖（本地）：skills.strategy.registry
-#
-# 🕒 创建时间：2025-12-19
-############################################################
-
 from skills.strategy.registry import StrategyRegistry
 
 
 def test_strategy_registry_basic(tmp_path):
+
     registry = StrategyRegistry(storage_path=tmp_path / "strategies.json")
+
     registry.register(
+
         name="trend_alpha",
+
         version="1.0",
+
         owner="deskA",
+
         symbol="BTC/USDT",
+
         timeframe="1h",
+
         direction="long",
+
         risk_level="medium",
+
         description="trend follower",
+
         tags=["trend", "momentum"],
+
     )
+
     registry.register(
+
         name="reversion_guard",
+
         version="0.3",
+
         owner="deskB",
+
         symbol="BTC/USDT",
+
         timeframe="1h",
+
         direction="short",
+
         risk_level="high",
+
         description="mean reversion",
+
     )
+
     result = registry.list(include_conflicts=True)
+
     assert len(result["strategies"]) == 2
+
     assert result["conflicts"], "Opposite directions should flag conflict"
 
+
     registry.set_enabled("trend_alpha", False)
+
     result = registry.list(filter_active=True)
+
     assert len(result["strategies"]) == 1

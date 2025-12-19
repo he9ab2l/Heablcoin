@@ -1,100 +1,116 @@
-############################################################
-# 📘 文件说明：
-# 本文件实现的功能：Redis 适配器（可选）
-#
-# 📋 程序整体伪代码（中文）：
-# 1. 初始化主要依赖与变量
-# 2. 加载输入数据或接收外部请求
-# 3. 执行主要逻辑步骤（如计算、处理、训练、渲染等）
-# 4. 输出或返回结果
-# 5. 异常处理与资源释放
-#
-# 🔄 程序流程图（逻辑流）：
-# ┌──────────┐
-# │  输入数据 │
-# └─────┬────┘
-#       ↓
-# ┌────────────┐
-# │  核心处理逻辑 │
-# └─────┬──────┘
-#       ↓
-# ┌──────────┐
-# │  输出结果 │
-# └──────────┘
-#
-# 📊 数据管道说明：
-# 数据流向：输入源 → 数据清洗/转换 → 核心算法模块 → 输出目标（文件 / 接口 / 终端）
-#
-# 🧩 文件结构：
-# - 依赖（标准库）：__future__, json, typing
-# - 依赖（第三方）：无
-# - 依赖（本地）：无
-#
-# 🕒 创建时间：2025-12-19
-############################################################
+"""
+
+Redis 适配器（可选）
+
+------------------
+
+封装基础的列表推送/弹出与键值读写，便于云端哨兵与本地 MCP 协同。
+
+依赖 redis-py，如果未安装则在实例化时抛出友好错误。
 
 """
-Redis 适配器（可选）
-------------------
-封装基础的列表推送/弹出与键值读写，便于云端哨兵与本地 MCP 协同。
-依赖 redis-py，如果未安装则在实例化时抛出友好错误。
-"""
+
 
 from __future__ import annotations
 
+
 import json
+
 from typing import Any, Optional
 
 
 class RedisAdapter:
+
     def __init__(self, url: str, ssl: bool = False, decode_responses: bool = True) -> None:
+
         try:
+
             import redis  # type: ignore
+
         except Exception as e:  # pragma: no cover - optional dependency
+
             raise RuntimeError("redis 库未安装，请先 pip install redis") from e
+
         ssl_params = {"ssl": True} if ssl else {}
+
         self._client = redis.from_url(url, decode_responses=decode_responses, **ssl_params)
 
+
     # 基础 KV
+
     def set_json(self, key: str, value: Any, expire: Optional[int] = None) -> None:
+
         payload = json.dumps(value, ensure_ascii=False)
+
         self._client.set(key, payload, ex=expire)
 
+
     def get_json(self, key: str) -> Any:
+
         raw = self._client.get(key)
+
         if raw is None:
+
             return None
+
         try:
+
             return json.loads(raw)
+
         except Exception:
+
             return raw
+
 
     # 队列（列表）操作
+
     def push_task(self, list_key: str, task: Any) -> None:
+
         payload = json.dumps(task, ensure_ascii=False)
+
         self._client.rpush(list_key, payload)
 
+
     def pop_task(self, list_key: str) -> Optional[Any]:
+
         raw = self._client.lpop(list_key)
+
         if raw is None:
+
             return None
+
         try:
+
             return json.loads(raw)
+
         except Exception:
+
             return raw
 
+
     # Hash 操作
+
     def hset_json(self, hash_key: str, field: str, value: Any) -> None:
+
         payload = json.dumps(value, ensure_ascii=False)
+
         self._client.hset(hash_key, field, payload)
 
+
     def hget_json(self, hash_key: str, field: str) -> Any:
+
         raw = self._client.hget(hash_key, field)
+
         if raw is None:
+
             return None
+
         try:
+
             return json.loads(raw)
+
         except Exception:
+
             return raw
 
 

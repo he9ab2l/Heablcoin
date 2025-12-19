@@ -46,7 +46,7 @@
     },
     {
       "project_id": "proj_20251218_02",
-      "name": "Heablcoin v3/v4 功能升级",
+      "name": "Heablcoin 功能升级",
       "status": "已完成",
       "progress": 100,
       "tasks": [
@@ -154,13 +154,13 @@
     },
     {
       "project_id": "proj_20251218_05",
-      "name": "深度审计专家系统 v4.0 规范固化",
+      "name": "审计专家系统 Prompt 规范固化",
       "status": "已完成",
       "progress": 100,
       "tasks": [
         {
           "task_id": "task_05_01",
-          "description": "新增独立 Prompt 文件 docs/developer/审计专家系统_v4.0_Prompt.md",
+          "description": "新增独立 Prompt 文件（审计专家系统 Prompt）",
           "progress": 100,
           "status": "已完成",
           "created_at": "2025-12-18 14:18:00"
@@ -183,7 +183,7 @@
     },
     {
       "project_id": "proj_20251218_06",
-      "name": "项目v1版本清理与Prompt规范化",
+      "name": "项目清理与 Prompt 规范化",
       "status": "已完成",
       "progress": 100,
       "tasks": [
@@ -203,7 +203,7 @@
         },
         {
           "task_id": "task_06_03",
-          "description": "落盘审计与传承专家系统v5.0 Prompt",
+          "description": "落盘审计与传承专家系统 Prompt",
           "progress": 100,
           "status": "已完成",
           "created_at": "2025-12-18 14:32:00"
@@ -601,13 +601,13 @@
     },
     {
       "project_id": "proj_20251219_152723_03",
-      "name": "任务.txt 执行（heablcoin_v2）",
+      "name": "任务.txt 执行",
       "status": "进行中",
       "progress": 70,
       "tasks": [
         {
           "task_id": "task_tasktxt_01",
-          "description": "分支治理：保留 main，新建 heablcoin_v1/heablcoin_v2，并清理其他分支",
+          "description": "分支治理：保留 main，新建长期维护分支，并清理其他分支",
           "progress": 100,
           "status": "已完成",
           "created_at": "2025-12-19 15:27:23"

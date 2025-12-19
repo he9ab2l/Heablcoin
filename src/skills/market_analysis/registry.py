@@ -1,42 +1,10 @@
-############################################################
-# 📘 文件说明：
-# 本文件实现的功能：市场研究/分析模块：提供数据分析、质量评估与研究辅助能力。
-#
-# 📋 程序整体伪代码（中文）：
-# 1. 初始化主要依赖与变量
-# 2. 加载输入数据或接收外部请求
-# 3. 执行主要逻辑步骤（如计算、处理、训练、渲染等）
-# 4. 输出或返回结果
-# 5. 异常处理与资源释放
-#
-# 🔄 程序流程图（逻辑流）：
-# ┌──────────┐
-# │  输入数据 │
-# └─────┬────┘
-#       ↓
-# ┌────────────┐
-# │  核心处理逻辑 │
-# └─────┬──────┘
-#       ↓
-# ┌──────────┐
-# │  输出结果 │
-# └──────────┘
-#
-# 📊 数据管道说明：
-# 数据流向：输入源 → 数据清洗/转换 → 核心算法模块 → 输出目标（文件 / 接口 / 终端）
-#
-# 🧩 文件结构：
-# - 依赖（标准库）：__future__, dataclasses, typing
-# - 依赖（第三方）：无
-# - 依赖（本地）：.data_provider
-#
-# 🕒 创建时间：2025-12-19
-############################################################
-
 from __future__ import annotations
 
+
 from dataclasses import dataclass
+
 from typing import Any, Callable, Dict, List, Optional
+
 
 from .data_provider import StandardMarketData
 
@@ -45,24 +13,38 @@ AnalyzerFn = Callable[[StandardMarketData, Dict[str, Any]], Dict[str, Any]]
 
 
 @dataclass
+
 class AnalyzerModule:
+
     name: str
+
     analyze: AnalyzerFn
+
     enabled_by_default: bool = True
 
 
 class AnalyzerRegistry:
+
     def __init__(self) -> None:
+
         self._modules: Dict[str, AnalyzerModule] = {}
 
+
     def register(self, name: str, analyze: AnalyzerFn, enabled_by_default: bool = True) -> None:
+
         self._modules[name] = AnalyzerModule(name=name, analyze=analyze, enabled_by_default=enabled_by_default)
 
+
     def get(self, name: str) -> Optional[AnalyzerModule]:
+
         return self._modules.get(name)
 
+
     def list(self) -> List[str]:
+
         return sorted(self._modules.keys())
 
+
     def defaults(self) -> List[str]:
+
         return [k for k, m in self._modules.items() if m.enabled_by_default]

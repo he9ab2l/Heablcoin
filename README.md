@@ -4,7 +4,6 @@
 
 > Intelligent, modular crypto trading assistant compliant with the Model Context Protocol (MCP).
 
-![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 
@@ -42,10 +41,14 @@ Heablcoin is a modular trading system built for MCP clients (Claude Desktop, Win
 - [Deployment Guide](DEPLOY_GUIDE.md)
 - [Architecture](docs/developer/架构设计.md)
 - [Task Examples](examples.md)
+- [System Test Guide](docs/测试/系统化测试指南.md)
+- [Claude/Windsurf Acceptance](docs/客户端/Claude_Windsurf_验收清单.md)
 
 ## Environment Variables (core)
 
 Set via `.env` (copy from `.env.example`). Keep secrets private.
+
+See the full, canonical configuration guide: [`env配置说明.md`](env配置说明.md).
 
 | Name | Purpose | Notes |
 | --- | --- | --- |
@@ -113,7 +116,7 @@ Then ask: ?Analyze BTC price action? or ?Check my account balance?.
 
 ### Terminal Smoke Tests
 ```bash
-python Heablcoin-test.py --quick
+python tests/run_tests.py --file test_integration_simple.py
 python tests/run_tests.py unit
 python -c "from core.cloud.task_executor import submit_task; submit_task('market_analysis','top_market_cap',{'limit':5})"
 ```
@@ -155,7 +158,7 @@ python tests/run_tests.py all
 # Dev server (MCP stdio)
 python Heablcoin.py
 ```
-Guides: `dev/DEVELOPER_GUIDE.md`, `dev/DEV_LOG.md`, `docs/developer/Prompt备忘录.md` (response rules & conventions).
+Guides: [DEVELOPER_GUIDE](dev/DEVELOPER_GUIDE.md), [DEV_LOG](dev/DEV_LOG.md), [Prompt备忘录](docs/developer/Prompt备忘录.md) (response rules & conventions).
 
 ## Logs, Data, and Persistence
 

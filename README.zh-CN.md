@@ -4,7 +4,6 @@
 
 > 一个符合 MCP（Model Context Protocol）的智能交易分析/执行助手：模块化、可扩展，并以安全默认值为第一原则。
 
-![Version](https://img.shields.io/badge/version-0.1.0-blue.svg)
 ![License](https://img.shields.io/badge/license-MIT-green.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
 
@@ -31,16 +30,19 @@
 
 ## 快速链接
 
-- 快速开始：`docs/user/快速开始.md`
-- 安装指南：`docs/user/安装指南.md`
-- 配置指南：`docs/user/配置指南.md`
-- MCP 配置（Claude/Windsurf/Codex）：`docs/user/MCP配置指南.md`
-- MCP 使用指南：`docs/user/MCP使用指南.md`
-- API 参考（工具清单）：`docs/developer/API参考.md`
-- API 规范（工具与负载）：`API_SPEC.md`
-- 部署与运维：`DEPLOY_GUIDE.md`
-- 架构设计：`docs/developer/架构设计.md`
-- 示例：`examples.md`
+- [快速开始](docs/user/快速开始.md)
+- [安装指南](docs/user/安装指南.md)
+- [配置指南](docs/user/配置指南.md)
+- [环境变量与 .env 配置说明](env配置说明.md)
+- [MCP 配置（Claude/Windsurf/Codex）](docs/user/MCP配置指南.md)
+- [MCP 使用指南](docs/user/MCP使用指南.md)
+- [API 参考（工具清单）](docs/developer/API参考.md)
+- [API 规范（工具与负载）](API_SPEC.md)
+- [部署与运维](DEPLOY_GUIDE.md)
+- [架构设计](docs/developer/架构设计.md)
+- [示例](examples.md)
+- [系统化测试指南](docs/测试/系统化测试指南.md)
+- [Claude/Windsurf 验收清单](docs/客户端/Claude_Windsurf_验收清单.md)
 
 ## 安装与自检
 
