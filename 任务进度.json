@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-12-19 15:49:54",
+  "last_updated": "2025-12-19 15:55:19",
   "projects": [
     {
       "project_id": "proj_20251218_01",
@@ -654,6 +654,35 @@
           "progress": 100,
           "status": "已完成",
           "created_at": "2025-12-19 15:49:54"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251219_155519_05",
+      "name": "云端任务模板与等待工具增强",
+      "status": "已完成",
+      "progress": 100,
+      "tasks": [
+        {
+          "task_id": "task_18_01",
+          "description": "Cloud tools：新增 list_task_templates/render_task_template（AI 工单模板）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 15:55:19"
+        },
+        {
+          "task_id": "task_18_02",
+          "description": "Cloud tools：新增 wait_for_task/wait_for_pipeline_result（发布后可阻塞等待结果）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 15:55:19"
+        },
+        {
+          "task_id": "task_18_03",
+          "description": "文档：补齐 API_SPEC.md 与 docs/developer/API参考.md 中的工具清单",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-19 15:55:19"
         }
       ]
     }

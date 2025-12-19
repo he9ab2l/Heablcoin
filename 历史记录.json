@@ -201,5 +201,12 @@
     "details": "Made EnhancedCloudTaskPublisher thread-safe within a process (atomic publish/update/list/get_ready/get_stats) and added a stress suite (200 concurrent publishes + executor consumption) wired into tests/run_tests.py as suite=stress.",
     "change_type": "enhance",
     "file_path": "d:/MCP/src/core/cloud/enhanced_publisher.py,d:/MCP/tests/run_tests.py,d:/MCP/tests/test_stress_task_executor.py"
+  },
+  {
+    "id": "2025-12-19 15:55:19",
+    "user_intent": "Provide AI-friendly task templates and synchronous wait helpers for cloud tasks and Redis pipeline results.",
+    "details": "Added list_task_templates/render_task_template plus wait_for_task (enhanced queue) and wait_for_pipeline_result (Redis hash) into src/tools/cloud_tools.py, then updated API_SPEC.md and docs/developer/API参考.md to document the new tools and the pipeline endpoints.",
+    "change_type": "enhance",
+    "file_path": "d:/MCP/src/tools/cloud_tools.py,d:/MCP/API_SPEC.md,d:/MCP/docs/developer/API参考.md"
   }
 ]
