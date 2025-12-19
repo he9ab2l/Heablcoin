@@ -5,6 +5,7 @@ Cloud tools: task publishing, scheduler controls, API endpoint registry.
 from __future__ import annotations
 
 import json
+import os
 import time
 from pathlib import Path
 from typing import Any, Dict, Optional, List
@@ -16,6 +17,8 @@ from core.cloud.scheduler import CloudScheduler
 from core.cloud.api_manager import ApiManager, ApiEndpoint, ApiStatus
 from core.orchestration.router import build_orchestrator_from_env, build_default_task_plan
 from core.cloud.task_executor import submit_task
+from storage.redis_adapter import RedisAdapter
+from utils.env_helpers import env_bool
 from utils.validators import normalize_symbol, validate_price_condition
 from utils.smart_logger import get_logger
 
@@ -271,3 +274,76 @@ def register_tools(mcp: Any) -> None:
     def reset_api_stats() -> str:
         api_manager.reset_stats()
         return json.dumps({"status": "reset"}, ensure_ascii=False)
+
+    def _redis_from_env() -> RedisAdapter:
+        url = os.getenv("REDIS_URL")
+        if not url:
+            host = os.getenv("REDIS_HOST")
+            port = os.getenv("REDIS_PORT", "6379")
+            password = os.getenv("REDIS_PASSWORD") or os.getenv("REDIS_PASS")
+            if host:
+                auth = f":{password}@" if password else ""
+                url = f"redis://{auth}{host}:{port}/0"
+        if not url:
+            raise RuntimeError("REDIS_URL/REDIS_HOST 未配置，无法对接云端 Redis")
+        ssl = env_bool("REDIS_SSL", False)
+        return RedisAdapter(url=url, ssl=ssl, decode_responses=True)
+
+    @mcp.tool()
+    @mcp_tool_safe
+    def publish_pipeline_task(
+        query: str,
+        task_id: str = "",
+        notify: str = "",
+        extra_payload_json: str = "{}",
+        queue_key: str = "",
+    ) -> str:
+        """
+        发布云端 Pipeline 任务到 Redis list（由 `src/core/cloud/pipeline_worker.py` 消费）。
+
+        - 默认队列 key: TASK_QUEUE_KEY（默认 mcp:tasks）
+        - 结果写回 hash: RESULT_HASH_KEY（默认 mcp:results）
+
+        Args:
+            query: 要搜索/总结的问题
+            task_id: 可选，自定义任务 ID（留空自动生成）
+            notify: 通知通道，逗号分隔（如 "serverchan,feishu"）
+            extra_payload_json: 额外 payload（JSON 字符串，会合并到 payload）
+            queue_key: 可选，覆盖队列 key
+        """
+        task_queue = (queue_key or os.getenv("TASK_QUEUE_KEY") or "mcp:tasks").strip()
+        rid = _redis_from_env()
+
+        if not task_id:
+            task_id = f"task_{int(time.time() * 1000)}"
+
+        payload: Dict[str, Any] = {"query": query}
+        if notify.strip():
+            payload["notify"] = [p.strip() for p in notify.split(",") if p.strip()]
+
+        if extra_payload_json:
+            try:
+                extra = json.loads(extra_payload_json)
+                if isinstance(extra, dict):
+                    payload.update(extra)
+            except Exception:
+                pass
+
+        task = {"id": task_id, "payload": payload}
+        rid.push_task(task_queue, task)
+        return json.dumps({"success": True, "task_id": task_id, "queue_key": task_queue}, ensure_ascii=False, indent=2)
+
+    @mcp.tool()
+    @mcp_tool_safe
+    def get_pipeline_result(task_id: str, result_hash_key: str = "") -> str:
+        """
+        查询云端 Pipeline worker 写回的结果（Redis hash）。
+
+        Args:
+            task_id: publish_pipeline_task 返回的 task_id
+            result_hash_key: 可选，覆盖结果 hash key（默认 RESULT_HASH_KEY 或 mcp:results）
+        """
+        key = (result_hash_key or os.getenv("RESULT_HASH_KEY") or "mcp:results").strip()
+        rid = _redis_from_env()
+        data = rid.hget_json(key, task_id)
+        return json.dumps({"success": True, "task_id": task_id, "result_hash_key": key, "data": data}, ensure_ascii=False, indent=2)

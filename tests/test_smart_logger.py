@@ -33,8 +33,12 @@ def test_smart_logger_creation():
         assert 'analysis' in logger.loggers, "缺少 analysis logger"
         assert 'error' in logger.loggers, "缺少 error logger"
         assert 'performance' in logger.loggers, "缺少 performance logger"
+        assert 'learning' in logger.loggers, "缺少 learning logger"
+        assert 'cloud' in logger.loggers, "缺少 cloud logger"
+        assert 'storage' in logger.loggers, "缺少 storage logger"
+        assert 'mcp' in logger.loggers, "缺少 mcp logger"
         
-        print("✅ 通过: 创建了5个日志通道")
+        print(f"✅ 通过: 创建了 {len(logger.loggers)} 个日志通道")
         return True
     except Exception as e:
         print(f"❌ 失败: {e}")
@@ -55,12 +59,14 @@ def test_logger_channels():
         logger.get_logger('system').info("系统日志测试")
         logger.get_logger('trading').info("交易日志测试")
         logger.get_logger('error').error("错误日志测试")
+        logger.get_logger('mcp').info("MCP日志测试")
         
         # 验证日志文件存在
         log_files = os.listdir(temp_dir)
         assert 'system.log' in log_files, "system.log 未创建"
         assert 'trading.log' in log_files, "trading.log 未创建"
         assert 'error.log' in log_files, "error.log 未创建"
+        assert 'mcp.log' in log_files, "mcp.log 未创建"
         
         print(f"✅ 通过: 创建了 {len(log_files)} 个日志文件")
         return True

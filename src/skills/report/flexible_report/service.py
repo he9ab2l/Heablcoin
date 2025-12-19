@@ -104,7 +104,9 @@ def register_tools(
     set_send_email_fn(send_email_fn)
     set_notify_switch_fn(notify_switch_fn)
     set_data_providers(data_providers)
-    mcp.tool()(send_flexible_report)
+    from core.mcp_safety import mcp_tool_safe
+
+    mcp.tool()(mcp_tool_safe(send_flexible_report))
 
 
 def send_flexible_report(

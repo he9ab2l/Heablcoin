@@ -26,10 +26,33 @@ except Exception:
     pass
 
 # === CRITICAL: MCP Protocol Protection ===
-# MCP通过stdout传输JSON-RPC消息，任何print()或第三方库输出都会污染协议通道
-# 将stdout重定向到stderr，防止污染JSON-RPC通道
+# MCP/JSON-RPC 使用 stdout 作为协议通道，严禁向 stdout 输出人类可读文本。
+# 为降低“stdout 污染”风险，这里默认将 *未显式指定 file 的 print()* 重定向到 stderr，
+# 但不修改 sys.stdout 本身（避免破坏 MCP 协议输出）。
+import builtins as _builtins
+
 _original_stdout = sys.stdout
-sys.stdout = sys.stderr
+_original_print = _builtins.print
+
+
+def _env_truthy(name: str, default: str) -> bool:
+    return os.getenv(name, default).strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def _mcp_safe_print(*args, **kwargs):  # type: ignore[no-untyped-def]
+    file = kwargs.get("file")
+    if file is None or file is sys.stdout:
+        kwargs["file"] = sys.stderr
+    return _original_print(*args, **kwargs)
+
+
+if _env_truthy("MCP_FORCE_PRINT_TO_STDERR", "true"):
+    _builtins.print = _mcp_safe_print
+
+# 高风险选项：将 sys.stdout 重定向到 stderr（可能破坏 MCP stdio 协议）。
+# 默认关闭，仅用于极端排障场景。
+if _env_truthy("MCP_REDIRECT_STDOUT", "false"):
+    sys.stdout = sys.stderr
 
 # --- 0. 环境初始化 ---
 warnings.simplefilter("ignore")

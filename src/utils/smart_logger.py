@@ -30,6 +30,7 @@ MODULE_ERROR_CODES = {
     'learning': 'E60',
     'cloud': 'E70',
     'storage': 'E80',
+    'mcp': 'E90',
 }
 
 # 错误计数器
@@ -262,6 +263,51 @@ class SmartLogger:
         learning_handler.setFormatter(StructuredLogFormatter('learning'))
         learning_logger.addHandler(learning_handler)
         self.loggers['learning'] = learning_logger
+
+        # 7. 云端日志（任务/队列/worker）
+        cloud_logger = logging.getLogger('heablcoin.cloud')
+        cloud_logger.setLevel(logging.INFO)
+        cloud_logger.propagate = False
+
+        cloud_handler = RotatingFileHandler(
+            os.path.join(self.base_dir, 'cloud.log'),
+            maxBytes=20*1024*1024,  # 20MB
+            backupCount=5,
+            encoding='utf-8'
+        )
+        cloud_handler.setFormatter(StructuredLogFormatter('cloud'))
+        cloud_logger.addHandler(cloud_handler)
+        self.loggers['cloud'] = cloud_logger
+
+        # 8. 存储日志（文件/Notion/Redis/Email 等适配器）
+        storage_logger = logging.getLogger('heablcoin.storage')
+        storage_logger.setLevel(logging.INFO)
+        storage_logger.propagate = False
+
+        storage_handler = RotatingFileHandler(
+            os.path.join(self.base_dir, 'storage.log'),
+            maxBytes=20*1024*1024,  # 20MB
+            backupCount=5,
+            encoding='utf-8'
+        )
+        storage_handler.setFormatter(StructuredLogFormatter('storage'))
+        storage_logger.addHandler(storage_handler)
+        self.loggers['storage'] = storage_logger
+
+        # 9. MCP 调用日志（每次工具调用都写入，用于审计/回放/排障）
+        mcp_logger = logging.getLogger('heablcoin.mcp')
+        mcp_logger.setLevel(logging.INFO)
+        mcp_logger.propagate = False
+
+        mcp_handler = RotatingFileHandler(
+            os.path.join(self.base_dir, 'mcp.log'),
+            maxBytes=50*1024*1024,  # 50MB
+            backupCount=10,
+            encoding='utf-8'
+        )
+        mcp_handler.setFormatter(StructuredLogFormatter('mcp'))
+        mcp_logger.addHandler(mcp_handler)
+        self.loggers['mcp'] = mcp_logger
     
     def get_logger(self, channel: str = 'system') -> logging.Logger:
         """获取指定通道的logger"""

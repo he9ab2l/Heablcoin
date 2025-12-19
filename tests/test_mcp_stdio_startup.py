@@ -29,3 +29,8 @@ async def _run():
 
 def test_stdio_bootstrap():
     anyio.run(_run, backend="asyncio")
+
+
+if __name__ == "__main__":
+    # Make this test runnable under `python tests/run_tests.py integration`
+    test_stdio_bootstrap()
