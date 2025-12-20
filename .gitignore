@@ -52,3 +52,7 @@ Thumbs.db
 
 trade_history.csv
 check_md_links.py
+
+# Project records (local tracking only)
+历史记录.json
+任务进度.json
