@@ -41,8 +41,26 @@
 - [部署与运维](DEPLOY_GUIDE.md)
 - [架构设计](docs/developer/架构设计.md)
 - [示例](examples.md)
-- [系统化测试指南](docs/测试/系统化测试指南.md)
-- [Claude/Windsurf 验收清单](docs/客户端/Claude_Windsurf_验收清单.md)
+- [系统化测试指南](docs/developer/系统化测试指南.md)
+- [Claude/Windsurf 验收清单](docs/user/验收清单.md)
+
+## 文档索引
+
+### 用户文档
+- [文档主页](docs/README.md) - 完整用户与开发者文档入口
+- [用户文档入口](docs/user/README.md) - 用户向文档
+- [开发者文档入口](docs/developer/README.md) - 开发者向文档
+- [代码使用全景图](docs/user/代码使用全景图_按时间轴.md) - 项目演进与使用模式
+- [故障排查](docs/user/故障排查.md) - 常见问题与解决方案
+- [功能概览](docs/user/功能概览.md) - 系统功能概览
+
+### 开发者文档
+- [项目概览](docs/developer/项目概览.md) - 项目高层描述
+- [项目记录规范](docs/developer/项目记录规范.md) - 文档与记录规范
+- [多端连接集成指南](docs/developer/多端连接集成流程标准化.md) - 集成工作流
+- [系统架构图](可视化系统架构.mmd) - 可视化系统架构
+- [系统级注入 Prompt](docs/developer/系统级注入%20Prompt.md) - 系统级 Prompt 框架
+- [审计专家系统 Prompt](docs/developer/审计专家系统Prompt.md) - 审计框架
 
 ## 安装与自检
 

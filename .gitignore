@@ -56,3 +56,6 @@ check_md_links.py
 # Project records (local tracking only)
 历史记录.json
 任务进度.json
+
+# Backup files
+backup/

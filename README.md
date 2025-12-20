@@ -41,8 +41,26 @@ Heablcoin is a modular trading system built for MCP clients (Claude Desktop, Win
 - [Deployment Guide](DEPLOY_GUIDE.md)
 - [Architecture](docs/developer/架构设计.md)
 - [Task Examples](examples.md)
-- [System Test Guide](docs/测试/系统化测试指南.md)
-- [Claude/Windsurf Acceptance](docs/客户端/Claude_Windsurf_验收清单.md)
+- [System Test Guide](docs/developer/系统化测试指南.md)
+- [Claude/Windsurf Acceptance](docs/user/验收清单.md)
+
+## Documentation Index
+
+### User Documentation
+- [Documentation Home](docs/README.md) - Complete user and developer documentation portal
+- [User Guide Portal](docs/user/README.md) - User-focused documentation
+- [Developer Guide Portal](docs/developer/README.md) - Developer-focused documentation
+- [Code Usage Timeline](docs/user/代码使用全景图_按时间轴.md) - Project evolution and usage patterns
+- [Troubleshooting](docs/user/故障排查.md) - Common issues and solutions
+- [Feature Overview](docs/user/功能概览.md) - System capabilities overview
+
+### Developer Documentation
+- [Project Overview](docs/developer/项目概览.md) - High-level project description
+- [Project Recording Standards](docs/developer/项目记录规范.md) - Documentation and tracking standards
+- [Multi-end Integration Guide](docs/developer/多端连接集成流程标准化.md) - Integration workflows
+- [System Architecture](可视化系统架构.mmd) - Visual system architecture diagram
+- [Audit Expert System Prompt](docs/developer/审计专家系统_v4.0_Prompt.md) - System audit framework
+- [Audit & Inheritance Expert System](docs/developer/审计与传承专家系统_v5.0_Prompt.md) - Advanced audit system
 
 ## Environment Variables (core)
 
