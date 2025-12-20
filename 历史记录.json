@@ -229,5 +229,19 @@
     "details": "Aligned Python version requirement to 3.10+ (code uses 3.10 syntax), replaced stale `tests/run_tests.py --quick`/pytest references with the supported test runner suites and `--file` smoke option, and simplified Windsurf mcp_config.json by removing the huge client-side disabledTools list in favor of server-supported `TOOLS_DISABLED` (keeping paper/testnet defaults and UTF-8 env).",
     "change_type": "modify",
     "file_path": "d:/MCP/README.md,d:/MCP/README.zh-CN.md,d:/MCP/dev/DEVELOPER_GUIDE.md,d:/MCP/docs/developer/README.md,d:/MCP/docs/developer/多端连接集成流程标准化.md,d:/MCP/docs/developer/交接提示词_20251218.md,d:/MCP/docs/developer/项目概览.md,d:/MCP/docs/developer/项目上下文文档.md,d:/MCP/docs/user/MCP使用指南.md,d:/MCP/docs/user/代码使用全景图_按时间轴.md,d:/MCP/docs/user/安装指南.md,d:/MCP/docs/user/快速开始.md,d:/MCP/docs/user/故障排查.md,d:/MCP/docs/user/终端使用指南.md,d:/MCP/docs/user/配置指南.md,d:/MCP/tests/QUICK_START.md,d:/MCP/tests/README.md,d:/MCP/tests/TEST_SUMMARY.md,d:/MCP/升级.md,c:/Users/16864/.codeium/windsurf/mcp_config.json"
+  },
+  {
+    "id": "2025-12-20 03:10:00",
+    "user_intent": "执行 Project Janus-Ω 完整交易周期测试，验证MCP工具集功能",
+    "details": "完成7阶段交易周期测试（市场分析、AI协同、交易决策、风险校验、执行模拟、日志、复盘）；测试理性决策与情绪偏差场景；验证FOMO检测、熔断器、风险预算等拦截机制；覆盖连续亏损后FOMO场景；所有风控模块工作正常",
+    "change_type": "add",
+    "file_path": "d:/MCP/测试1220.md"
+  },
+  {
+    "id": "2025-12-20 18:30:00",
+    "user_intent": "修复通知系统并完成 docs 严格跳转校验（Server酱/飞书直连、多渠道工具、坏链修复）",
+    "details": "实现并接入多渠道通知：Server酱/飞书直连（requests）；修复 src/core/server.py 中重复的 send_notification 工具名冲突（保留多渠道版）；新增/完善通知测试工具与渠道状态工具；逐文件修复 docs/ 内部坏链（邮件配置指南路径、移除不存在的升级.md 链接、统一文档索引跳转）；补齐 requests 依赖并将临时脚本加入 .gitignore 防误提交",
+    "change_type": "fix",
+    "file_path": "d:/MCP/src/core/server.py,d:/MCP/src/utils/notification_channels.py,d:/MCP/requirements.txt,d:/MCP/docs/developer/报告系统指南.md,d:/MCP/docs/developer/云端模块指南.md,d:/MCP/docs/user/MCP使用指南.md,d:/MCP/docs/user/终端使用指南.md,d:/MCP/.gitignore,d:/MCP/历史记录.json,d:/MCP/任务进度.json,d:/MCP/可视化系统架构.mmd"
   }
 ]

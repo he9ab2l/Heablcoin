@@ -12,11 +12,11 @@
 8. [路线图](路线图.md)
 9. [系统级注入 Prompt](系统级注入%20Prompt.md) + [Prompt备忘录](Prompt备忘录.md) + [MCP_SYSTEM_DEVELOPMENT_PROMPT_v1.0](MCP_SYSTEM_DEVELOPMENT_PROMPT_v1.0.md)
 10. Runbook：[多端连接集成流程标准化](多端连接集成流程标准化.md)
-11. [项目记录规范](../项目管理/项目记录规范.md)（历史记录/任务进度的合并方式与写入流程）
+11. [项目记录规范](项目记录规范.md)（历史记录/任务进度的合并方式与写入流程）
 
 ## 开发规范（必须遵守）
 
-1. 历史与任务：变更要同步追加到 `历史记录.json`、更新 `任务进度.json`（详见 [项目记录规范](../项目管理/项目记录规范.md)）。
+1. 历史与任务：变更要同步追加到 `历史记录.json`、更新 `任务进度.json`（详见 [项目记录规范](项目记录规范.md)）。
 2. 协议保护：MCP/JSON-RPC 使用 stdio，禁止 stdout 污染；工具必须用 `mcp_tool_safe` 做异常隔离。
 3. 提交前检查：
    - `python scripts/check_naming.py`

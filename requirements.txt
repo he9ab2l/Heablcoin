@@ -5,6 +5,7 @@ pandas
 numpy
 python-dotenv
 markdown
+requests
 
 # Optional: for better async support
 aiohttp

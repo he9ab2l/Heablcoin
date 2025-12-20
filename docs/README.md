@@ -2,9 +2,9 @@
 
 - [用户文档入口](user/README.md)
 - [开发者文档入口](developer/README.md)
-- [项目记录规范](项目管理/项目记录规范.md)
-- [系统化测试指南](测试/系统化测试指南.md)
-- [Claude/Windsurf 验收清单](客户端/Claude_Windsurf_验收清单.md)
+- [验收清单](user/验收清单.md)
+- [系统化测试指南](developer/系统化测试指南.md)
+- [项目记录规范](developer/项目记录规范.md)
 - [项目总览](../README.md)
 
 约定：

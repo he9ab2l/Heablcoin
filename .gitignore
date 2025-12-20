@@ -51,3 +51,4 @@ htmlcov/
 Thumbs.db
 
 trade_history.csv
+check_md_links.py

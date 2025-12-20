@@ -1,5 +1,5 @@
 {
-  "last_updated": "2025-12-19 18:30:50",
+  "last_updated": "2025-12-20 18:30:00",
   "projects": [
     {
       "project_id": "proj_20251218_01",
@@ -712,6 +712,78 @@
           "progress": 100,
           "status": "已完成",
           "created_at": "2025-12-19 18:30:50"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251220_01",
+      "name": "Project Janus-Ω 极端交易者模拟测试",
+      "status": "已完成",
+      "progress": 100,
+      "tasks": [
+        {
+          "task_id": "task_20_01",
+          "description": "执行7阶段完整交易周期测试（市场分析、AI协同、交易决策、风险校验、执行模拟、日志、复盘）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-20 03:00:00"
+        },
+        {
+          "task_id": "task_20_02",
+          "description": "测试MCP工具集：market_analysis_tools, risk_tools, learning_tools, strategy_tools",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-20 03:01:00"
+        },
+        {
+          "task_id": "task_20_03",
+          "description": "验证风控拦截机制：FOMO检测、熔断器、风险预算、逆势警报",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-20 03:02:00"
+        },
+        {
+          "task_id": "task_20_04",
+          "description": "执行连续亏损后FOMO场景测试，验证系统保护机制",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-20 03:05:00"
+        },
+        {
+          "task_id": "task_20_05",
+          "description": "生成完整测试报告并保存到测试1220.md",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-20 03:10:00"
+        }
+      ]
+    },
+    {
+      "project_id": "proj_20251220_02",
+      "name": "通知系统修复与文档链接严格校验",
+      "status": "进行中",
+      "progress": 67,
+      "tasks": [
+        {
+          "task_id": "task_20_06",
+          "description": "通知系统：Server酱/飞书直连、多渠道 send_notification、修复工具重名冲突、补齐 requests 依赖",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-20 18:30:00"
+        },
+        {
+          "task_id": "task_20_07",
+          "description": "docs 严格跳转校验：逐文件核对并修复内部坏链（含索引跳转一致性）",
+          "progress": 100,
+          "status": "已完成",
+          "created_at": "2025-12-20 18:30:00"
+        },
+        {
+          "task_id": "task_20_08",
+          "description": "MCP 基本功能全面验证：工具列表、关键工具调用、通知渠道测试",
+          "progress": 0,
+          "status": "待验证",
+          "created_at": "2025-12-20 18:30:00"
         }
       ]
     }

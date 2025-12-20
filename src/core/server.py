@@ -661,13 +661,7 @@ except Exception as _e:
     logger.warning(f"⚠️ send_flexible_report 注册失败: {type(_e).__name__}: {_e}")
 
 
-@mcp.tool()
-
-
-@mcp_tool_safe
-
-
-def send_notification(title: str, message: str) -> str:
+def send_email_notification(title: str, message: str) -> str:
     """
     发送自定义邮件通知。
     Args:
@@ -2565,6 +2559,184 @@ def clear_cache(pattern: str = None) -> str:
             return "✅ 已清除所有缓存"
     except Exception as e:
         return f"❌ 清除失败: {str(e)}"
+# ============================================
+# 10. 改进的多渠道通知系统
+# ============================================
+
+
+@mcp.tool()
+@mcp_tool_safe
+def send_notification(title: str, message: str) -> str:
+    """
+    发送自定义通知到所有渠道。
+    Args:
+        title: 通知标题
+        message: 通知内容
+    """
+    try:
+        from utils.notification_channels import MultiChannelNotifier
+    except ImportError as e:
+        return f"❌ 导入通知模块失败: {e}"
+    
+    results = []
+    
+    # 1. 发送邮件
+    try:
+        email_ok = send_email(title, message, msg_type='NOTIFICATION')
+        results.append(f"📧 邮件: {'✅ 成功' if email_ok else '❌ 失败'}")
+    except Exception as e:
+        results.append(f"📧 邮件: ❌ 异常 ({str(e)[:50]})")
+    
+    # 2. 发送Server酱和飞书
+    try:
+        notifier = MultiChannelNotifier()
+        channel_results = notifier.send_all(title, message)
+        
+        # Server酱结果
+        if channel_results["serverchan"] is None:
+            results.append("🔔 Server酱: ⚠️ 未配置")
+        elif channel_results["serverchan"]:
+            results.append("🔔 Server酱: ✅ 成功")
+        else:
+            results.append("🔔 Server酱: ❌ 失败")
+        
+        # 飞书结果
+        if channel_results["feishu"] is None:
+            results.append("📱 飞书: ⚠️ 未配置")
+        elif channel_results["feishu"]:
+            results.append("📱 飞书: ✅ 成功")
+        else:
+            results.append("📱 飞书: ❌ 失败")
+    except Exception as e:
+        results.append(f"⚠️ 多渠道通知异常: {str(e)[:100]}")
+    
+    return f"✅ 通知已发送: {title}\n\n" + "\n".join(results)
+
+
+@mcp.tool()
+@mcp_tool_safe
+def test_notifications() -> str:
+    """测试所有通知渠道"""
+    results = []
+    results.append("🧪 **通知渠道测试**")
+    results.append("═" * 30)
+    results.append("")
+    
+    # 测试邮件
+    results.append("📧 测试邮件...")
+    try:
+        email_ok = send_email(
+            "Heablcoin 通知测试", 
+            "这是一条测试消息，用于验证邮件通知功能。\n\n发送时间: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+            msg_type='TEST'
+        )
+        results.append(f"  → {'✅ 成功' if email_ok else '❌ 失败'}")
+    except Exception as e:
+        results.append(f"  → ❌ 异常: {str(e)[:50]}")
+    results.append("")
+    
+    # 测试Server酱和飞书
+    try:
+        from utils.notification_channels import MultiChannelNotifier
+        notifier = MultiChannelNotifier()
+        status = notifier.get_status()
+        
+        # Server酱测试
+        results.append(f"🔔 Server酱: {status['serverchan']}")
+        if notifier.serverchan.is_available():
+            results.append("  → 发送测试消息...")
+            sc_ok = notifier.serverchan.send(
+                "Heablcoin 通知测试",
+                "这是一条测试消息\n\n发送时间: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            )
+            results.append(f"  → {'✅ 成功' if sc_ok else '❌ 失败'}")
+        results.append("")
+        
+        # 飞书测试
+        results.append(f"📱 飞书: {status['feishu']}")
+        if notifier.feishu.is_available():
+            results.append("  → 发送测试消息...")
+            fs_ok = notifier.feishu.send(
+                "Heablcoin 通知测试",
+                "这是一条测试消息\n\n发送时间: " + datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+            )
+            results.append(f"  → {'✅ 成功' if fs_ok else '❌ 失败'}")
+        results.append("")
+        
+    except Exception as e:
+        results.append(f"⚠️ 多渠道测试异常: {str(e)}")
+        results.append("")
+    
+    results.append("═" * 30)
+    results.append("💡 提示: 请检查各个渠道是否收到测试消息")
+    
+    return "\n".join(results)
+
+
+@mcp.tool()
+@mcp_tool_safe
+def get_notification_channels_status() -> str:
+    """获取所有通知渠道的配置状态"""
+    results = []
+    results.append("📡 **通知渠道状态**")
+    results.append("═" * 30)
+    results.append("")
+    
+    # 邮件配置
+    email_enabled = os.getenv("EMAIL_NOTIFICATIONS_ENABLED", "False").lower() == "true"
+    sender_email = os.getenv("SENDER_EMAIL", "")
+    recipient_email = (
+        os.getenv("RECIPIENT_EMAIL") or 
+        os.getenv("RECEIVER_EMAIL") or 
+        os.getenv("NOTIFY_EMAIL") or 
+        ""
+    )
+    
+    results.append("📧 **邮件**")
+    results.append(f"├─ 状态: {'✅ 已启用' if email_enabled else '❌ 未启用'}")
+    results.append(f"├─ 发件人: {sender_email if sender_email else '❌ 未配置'}")
+    results.append(f"└─ 收件人: {recipient_email if recipient_email else '❌ 未配置'}")
+    results.append("")
+    
+    # Server酱配置
+    try:
+        from utils.notification_channels import ServerChanNotifier
+        sc = ServerChanNotifier()
+        sendkey = os.getenv("SERVERCHAN_SENDKEY", "")
+        
+        results.append("🔔 **Server酱**")
+        results.append(f"├─ 状态: {'✅ 已配置' if sc.is_available() else '❌ 未配置'}")
+        if sendkey:
+            results.append(f"└─ SendKey: {sendkey[:20]}...")
+        else:
+            results.append("└─ SendKey: ❌ 未配置")
+        results.append("")
+    except Exception as e:
+        results.append(f"🔔 **Server酱**: ⚠️ 检查失败 ({str(e)[:30]})")
+        results.append("")
+    
+    # 飞书配置
+    try:
+        from utils.notification_channels import FeishuNotifier
+        fs = FeishuNotifier()
+        webhook = os.getenv("FEISHU_WEBHOOK", "")
+        
+        results.append("📱 **飞书**")
+        results.append(f"├─ 状态: {'✅ 已配置' if fs.is_available() else '❌ 未配置'}")
+        if webhook:
+            results.append(f"└─ Webhook: {webhook[:50]}...")
+        else:
+            results.append("└─ Webhook: ❌ 未配置")
+        results.append("")
+    except Exception as e:
+        results.append(f"📱 **飞书**: ⚠️ 检查失败 ({str(e)[:30]})")
+        results.append("")
+    
+    results.append("═" * 30)
+    results.append("💡 使用 test_notifications() 测试所有渠道")
+    
+    return "\n".join(results)
+
 # ============================================
 # 启动入口
 # ============================================

@@ -1,4 +1,4 @@
-%% 可视化系统架构 - 自动生成（更新时间：2025-12-19 15:12:23）
+%% 可视化系统架构 - 自动生成（更新时间：2025-12-20 18:30:00）
 %% 可直接导入 https://www.mermaidchart.com/
 %% Heablcoin - MCP 驱动的加密交易系统（src 分层架构）
 
@@ -62,6 +62,7 @@ graph TB
         U_Risk["risk_management.py"]
         U_ExchangeAdapter["exchange_adapter.py"]
         U_Notifier["notifier.py"]
+        U_NotificationChannels["notification_channels.py（Server酱/飞书直连）"]
     end
 
     subgraph StorageLayer["存储适配 Storage（src/storage）"]
@@ -110,10 +111,13 @@ graph TB
     DS_Redis --> ST_Redis
     DS_LLM --> CORE_Orch
     DS_Notify --> ST_Email
+    DS_Notify --> U_NotificationChannels
     UT_PipelineWorker --> DS_Redis
     UT_PipelineWorker --> DS_LLM
     UT_PipelineWorker --> DS_Notify
     T_Cloud --> DS_Redis
+
+    SERVER --> U_NotificationChannels
 
     SERVER -->|"MCP JSON-RPC"| UT_Claude
     SERVER -->|"MCP JSON-RPC"| UT_Windsurf
